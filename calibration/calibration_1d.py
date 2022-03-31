@@ -17,25 +17,17 @@ import sys
 from hydro_python_subroutine import solve_transient_both_diri
 import calibration_1d_utilities
 
-#%% platform fork
-if platform.system() == 'Linux': # Working on CSC machines
-    data_parent_folder = Path(r'/users/urzainqu/blopti_dev/ForestCarbon2022/calibration/data')
-    output_parent_folder = Path(r'/users/urzainqu/blopti_dev/ForestCarbon2022/calibration/1d_cal_output')
-    
-    sys.path.insert(1, r'/users/urzainqu/blopti_dev') # insert at 1, 0 is the script path
-    import estimate_daily_et
-    import evapotranspiration_fao
-    import get_data
+#%% Folders and additional imports
 
-elif platform.system() == 'Windows':    
-    data_parent_folder = Path(r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\0. Raw Data")
-    output_parent_folder = Path(r"C:/Users/03125327/github/blopti_dev/ForestCarbon2022/calibration/1d_cal_output")
-    
-    # import from blopti_dev
-    sys.path.insert(1, r'C:\Users\03125327\github\blopti_dev') # insert at 1, 0 is the script path
-    import estimate_daily_et
-    import evapotranspiration_fao
-    import get_data
+# Folders
+data_parent_folder = Path('../data')
+output_parent_folder = Path('1d_cal_output')
+
+sys.path.insert(1, '..') # add parent folder to path
+import estimate_daily_et
+import evapotranspiration_fao
+import get_data
+
 
 #%% Parse arguments
 if platform.system() == 'Linux': # Working on CSC machines
@@ -176,26 +168,25 @@ for name, heights in dipwell_heights.items():
     transect_dem[name] = inter_func(MESH) + EXTRA_PEAT_DEPTH
 
 #%% Choose data
-# Remove outliers: points further away than 3 STD
 # Uncomment to print bad days.
 
-# print('Bad (NaN and outliers) days per transect: ')
-# bad_data_per_transect = {}
-# for name, df in dict_of_transects.items():
-#     # outliers
-#     zscore_more_than_3std = (df.dropna().apply(zscore) > 3).all(axis=1)
+print('Bad (NaN and outliers) days per transect: ')
+bad_data_per_transect = {}
+for name, df in dict_of_transects.items():
+    # outliers
+    zscore_more_than_3std = (df.dropna().apply(zscore) > 3).all(axis=1)
     
-#     # Nans
-#     row_has_NaN = df.isnull().any(axis=1)
+    # Nans
+    row_has_NaN = df.isnull().any(axis=1)
     
-#     # Append those values to list
-#     bad_data_per_transect[name] = list(row_has_NaN.index[row_has_NaN]) + list(zscore_more_than_3std.index[zscore_more_than_3std])
+    # Append those values to list
+    bad_data_per_transect[name] = list(row_has_NaN.index[row_has_NaN]) + list(zscore_more_than_3std.index[zscore_more_than_3std])
     
-#     print(name, bad_data_per_transect[name])
+    print(name, bad_data_per_transect[name])
 
-jday_bounds = {'SI':[50, 80],
-               'SE':[150, 180],
-               'RA':[300, 330]
+jday_bounds = {'SI':[50, 100],
+               'SE':[150, 200],
+               'RA':[300, 350]
                }
 
 # %% Create initial zeta 
@@ -343,24 +334,6 @@ elif N_CPU == 1: # single processor
     sampler.run_mcmc(pos, MCMC_STEPS, progress=True)
 
 
-# %%
 
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
 
 # %%
