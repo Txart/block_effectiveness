@@ -231,7 +231,7 @@ def get_sensor_measurements(df, t_name):
 def log_prior(params):
     s1, s2, t1, t2 = params
     # uniform priors everywhere.
-    if 0<s1<1000 and 0<s2<1 and 0<t1<1000 and 0<t2<100: 
+    if 0<s1<1000 and -10<s2<10 and 0<t1<1000 and 0<t2<100: 
         return 0.0
     return -np.inf        
  
@@ -298,7 +298,7 @@ def log_probability(params):
 
 def gen_positions_for_walkers(n_walkers, n_params):
     # Generate based on true values + noise. TODO: change in the future!
-    ini_values =  [0.1, 1, 10, 2] # s2, t1, t2
+    ini_values =  [0.1, -0.4, 10, 2] # s1, s2, t1, t2
     true_values = np.array([ini_values,]*n_walkers)
     noise = (np.random.rand(n_walkers, n_params) -0.5) # random numbers in (-0.5, +0.5)
     return true_values + noise
