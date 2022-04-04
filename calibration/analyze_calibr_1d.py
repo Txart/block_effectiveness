@@ -116,14 +116,14 @@ def corner_plot(samples, labels, savefig=True):
     import corner
     fig = corner.corner(samples, labels=labels)
     if savefig:
-        fig.savefig("MCMC_corner_result.png")
+        fig.savefig("1d_cal_output/MCMC_corner_result.png")
     
     return 0
 
 #%%
     
 #fname = r"C:\Users\03125327\github\blopti_dev\calibration\mcmc_result_chain.h5"
-fname = r"C:\Users\03125327\github\blopti_dev\ForestCarbon2022\calibration\1d_cal_output\mcmc_result_chain_FC_NEW.h5"
+fname = r"1d_cal_output\mcmc_result_chain_FC_NEW.h5"
 
 reader = read_from_backend(fname)
 flat_samples = reader.get_chain(flat=True)
@@ -167,7 +167,7 @@ print(tau)
 #%%
 # Thin and discard samples
 DISCARD = 10000
-THIN = 1# 1=no thinning
+THIN = 1000# 1=no thinning
 flat_samples = reader.get_chain(discard=DISCARD, thin=THIN, flat=True)
 fat_samples = reader.get_chain(discard=DISCARD, thin=THIN, flat=False)
 print(f"flat samples shape: {flat_samples.shape}")

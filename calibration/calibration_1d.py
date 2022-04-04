@@ -184,9 +184,9 @@ for name, df in dict_of_transects.items():
     
     print(name, bad_data_per_transect[name])
 
-jday_bounds = {'SI':[50, 100],
-               'SE':[150, 200],
-               'RA':[300, 350]
+jday_bounds = {'SI':[50, 80],
+               'SE':[150, 180],
+               'RA':[300, 330]
                }
 
 # %% Create initial zeta 
@@ -311,7 +311,7 @@ if N_CPU > 1:
         nwalkers, ndim = pos.shape
          
         # save chain to HDF5 file
-        fname = output_parent_folder.joinpath("mcmc_result_chain_FC_NEW.h5")
+        fname = output_parent_folder.joinpath("mcmc_result_chain_FC.h5")
         backend = emcee.backends.HDFBackend(fname)
         backend.reset(nwalkers, ndim) # commenting this line: continue from stored markovchain
         
