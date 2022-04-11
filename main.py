@@ -15,12 +15,16 @@ import multiprocessing as mp
 import argparse
 
 import get_data
+import preprocess_data
+from classes.channel_network import ChannelNetwork
+from classes.channel_hydrology import set_up_channel_hydrology, CWLHydroParameters
+from classes.peatland import Peatland
+from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_hydrology
 
 if platform.system() == 'Linux': # Working on my own machine
-    parent_directory = Path(r'/users/urzainqu/blopti_dev')
-    data_parent_folder = parent_directory.joinpath('ForestCarbon2022/data')
-    mesh_fn = data_parent_folder.joinpath("mesh_0.05.msh2") # triangular mesh
-    fn_pointers = parent_directory.joinpath(r'ForestCarbon2022/file_pointers_csc.xlsx')
+    parent_directory = Path(r'/users/urzainqu/paper2')
+    data_parent_folder = parent_directory.joinpath('data')
+    fn_pointers = parent_directory.joinpath(r'file_pointers_csc.xlsx')
     
     parser = argparse.ArgumentParser(description='Run 2d calibration')
     
@@ -30,20 +34,20 @@ if platform.system() == 'Linux': # Working on my own machine
     N_CPU = args.ncpu    
 
 elif platform.system() == 'Windows':  
-    parent_directory = Path(r"C:\Users\03125327\github\blopti_dev")
-    data_parent_folder = Path(r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\0. Raw Data\Raw csv")
-    mesh_fn = r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\qgis_derivated_data\mesh\mesh_0.05.msh2" # triangular mesh
-    fn_pointers = parent_directory.joinpath(r'ForestCarbon2022/file_pointers.xlsx')
+    parent_directory = Path(r"C:\Users\03125327\github\paper2")
+    data_parent_folder = Path(r"data\Raw csv")
+    fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
     
 #%% Read weather data
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
 
 # %% Prepare data
-graph = pickle.load(open(parent_directory.joinpath("ForestCarbon2022/canal_network_matrix_50meters.p"), "rb"))
+graph = pickle.load(open(("data/canal_network_matrix_50meters.p"), "rb"))
 
 filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str)
 fn_dem = Path(filenames_df[filenames_df.Content == 'DEM'].Path.values[0])
 dem = preprocess_data.read_raster(fn_dem)
+mesh_fn = Path(filenames_df[filenames_df.Content == 'mesh'].Path.values[0])
 
 channel_network = ChannelNetwork(
     graph, block_height_from_surface=0.5, block_coeff_k=2000.0,
@@ -63,7 +67,7 @@ peat_hydro_params = PeatlandHydroParameters(
 if platform.system() == 'Linux': # Working on my own machine
     peat_hydro_params.bigger_dem_raster_fn = data_parent_folder.joinpath("dtm_big_area_depth_padded.tif")
 elif platform.system() == 'Windows':    
-    peat_hydro_params.bigger_dem_raster_fn = r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\qgis_derivated_data\dtm_big_area_depth_padded.tif"
+    peat_hydro_params.bigger_dem_raster_fn = r"data\dtm_big_area_depth_padded.tif"
 
 
 # Set up cwl computation
@@ -77,7 +81,7 @@ cwl_params = CWLHydroParameters(g=9.8, # g in meters per second
                                 n2=1,
                                 max_niter_newton=int(1e5), max_niter_inexact=int(50),
                                 rel_tol=1e-3, abs_tol=1e-3, weight_A=5e-2, weight_Q=5e-2, ncpus=1,
-                                downstream_diri_BC=True)
+                                downstream_diri_BC=False)
 
 cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit',
                                         cwl_params=cwl_params,
@@ -85,7 +89,8 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit',
 
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
                                   peatland=peatland, peat_hydro_params=peat_hydro_params,
-                                  channel_network=channel_network, cwl_params=cwl_params)
+                                  channel_network=channel_network, cwl_params=cwl_params,
+                                  zeta_diri_bc=-0.2, use_scaled_pde=False)
 
 
 #%% Simulation functions
@@ -95,11 +100,6 @@ def simulate_one_timestep(hydro, cwl_hydro):
     
     # "predictive" step: compute the CWL source term, q, using the peat hydro model
     theta = hydro.create_theta_from_zeta(hydro.zeta)
-    
-    # set theta diri BC
-    # ZETA_DIRI_BC = -0.2
-    # theta = hydro.set_theta_diriBC_from_zeta_value(zeta_diri_BC=ZETA_DIRI_BC, theta_fipy=theta)
-
     theta_sol = hydro.run(mode='theta', fipy_var=theta)
     
     zeta_sol = hydro.zeta_from_theta(theta_sol)
@@ -152,9 +152,6 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     zeta_before = hydro.zeta
     # Simulate WTD
     hydro.theta = hydro.create_theta_from_zeta(hydro.zeta) 
-    # Set diri BC in theta
-    # ZETA_DIRI_BC = -0.2
-    # hydro.theta = hydro.set_theta_diriBC_from_zeta_value(zeta_diri_BC=ZETA_DIRI_BC, theta_fipy=hydro.theta)
     
     hydro.theta = hydro.run(mode='theta', fipy_var=hydro.theta)  # solution is saved into class attribute
     hydro.zeta = hydro.create_zeta_from_theta(hydro.theta)
@@ -220,19 +217,19 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     
     # Read day 0 sensor coords and values
     # The pickle file was produced elsewhere, probably in scratch.py
-    fn_sensor_pickle = parent_directory.joinpath("ForestCarbon2022/sensor_pickle.p")
+    fn_sensor_pickle = parent_directory.joinpath("sensor_pickle.p")
     sensor_coords, sensor_measurements = pickle.load(open(fn_sensor_pickle, 'rb'))
     
     # Get mesh cell center posiitions to compare to sensor values
     mesh_cell_centers = hydro.mesh.cellCenters.value.T
     
-    MEAN_P_MINUS_ET = -0.004 # m/day. SOmething like 2,5x the daily ET to speed things up.
+    MEAN_P_MINUS_ET = -0.01 # m/day. SOmething like 2,5x the daily ET to speed things up.
     hydro.ph_params.use_several_weather_stations = False
     hydro.set_sourcesink_variable(value=MEAN_P_MINUS_ET)
 
-    N_DAYS = 0
+    N_DAYS = 50
     day = 0
-    needs_smaller_timestep = False # If True, start day0 with a small timestep to smooth things
+    needs_smaller_timestep = True # If True, start day0 with a small timestep to smooth things
     NORMAL_TIMESTEP = 24 # Hourly
     SMALLER_TIMESTEP = 100
     while day < N_DAYS:
@@ -279,9 +276,9 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
                 best_fitness = current_fitness
                 
                 if channel_network.work_without_blocks:
-                    fn_pickle = output_folder_path.joinpath('no_blocks_diriBC_full_diriBCexterior/best_initial_zeta.p')
+                    fn_pickle = output_folder_path.joinpath('no_blocks/best_initial_zeta.p')
                 else:
-                    fn_pickle = output_folder_path.joinpath('yes_blocks_diriBC_full_diriBCexterior/best_initial_zeta.p')
+                    fn_pickle = output_folder_path.joinpath('yes_blocks/best_initial_zeta.p')
                 
                 pickle.dump(best_initial_zeta, open(fn_pickle, 'wb'))
                 
@@ -299,7 +296,7 @@ hydro.ph_params.dt = 1/24 # dt in days
 hydro.cn_params.dt = 3600 # dt in seconds
 
 # Read params
-params_fn = Path.joinpath(parent_directory, 'ForestCarbon2022/2d_calibration_parameters.xlsx')
+params_fn = Path.joinpath(parent_directory, '2d_calibration_parameters.xlsx')
 PARAMS = pd.read_excel(params_fn)
 N_PARAMS = len(PARAMS)
 
@@ -347,22 +344,22 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
     cwl_hydro.cwl_params.n2 = PARAMS.loc[param_number, 'n2']
     
     # Outputs will go here
-    output_directory = Path.joinpath(parent_directory, 'ForestCarbon2022/2d_calibration_output')
+    output_directory = Path.joinpath(parent_directory, 'output')
     out_rasters_folder_name = f"params_number_{param_number}"
     full_folder_path = Path.joinpath(output_directory, out_rasters_folder_name)
     
     # Get best initial condition with these params
-    # best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,
-    #                                                     hydro, cwl_hydro,
-    #                                                     parent_directory, full_folder_path)
+    best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,
+                                                        hydro, cwl_hydro,
+                                                        parent_directory, full_folder_path)
     
     # Read from pickle
-    fn_pickle = full_folder_path.joinpath("yes_blocks_diriBC_full_diriBCexterior/best_initial_zeta.p")
-    best_initial_zeta_value = pickle.load(open(fn_pickle, 'rb'))
+    # fn_pickle = full_folder_path.joinpath("yes_blocks/best_initial_zeta.p")
+    # best_initial_zeta_value = pickle.load(open(fn_pickle, 'rb'))
     
     hydro.zeta = fp.CellVariable(name='zeta', mesh=hydro.mesh, value=best_initial_zeta_value, hasOld=True)
     
-    N_DAYS = 365
+    N_DAYS = 731
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24 # Hourly
@@ -403,9 +400,9 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
             
             # write zeta to file
             if channel_network.work_without_blocks:
-                write_output_zeta_raster(hydro.zeta, full_folder_path.joinpath('no_blocks_diriBC_full_diriBCexterior'), day)
+                write_output_zeta_raster(hydro.zeta, full_folder_path.joinpath('no_blocks'), day)
             else:
-                write_output_zeta_raster(hydro.zeta, full_folder_path.joinpath('yes_blocks_diriBC_full_diriBCexterior'), day)
+                write_output_zeta_raster(hydro.zeta, full_folder_path.joinpath('yes_blocks'), day)
                 
             continue
                 
@@ -429,7 +426,7 @@ if platform.system() == 'Linux':
 
 #%% Run Windows
 if platform.system() == 'Windows':
-    hydro.verbose = False
+    hydro.verbose = True
     N_PARAMS = 1
     param_numbers = range(0, N_PARAMS)
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
