@@ -123,7 +123,7 @@ def corner_plot(samples, labels, savefig=True):
 #%%
     
 #fname = r"C:\Users\03125327\github\blopti_dev\calibration\mcmc_result_chain.h5"
-fname = r"1d_cal_output\mcmc_result_chain_FC_NEW.h5"
+fname = r"1d_cal_output\mcmc_result_chain_FC_Sfixed.h5"
 
 reader = read_from_backend(fname)
 flat_samples = reader.get_chain(flat=True)
@@ -137,7 +137,7 @@ fig, axes = plt.subplots(nparams, sharex=True)
 
 axes[0].set_title('Before discarding and thinning')
 
-labels = ["s1", "s2", 't1', 't2']
+labels = ["s2", 't1', 't2']
 for i in range(nparams):
     ax = axes[i]
     ax.plot(fat_samples[:, :, i], "k", alpha=0.3)
@@ -166,8 +166,8 @@ print(tau)
 
 #%%
 # Thin and discard samples
-DISCARD = 10000
-THIN = 1000# 1=no thinning
+DISCARD = 2000
+THIN = 500# 1=no thinning
 flat_samples = reader.get_chain(discard=DISCARD, thin=THIN, flat=True)
 fat_samples = reader.get_chain(discard=DISCARD, thin=THIN, flat=False)
 print(f"flat samples shape: {flat_samples.shape}")

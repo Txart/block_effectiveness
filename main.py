@@ -14,7 +14,7 @@ from scipy.spatial import distance
 import multiprocessing as mp
 import argparse
 
-import fc_get_data
+import get_data
 
 if platform.system() == 'Linux': # Working on my own machine
     parent_directory = Path(r'/users/urzainqu/blopti_dev')
@@ -36,7 +36,7 @@ elif platform.system() == 'Windows':
     fn_pointers = parent_directory.joinpath(r'ForestCarbon2022/file_pointers.xlsx')
     
 #%% Read weather data
-df_p_minus_et = fc_get_data.get_P_minus_ET_dataframe(data_parent_folder)
+df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
 
 # %% Prepare data
 graph = pickle.load(open(parent_directory.joinpath("ForestCarbon2022/canal_network_matrix_50meters.p"), "rb"))

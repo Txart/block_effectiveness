@@ -311,7 +311,7 @@ if N_CPU > 1:
         # save chain to HDF5 file
         fname = output_parent_folder.joinpath("mcmc_result_chain_FC_Sfixed.h5")
         backend = emcee.backends.HDFBackend(fname)
-        backend.reset(nwalkers, ndim) # commenting this line: continue from stored markovchain
+        # backend.reset(nwalkers, ndim) # commenting this line: continue from stored markovchain
         
         sampler = emcee.EnsembleSampler(nwalkers, ndim, log_probability, pool=pool,
                                         backend=backend,
