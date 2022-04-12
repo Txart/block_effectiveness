@@ -23,7 +23,7 @@ from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_
 
 if platform.system() == 'Linux': # Working on my own machine
     parent_directory = Path(r'/users/urzainqu/paper2')
-    data_parent_folder = parent_directory.joinpath('data')
+    data_parent_folder = parent_directory.joinpath('data/Raw csv')
     fn_pointers = parent_directory.joinpath(r'file_pointers_csc.xlsx')
     
     parser = argparse.ArgumentParser(description='Run 2d calibration')
