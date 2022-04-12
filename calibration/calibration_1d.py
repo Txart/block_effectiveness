@@ -20,7 +20,7 @@ import calibration_1d_utilities
 #%% Folders and additional imports
 
 # Folders
-data_parent_folder = Path('../data')
+data_parent_folder = Path('data')
 output_parent_folder = Path('1d_cal_output')
 
 sys.path.insert(1, '..') # add parent folder to path
@@ -80,12 +80,12 @@ SENSOR_MEASUREMENT_ERR = 0.05 # metres. Theoretically, 1mm
 
 #%% Read data
 # Read historic WTD sensor data from file
-df_rain = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/Rain2021.csv'), sep=';')
-df_relhum = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/RelHum2021.csv'), sep=';')
-df_maxtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/Temp_Max2021.csv'), sep=';')
-df_mintemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/Temp_Min2021.csv'), sep=';')
-df_avgtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/Temp_Average2021.csv'), sep=';')
-df_windspeed = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/WindSpeed2021.csv'), sep=';')
+df_rain = pd.read_csv(Path.joinpath(data_parent_folder, 'Rain2021.csv'), sep=';')
+df_relhum = pd.read_csv(Path.joinpath(data_parent_folder, 'RelHum2021.csv'), sep=';')
+df_maxtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp_Max2021.csv'), sep=';')
+df_mintemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp_Min2021.csv'), sep=';')
+df_avgtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp_Average2021.csv'), sep=';')
+df_windspeed = pd.read_csv(Path.joinpath(data_parent_folder, 'WindSpeed2021.csv'), sep=';')
 
 # rename "Main Camp" to "MainCamp"
 for df in [df_rain, df_relhum, df_maxtemp, df_mintemp, df_avgtemp, df_windspeed]:
@@ -135,8 +135,8 @@ for patrol_name in patrol_post_names:
 df_source = df_rain - df_ET
 
 #%% Read WTD transect dipwell data
-df_wtd_transects = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/WTL_PatPos_2021.csv'), sep=';')
-df_wtd_transects_canal = pd.read_csv(Path.joinpath(data_parent_folder, 'Raw csv/WaterLevel_Adjusted_2021.csv'), sep=';')
+df_wtd_transects = pd.read_csv(Path.joinpath(data_parent_folder, 'WTL_PatPos_2021.csv'), sep=';')
+df_wtd_transects_canal = pd.read_csv(Path.joinpath(data_parent_folder, 'WaterLevel_Adjusted_2021.csv'), sep=';')
 
 # Change units cm -> m
 df_wtd_transects.loc[:, df_wtd_transects.columns != 'Date'] = df_wtd_transects.loc[:, df_wtd_transects.columns != 'Date'] * 0.01

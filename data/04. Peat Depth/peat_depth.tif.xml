@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<metadata xml:lang="en"><Esri><CreaDate>20190507</CreaDate><CreaTime>16233700</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce><DataProperties><lineage><Process ToolSource="c:\program files (x86)\arcgis\desktop10.6\ArcToolbox\Toolboxes\Spatial Analyst Tools.tbx\ExtractByMask" Date="20190507" Time="162337">ExtractByMask peat_depth.tif GAL_final_polygon_minus_community_zone Y:\1_Raw\2019\05\PD_Maps\section_3\peat_depth_nocommunity.tif</Process></lineage></DataProperties></Esri></metadata>
