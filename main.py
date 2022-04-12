@@ -42,17 +42,18 @@ elif platform.system() == 'Windows':
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
 
 # %% Prepare data
-graph = pickle.load(open(("data/canal_network_matrix_50meters.p"), "rb"))
-
 filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str)
 fn_dem = Path(filenames_df[filenames_df.Content == 'DEM'].Path.values[0])
 dem = preprocess_data.read_raster(fn_dem)
 mesh_fn = Path(filenames_df[filenames_df.Content == 'mesh'].Path.values[0])
 
+graph_fn = Path(filenames_df[filenames_df.Content == 'graph'].Path.values[0])
+graph = pickle.load(open((graph_fn), "rb"))
+
 channel_network = ChannelNetwork(
     graph, block_height_from_surface=0.5, block_coeff_k=2000.0,
     y_ini_below_DEM=-0.0, Q_ini_value=0.0, channel_bottom_below_DEM=8.0,
-    y_BC_below_DEM=-0.0, Q_BC=0.1, channel_width=3.5, work_without_blocks=True)
+    y_BC_below_DEM=-0.0, Q_BC=0.1, channel_width=3.5, work_without_blocks=False)
 
 peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 
@@ -64,10 +65,7 @@ peat_hydro_params = PeatlandHydroParameters(
     use_several_weather_stations=True)
 
 # Mesh has some cell centers outside of the dem. This is a quickfix.
-if platform.system() == 'Linux': # Working on my own machine
-    peat_hydro_params.bigger_dem_raster_fn = data_parent_folder.joinpath("dtm_big_area_depth_padded.tif")
-elif platform.system() == 'Windows':    
-    peat_hydro_params.bigger_dem_raster_fn = r"data\dtm_big_area_depth_padded.tif"
+peat_hydro_params.bigger_dem_raster_fn = Path(filenames_df[filenames_df.Content == 'bigger_dem_raster'].Path.values[0])
 
 
 # Set up cwl computation
