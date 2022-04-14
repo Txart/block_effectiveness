@@ -88,7 +88,8 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit',
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
                                   peatland=peatland, peat_hydro_params=peat_hydro_params,
                                   channel_network=channel_network, cwl_params=cwl_params,
-                                  zeta_diri_bc=-0.2, use_scaled_pde=False)
+                                  zeta_diri_bc=-0.2, use_scaled_pde=False,
+                                  force_ponding_storage_equal_one=False)
 
 
 #%% Simulation functions
@@ -215,7 +216,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     
     # Read day 0 sensor coords and values
     # The pickle file was produced elsewhere, probably in scratch.py
-    fn_sensor_pickle = parent_directory.joinpath("sensor_pickle.p")
+    fn_sensor_pickle = parent_directory.joinpath("initial_sensor_pickle.p")
     sensor_coords, sensor_measurements = pickle.load(open(fn_sensor_pickle, 'rb'))
     
     # Get mesh cell center posiitions to compare to sensor values
@@ -310,6 +311,7 @@ def run_daily_computations(hydro, cwl_hydro, df_p_minus_et, internal_timesteps, 
     hydro.ph_params.use_several_weather_stations = True
     sources_dict = df_p_minus_et.loc[day].to_dict() # sources_dict = {'Ramin':1.0, 'Serindit':0.002, 'Buring':0.5, 'Lestari':-0.004, 'Sialang':1, 'MainCamp':2}
     hydro.set_sourcesink_variable(value=sources_dict)
+    hydro.sourcesink = hydro.sourcesink - hydro.compute_pan_ET_from_ponding_water(hydro.zeta) # Add pan ET
     
     zeta_t0 = hydro.zeta.value
     if day == 0:

@@ -50,7 +50,8 @@ class AbstractPeatlandHydro:
                  cwl_params: CWLHydroParameters,
                  model_coupling='darcy',
                  use_scaled_pde='False',
-                 zeta_diri_bc=None) -> None:
+                 zeta_diri_bc=None,
+                 force_ponding_storage_equal_one=False) -> None:
         """This class is abstract. Always create one of its subclasses.
 
         Class for WTD hydrological simulations.
@@ -68,6 +69,8 @@ class AbstractPeatlandHydro:
                 some cases when numbers become too large. Default: False.
             zeta_diri_bc (None or float, optional): If None, no flux Neumann BCs are applied. If float, constant
                 dirichlet BC is applied everywhere. Default: None.
+            force_ponding_storage_equal_one (bool, optional): If True, forces S=1 for water above the surface. Careful:
+                if S becomes discontinuous, the hydro model probably won't converge. So, set to True only if S=1 at the surface.  
 
         """
 
@@ -78,6 +81,7 @@ class AbstractPeatlandHydro:
         self.model_coupling = model_coupling
         self.use_scaled_pde = use_scaled_pde
         self.zeta_diri_bc = zeta_diri_bc
+        self.force_ponding_storage_equal_one = force_ponding_storage_equal_one
 
         self._check_model_coupling_choice()
 
@@ -320,10 +324,11 @@ class GmshMeshHydro(AbstractPeatlandHydro):
                  cwl_params: CWLHydroParameters,
                  model_coupling='darcy',
                  use_scaled_pde=False,
-                 zeta_diri_bc=None) -> None:
+                 zeta_diri_bc=None,
+                 force_ponding_storage_equal_one=False) -> None:
         super().__init__(peatland, peat_hydro_params, channel_network,
                          cwl_params, model_coupling=model_coupling, use_scaled_pde=use_scaled_pde,
-                         zeta_diri_bc=zeta_diri_bc)
+                         zeta_diri_bc=zeta_diri_bc, force_ponding_storage_equal_one=force_ponding_storage_equal_one)
 
         self.mesh = fp.Gmsh2D(mesh_fn)
 
@@ -425,7 +430,17 @@ class GmshMeshHydro(AbstractPeatlandHydro):
                 t1/s1**(t2/s2)*(s1*numerix.exp(-self.dem*s2) + s2*theta)**(t2/s2-1) -
                 t1*numerix.exp(-self.b*t2)/(s1*numerix.exp(-self.dem*s2) + s2*theta)
                 )
-        
+        # Set diff coeff with S=1 when water is ponding
+        if self.force_ponding_storage_equal_one:
+            zeta = self.zeta_from_theta(theta)
+            ponding_mask = 1*(zeta > 0) # 1 where ponding, 0 otherwise
+            not_ponding_mask = 1 - ponding_mask # 1 where not ponding, 0 otherwise
+            
+            diff_coeff_ponding = t1*((s2/s1*theta + numerix.exp(-s2*self.dem))**(t2/s2) -
+                                     numerix.exp(-t2*self.b)) # when S=1, D=T
+            
+            diff_coeff = diff_coeff * not_ponding_mask + diff_coeff_ponding * ponding_mask
+            
         # Apply mask
         # diff_coeff.faceValue is a FaceVariable
         diff_coeff_face = diff_coeff.faceValue * mask
@@ -789,6 +804,7 @@ def set_up_peatland_hydrology(mesh_fn,
                               model_coupling,
                               use_scaled_pde,
                               zeta_diri_bc,
+                              force_ponding_storage_equal_one,
                               peatland: Peatland,
                               peat_hydro_params: PeatlandHydroParameters,
                               channel_network: ChannelNetwork,
@@ -811,7 +827,8 @@ def set_up_peatland_hydrology(mesh_fn,
                                     cwl_params=cwl_params,
                                     model_coupling=model_coupling,
                                     use_scaled_pde=use_scaled_pde,
-                                    zeta_diri_bc=zeta_diri_bc)
+                                    zeta_diri_bc=zeta_diri_bc,
+                                    force_ponding_storage_equal_one=force_ponding_storage_equal_one)
     else:
         if use_scaled_pde:
             raise Warning('Scaled PDE version is only supported with gmsh mesh')
@@ -822,4 +839,5 @@ def set_up_peatland_hydrology(mesh_fn,
                              cwl_params=cwl_params,
                              model_coupling=model_coupling,
                              use_scaled_pde=use_scaled_pde,
-                             zeta_diri_bc=zeta_diri_bc)
+                             zeta_diri_bc=zeta_diri_bc,
+                             force_ponding_storage_equal_one=force_ponding_storage_equal_one)
