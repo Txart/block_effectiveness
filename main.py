@@ -35,13 +35,13 @@ if platform.system() == 'Linux': # Working on my own machine
     parser.add_argument('--no-pickled-ini-zeta', help='Do not use previously computed initial condition. Calculate it',
                         dest='ini_zetaOpt', action='store_false')
 
+    args = parser.parse_args()
+
     parser.set_defaults(blockOpt=True)
     blockOpt = args.blockOpt
     
     parser.set_defaults(ini_zetaOpt=True)
     ini_zetaOpt = args.ini_zetaOpt
-    
-    args = parser.parse_args()
     
     N_CPU = args.ncpu    
 
