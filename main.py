@@ -29,6 +29,18 @@ if platform.system() == 'Linux': # Working on my own machine
     parser = argparse.ArgumentParser(description='Run 2d calibration')
     
     parser.add_argument('--ncpu', default=1, help='(int) Number of processors', type=int)
+    parser.add_argument('--yes-blocks', help='Use status quo blocks. This is the default behaviour.', dest='blockOpt', action='store_true')
+    parser.add_argument('--no-blocks', help='Do not use any block', dest='blockOpt', action='store_false')
+    parser.add_argument('--pickled-ini-zeta', help='Use best_initial_zeta.p. This is the default behaviour.', dest='ini_zetaOpt', action='store_true')
+    parser.add_argument('--no-pickled-ini-zeta', help='Do not use previously computed initial condition. Calculate it',
+                        dest='ini_zetaOpt', action='store_false')
+
+    parser.set_defaults(blockOpt=True)
+    blockOpt = args.blockOpt
+    
+    parser.set_defaults(ini_zetaOpt=True)
+    ini_zetaOpt = args.ini_zetaOpt
+    
     args = parser.parse_args()
     
     N_CPU = args.ncpu    
@@ -37,6 +49,8 @@ elif platform.system() == 'Windows':
     parent_directory = Path(r"C:\Users\03125327\github\paper2")
     data_parent_folder = Path(r"data\Raw csv")
     fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
+    
+    blockOpt = True # use existing blocks
     
 #%% Read weather data
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
@@ -53,7 +67,7 @@ graph = pickle.load(open((graph_fn), "rb"))
 channel_network = ChannelNetwork(
     graph, block_height_from_surface=0.5, block_coeff_k=2000.0,
     y_ini_below_DEM=-0.0, Q_ini_value=0.0, channel_bottom_below_DEM=8.0,
-    y_BC_below_DEM=-0.0, Q_BC=0.1, channel_width=3.5, work_without_blocks=False)
+    y_BC_below_DEM=-0.0, Q_BC=0.1, channel_width=3.5, work_without_blocks= not blockOpt)
 
 peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 
@@ -230,7 +244,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     day = 0
     needs_smaller_timestep = True # If True, start day0 with a small timestep to smooth things
     NORMAL_TIMESTEP = 24 # Hourly
-    SMALLER_TIMESTEP = 100
+    SMALLER_TIMESTEP = 1000
     while day < N_DAYS:
         
         if not needs_smaller_timestep:
@@ -274,11 +288,8 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
                 best_initial_zeta = hydro.zeta.value
                 best_fitness = current_fitness
                 
-                if channel_network.work_without_blocks:
-                    fn_pickle = output_folder_path.joinpath('no_blocks/best_initial_zeta.p')
-                else:
-                    fn_pickle = output_folder_path.joinpath('yes_blocks/best_initial_zeta.p')
-                
+                fn_pickle = output_folder_path.joinpath('best_initial_zeta.p')
+
                 pickle.dump(best_initial_zeta, open(fn_pickle, 'wb'))
                 
             # go to next day
@@ -334,7 +345,7 @@ def write_output_zeta_raster(zeta, full_folder_path, day):
     return None
 
 
-def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory):
+def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt):
     hydro.ph_params.s1 = PARAMS.loc[param_number, 's1']
     hydro.ph_params.s2 = PARAMS.loc[param_number, 's2']
     hydro.ph_params.t1 = PARAMS.loc[param_number, 't1']
@@ -349,17 +360,19 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
     full_folder_path = Path.joinpath(output_directory, out_rasters_folder_name)
     
     # Get best initial condition with these params
-    best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,
+    if ini_zetaOpt:
+        # Read from pickle
+        fn_pickle = full_folder_path.joinpath("best_initial_zeta.p")
+        best_initial_zeta_value = pickle.load(open(fn_pickle, 'rb'))
+    
+    elif not ini_zetaOpt:
+        best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,
                                                         hydro, cwl_hydro,
                                                         parent_directory, full_folder_path)
-    
-    # Read from pickle
-    # fn_pickle = full_folder_path.joinpath("yes_blocks/best_initial_zeta.p")
-    # best_initial_zeta_value = pickle.load(open(fn_pickle, 'rb'))
-    
+
     hydro.zeta = fp.CellVariable(name='zeta', mesh=hydro.mesh, value=best_initial_zeta_value, hasOld=True)
     
-    N_DAYS = 731
+    N_DAYS = 0
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24 # Hourly
@@ -411,14 +424,14 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
 if platform.system() == 'Linux':
     if N_PARAMS > 1:
         param_numbers = range(0, N_PARAMS)
-        multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
+        multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
         with mp.Pool(processes=N_CPU) as pool:
             pool.starmap(produce_family_of_rasters, multiprocessing_arguments)
     
     elif N_PARAMS == 1:
         hydro.verbose = False
         param_numbers = range(0, N_PARAMS)
-        arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
+        arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
         for args in arguments:
             produce_family_of_rasters(*args)    
     
@@ -427,9 +440,10 @@ if platform.system() == 'Linux':
 #%% Run Windows
 if platform.system() == 'Windows':
     hydro.verbose = True
+    ini_zetaOpt = False # Start from pickled zeta
     N_PARAMS = 1
     param_numbers = range(0, N_PARAMS)
-    arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
+    arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
 
     for args in arguments:
         produce_family_of_rasters(*args)
