@@ -308,7 +308,7 @@ hydro.cn_params.dt = 3600 # dt in seconds
 # Read params
 params_fn = Path.joinpath(parent_directory, '2d_calibration_parameters.xlsx')
 PARAMS = pd.read_excel(params_fn)
-N_PARAMS = len(PARAMS)
+N_PARAMS = N_CPU
 
 
 #%% main function
