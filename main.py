@@ -423,7 +423,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
 #%% Run multiprocessing csc
 if platform.system() == 'Linux':
     if N_PARAMS > 1:
-        param_numbers = range(0, N_PARAMS)
+        param_numbers = range(1, 1+N_PARAMS)
         multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
         with mp.Pool(processes=N_CPU) as pool:
             pool.starmap(produce_family_of_rasters, multiprocessing_arguments)
