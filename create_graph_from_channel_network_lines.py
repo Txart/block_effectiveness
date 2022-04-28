@@ -7,6 +7,7 @@ import geopandas
 import rasterio
 from pathlib import Path
 import networkx as nx
+import pickle
 
 import cwl_preprocess_data
 
@@ -113,21 +114,17 @@ right_direction_lines_gdf.to_file(fn_right_direction_lines, layer='lines', drive
 #%% PART 1.5 happens in QGIS: we split  right_direction_lines_gdf into x metre segments
 # %% PART 2. Once that's done, run this to create the graph and save it as a pickle file
 
-fn_splitted_channel_net_gpkg = r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\qgis_derivated_data\water_bodies_split_with_network_single_parts.gpkg"
-# fn_splitted_channel_net_gpkg = r"C:\Users\03125327\github\blopti_dev\data\water_bodies-14.12.2021\channel_net_split_every_500_meters_fixedloop.gpkg"
-# fn_splitted_channel_net_gpkg = r"C:\Users\03125327\github\blopti_dev\data\water_bodies-14.12.2021\channel_net_split_every_1_kilometer_fixedloop.gpkg"
-# fn_unsplitted_right_directions = r"C:\Users\03125327\github\blopti_dev\data\water_bodies-14.12.2021\right_direction_lines.gpkg"
-
-parent_directory = Path(r"C:\Users\03125327\github\blopti_dev\ForestCarbon2022")
+# fn_splitted_channel_net_gpkg = r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\qgis_derivated_data\water_bodies_split_with_network_single_parts.gpkg"
+fn_splitted_channel_net_gpkg = r"C:\Users\03125327\github\paper2\data\new_area\water_bodies_singleparts.gpkg"
 
 fn_dem = r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\0. Raw Data\03. DTM\01_dtm_harmonized_50m.tif"
 # fn_dem = r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\qgis_derivated_data\dtm_big_area_depth_padded.tif"
 
 graph = cwl_preprocess_data.compute_channel_network_graph(gpkg_fn=fn_splitted_channel_net_gpkg, fn_dtm=fn_dem)
 
-#%% Add blocks to graph
+#%% PART 2.5 Add blocks to graph
 # coords of blocks need to exactly coincide with channel network nodes' coords ( did that in QGIS)
-fn_blocks = r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\qgis_derivated_data\canals_snapped_to_channel_nodes.gpkg"
+fn_blocks = r"C:\Users\03125327\github\paper2\data\new_area\dams.gpkg"
 gdf = geopandas.read_file(fn_blocks)
 node_xs = nx.get_node_attributes(graph, 'x')
 node_ys = nx.get_node_attributes(graph, 'y')
@@ -148,6 +145,9 @@ for i, values in gdf.iterrows():
 print(f"A total of {notfound} blocks weeren't found in the search " )
     
 # %% Dump graph into pickle
+
+parent_directory = Path(r"C:\Users\03125327\github\paper2\data\new_area")
+
 pickle_dump_fn = "canal_network_matrix_50meters.p"
 pickle_dump_fn=parent_directory.joinpath(pickle_dump_fn)
 pickle.dump(graph, open(pickle_dump_fn, "wb"))

@@ -13,7 +13,7 @@ import pandas as pd
 #%%
 
 def read_params(fn=r"/home/inaki/GitHub/dd_winrock/data/params.xlsx"):
-    df = pd.read_excel(fn)
+    df = pd.read_excel(fn, engine='openpyxl')
     return df
 
 

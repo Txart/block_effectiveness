@@ -49,6 +49,7 @@ elif platform.system() == 'Windows':
     parent_directory = Path(r"C:\Users\03125327\github\paper2")
     data_parent_folder = Path(r"data\Raw csv")
     fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
+    N_CPU = 1
     
     blockOpt = True # use existing blocks
     
@@ -56,7 +57,7 @@ elif platform.system() == 'Windows':
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
 
 # %% Prepare data
-filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str)
+filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str, engine='openpyxl')
 fn_dem = Path(filenames_df[filenames_df.Content == 'DEM'].Path.values[0])
 dem = preprocess_data.read_raster(fn_dem)
 mesh_fn = Path(filenames_df[filenames_df.Content == 'mesh'].Path.values[0])
@@ -307,7 +308,7 @@ hydro.cn_params.dt = 3600 # dt in seconds
 
 # Read params
 params_fn = Path.joinpath(parent_directory, '2d_calibration_parameters.xlsx')
-PARAMS = pd.read_excel(params_fn)
+PARAMS = pd.read_excel(params_fn, engine='openpyxl')
 N_PARAMS = N_CPU
 
 

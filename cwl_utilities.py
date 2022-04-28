@@ -149,7 +149,7 @@ def read_true_data():
     from pathlib import Path
     import preprocess_data
 
-    filenames_df = pd.read_excel('file_pointers.xlsx', header=2, dtype=str)
+    filenames_df = pd.read_excel('file_pointers.xlsx', header=2, dtype=str, engine='openpyxl')
 
     dem_rst_fn = Path(
         filenames_df[filenames_df.Content == 'DEM'].Path.values[0])

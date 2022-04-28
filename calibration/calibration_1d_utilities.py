@@ -52,14 +52,14 @@ def slice_by_julian_days(all_data_by_transect, jday_bounds):
     return dfs_sliced_relevant_transects
 
 def get_transect_physical_information_Psensors(fn_transect_info):
-    df_tra_info =  pd.read_excel(fn_transect_info)
+    df_tra_info =  pd.read_excel(fn_transect_info, engine='openpyxl')
     transect_elevations = {tname: df_tra_info[df_tra_info['Transect Name']==tname]['elevation_difference_canal_minus_inland(m)'].values[0] for tname in list(df_tra_info['Transect Name'].values) if 'P' in tname}
     transect_length = {tname: df_tra_info[df_tra_info['Transect Name']==tname]['distance_between_sensors(m)'].values[0] for tname in list(df_tra_info['Transect Name'].values) if 'P' in tname}
 
     return transect_elevations, transect_length
 
 def get_transect_physical_information_TNsensors(fn_transect_info):
-    df_tra_info =  pd.read_excel(fn_transect_info)
+    df_tra_info =  pd.read_excel(fn_transect_info, engine='openpyxl')
     sensor_elevations = {sname: df_tra_info[df_tra_info['Transect Name']==sname]['elevation_difference_canal_minus_inland(m)'].values[0] for sname in list(df_tra_info['Transect Name'].values) if 'TN' in sname}
     sensor_distance = {sname: df_tra_info[df_tra_info['Transect Name']==sname]['distance_between_sensors(m)'].values[0] for sname in list(df_tra_info['Transect Name'].values) if 'TN' in sname}
 

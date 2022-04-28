@@ -13,7 +13,7 @@ class Peatland:
     def __init__(self, cn: ChannelNetwork, fn_pointers) -> None:
         
         # filenames
-        filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str)
+        filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str, engine='openpyxl')
         self.fn_dem = Path(filenames_df[filenames_df.Content == 'DEM'].Path.values[0])
         self.fn_depth = Path(filenames_df[filenames_df.Content == 'depth'].Path.values[0])
         # fn_peat_type = filenames_df[filenames_df.Content == 'peat_type_raster'].Path.values[0]
@@ -122,7 +122,7 @@ class Peatland:
         return None
     
     def read_weather_station_locations(self):
-        df_weather_station_coords = pd.read_excel(self.fn_weather_station_locations)
+        df_weather_station_coords = pd.read_excel(self.fn_weather_station_locations, engine='openpyxl')
         weather_station_coords_dict = {}
         for i, row in df_weather_station_coords.iterrows():
             weather_station_coords_dict[row.Name] = np.array([row.X, row.Y])

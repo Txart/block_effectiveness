@@ -39,7 +39,7 @@ graph = pickle.load(open(parent_directory.joinpath("ForestCarbon2022/canal_netwo
 
 
 fn_pointers = parent_directory.joinpath(r'ForestCarbon2022/file_pointers.xlsx')
-filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str)
+filenames_df = pd.read_excel(fn_pointers, header=2, dtype=str, engine='openpyxl')
 fn_dem = Path(filenames_df[filenames_df.Content == 'DEM'].Path.values[0])
 dem = preprocess_data.read_raster(fn_dem)
 
