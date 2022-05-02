@@ -22,7 +22,11 @@ from classes.peatland import Peatland
 
 
 class PeatlandHydroParameters:
-    def __init__(self, dt, dx, nx, ny, max_sweeps, fipy_desired_residual, s1, s2, t1, t2, use_several_weather_stations) -> None:
+    def __init__(self, dt, dx, nx, ny,
+                 max_sweeps, fipy_desired_residual,
+                 s1, s2, t1, t2,
+                 average_mesh_triangle_side_length,
+                 use_several_weather_stations) -> None:
         self.dt = dt
         self.dx = dx
         self.nx = nx
@@ -38,6 +42,9 @@ class PeatlandHydroParameters:
         
         # Compute P-ET based on weighted average distance of several weather stations
         self.use_several_weather_stations = use_several_weather_stations
+        
+        # Triangular mesh element size for computing mesh cells that are touched by channel network
+        self.average_mesh_triangle_side_length = average_mesh_triangle_side_length
 
         pass
 
@@ -333,16 +340,17 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         self.mesh = fp.Gmsh2D(mesh_fn)
 
         mesh_centroids_coords = np.column_stack(self.mesh.cellCenters.value)
+        self.mesh_centroids_gdf = self._create_geodataframe_of_mesh_centroids()
         nearest_mesh_cell_for_each_canal_point = self._get_nearest_mesh_cell_for_each_canal_point()
-        self.canal_node_numbers_to_mesh_indices = nearest_mesh_cell_for_each_canal_point['mesh_index'].to_dict(
-        )
+        self.canal_node_numbers_to_mesh_indices = nearest_mesh_cell_for_each_canal_point['B'].to_dict()
+        self.mesh_cell_index_to_canal_node_number = self._get_nearest_canal_node_for_each_mesh_cell()['B'].to_dict()
+
+        self.mesh_indices_touched_by_channel_network = list(self._get_mesh_cells_touched_by_canal_network()['point'])
 
         # Canal mask
-        mesh_cells_that_are_canals = np.array(
-            list(self.canal_node_numbers_to_mesh_indices.values()))
         canal_mask_value = np.zeros(
             shape=mesh_centroids_coords.shape[0], dtype=int)
-        canal_mask_value[mesh_cells_that_are_canals] = True
+        canal_mask_value[self.mesh_indices_touched_by_channel_network] = True
         self.canal_mask = fp.CellVariable(
             mesh=self.mesh, value=canal_mask_value)
 
@@ -350,8 +358,7 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         # In those cases, the arithmetic mean will be computed. For that, we
         # first count the amount of points in a single mesh, and then multiply
         # the cwl by 1/amount
-        self.mesh_index_count = nearest_mesh_cell_for_each_canal_point['mesh_index'].value_counts(
-        ).to_dict()
+        self.mesh_index_count = nearest_mesh_cell_for_each_canal_point['B'].value_counts().to_dict()
 
         # Link mesh cell centers with canal network nodes
         self.burn_mesh_information_as_canal_graph_attributes()
@@ -405,6 +412,32 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         mesh_centroids_gdf['mesh_index'] = mesh_centroids_gdf.index
 
         return utilities.find_nearest_point_in_other_geodataframe(canal_nodes_gdf['geometry'], mesh_centroids_gdf)
+
+    def _get_nearest_canal_node_for_each_mesh_cell(self):
+        graph_df = utilities.convert_networkx_graph_to_dataframe(self.cn.graph)
+        canal_nodes_gdf = gpd.GeoDataFrame(
+            graph_df, geometry=gpd.points_from_xy(graph_df.x, graph_df.y))
+        # Sort according to index. This sorting is very important for finding the mesh match later!
+        canal_nodes_gdf = canal_nodes_gdf.sort_index()
+        
+        return utilities.find_nearest_point_in_other_geodataframe(self.mesh_centroids_gdf['geometry'], canal_nodes_gdf['geometry'])
+        
+    
+    def _get_mesh_cells_touched_by_canal_network(self):
+        cn_lines = gpd.read_file(self.pl.fn_channel_network_lines)
+        try: # if multilinestring, convert to linestring. If linestring, throws exception and do nothing
+            cn_lines_single = utilities.multilinestring_to_linestring(cn_lines)['geometry']
+        except:
+            cn_lines_single = cn_lines
+            
+        dist_df = utilities.find_distance_of_points_in_geodataframe_to_nearest_line_in_geodataframe(
+                                                gdf_points=self.mesh_centroids_gdf, gdf_lines=cn_lines_single)
+    
+        threshold_size = self.ph_params.average_mesh_triangle_side_length * np.sqrt(3)/4 # based on geometry of equilateral triangles. Distance from triangle center to edge.
+        dist_df = dist_df[dist_df['distance'] < threshold_size]
+        
+        return dist_df
+
 
     def burn_mesh_information_as_canal_graph_attributes(self):
         # Dict of attributes to add to the canal network nodes
