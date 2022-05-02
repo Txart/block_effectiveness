@@ -830,8 +830,6 @@ def set_up_peatland_hydrology(mesh_fn,
                                     zeta_diri_bc=zeta_diri_bc,
                                     force_ponding_storage_equal_one=force_ponding_storage_equal_one)
     else:
-        if use_scaled_pde:
-            raise Warning('Scaled PDE version is only supported with gmsh mesh')
         return GmshMeshHydro(mesh_fn=mesh_fn,
                              peatland=peatland,
                              peat_hydro_params=peat_hydro_params,

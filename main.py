@@ -103,7 +103,7 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit',
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
                                   peatland=peatland, peat_hydro_params=peat_hydro_params,
                                   channel_network=channel_network, cwl_params=cwl_params,
-                                  zeta_diri_bc=-0.2, use_scaled_pde=False,
+                                  zeta_diri_bc=-0.2, use_scaled_pde=True,
                                   force_ponding_storage_equal_one=False)
 
 
@@ -245,9 +245,9 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     day = 0
     needs_smaller_timestep = True # If True, start day0 with a small timestep to smooth things
     NORMAL_TIMESTEP = 24 # Hourly
-    SMALLER_TIMESTEP = 1000
+    SMALLER_TIMESTEP = 100
     while day < N_DAYS:
-        
+        print(f'day: {day}')
         if not needs_smaller_timestep:
             internal_timesteps = NORMAL_TIMESTEP
         elif needs_smaller_timestep:
@@ -262,8 +262,8 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
             elif day > 0:
                 solution_function = simulate_one_timestep_simple_two_step
             
-            for i in range(internal_timesteps): # internal timestep
-                    hydro, cwl_hydro = solution_function(hydro, cwl_hydro)
+            for i in tqdm(range(internal_timesteps)): # internal timestep
+                hydro, cwl_hydro = solution_function(hydro, cwl_hydro)
                 
         except Exception as e:
             if internal_timesteps == NORMAL_TIMESTEP:
@@ -289,7 +289,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
                 best_initial_zeta = hydro.zeta.value
                 best_fitness = current_fitness
                 
-                fn_pickle = output_folder_path.joinpath('best_initial_zeta.p')
+                fn_pickle = output_folder_path.joinpath('best_initial_zeta_scaledversion.p')
 
                 pickle.dump(best_initial_zeta, open(fn_pickle, 'wb'))
                 
@@ -440,8 +440,8 @@ if platform.system() == 'Linux':
 
 #%% Run Windows
 if platform.system() == 'Windows':
-    hydro.verbose = True
-    ini_zetaOpt = False # Start from pickled zeta
+    hydro.verbose = False
+    ini_zetaOpt = False # True: start from pickled zeta
     N_PARAMS = 1
     param_numbers = range(0, N_PARAMS)
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
