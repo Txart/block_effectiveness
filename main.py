@@ -77,7 +77,6 @@ peat_hydro_params = PeatlandHydroParameters(
     dx=50, # dx in meters, only used if structured mesh
     nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-3,
     s1= 0.808, s2=0.405, t1=100, t2=5,
-    average_mesh_triangle_side_length=80,
     use_several_weather_stations=True)
 
 # Mesh has some cell centers outside of the dem. This is a quickfix.

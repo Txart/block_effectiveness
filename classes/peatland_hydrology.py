@@ -25,7 +25,6 @@ class PeatlandHydroParameters:
     def __init__(self, dt, dx, nx, ny,
                  max_sweeps, fipy_desired_residual,
                  s1, s2, t1, t2,
-                 average_mesh_triangle_side_length,
                  use_several_weather_stations) -> None:
         self.dt = dt
         self.dx = dx
@@ -42,9 +41,6 @@ class PeatlandHydroParameters:
         
         # Compute P-ET based on weighted average distance of several weather stations
         self.use_several_weather_stations = use_several_weather_stations
-        
-        # Triangular mesh element size for computing mesh cells that are touched by channel network
-        self.average_mesh_triangle_side_length = average_mesh_triangle_side_length
 
         pass
 
@@ -340,12 +336,18 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         self.mesh = fp.Gmsh2D(mesh_fn)
 
         mesh_centroids_coords = np.column_stack(self.mesh.cellCenters.value)
+        
+        dist, indices = utilities.find_nearest_neighbour_in_array_of_points(mesh_centroids_coords)
+        self.average_dist_between_cell_centers = dist.mean()
+        
         self.mesh_centroids_gdf = self._create_geodataframe_of_mesh_centroids()
         nearest_mesh_cell_for_each_canal_point = self._get_nearest_mesh_cell_for_each_canal_point()
         self.canal_node_numbers_to_mesh_indices = nearest_mesh_cell_for_each_canal_point['B'].to_dict()
         self.mesh_cell_index_to_canal_node_number = self._get_nearest_canal_node_for_each_mesh_cell()['B'].to_dict()
 
         self.mesh_indices_touched_by_channel_network = list(self._get_mesh_cells_touched_by_canal_network()['point'])
+        
+        
 
         # Canal mask
         canal_mask_value = np.zeros(
@@ -433,7 +435,7 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         dist_df = utilities.find_distance_of_points_in_geodataframe_to_nearest_line_in_geodataframe(
                                                 gdf_points=self.mesh_centroids_gdf, gdf_lines=cn_lines_single)
     
-        threshold_size = self.ph_params.average_mesh_triangle_side_length * np.sqrt(3)/4 # based on geometry of equilateral triangles. Distance from triangle center to edge.
+        threshold_size = self.average_dist_between_cell_centers  # based on geometry of a mesh of equilateral triangles
         dist_df = dist_df[dist_df['distance'] < threshold_size]
         
         return dist_df
