@@ -18,6 +18,7 @@ class Peatland:
         self.fn_depth = Path(filenames_df[filenames_df.Content == 'depth'].Path.values[0])
         # fn_peat_type = filenames_df[filenames_df.Content == 'peat_type_raster'].Path.values[0]
         self.fn_weather_station_locations = filenames_df[filenames_df.Content == 'weather_station_coords'].Path.values[0]
+        self.fn_channel_network_lines = filenames_df[filenames_df.Content == 'channel_network_lines'].Path.values[0]
         
         # Arrays
         self.dem = self.read_and_preprocess_dem(self.fn_dem)

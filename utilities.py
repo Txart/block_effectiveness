@@ -14,6 +14,8 @@ import geopandas as gpd
 from rasterio import features, fill
 from scipy.spatial import cKDTree
 import pandas as pd
+import itertools
+from operator import itemgetter
 
 import preprocess_data
 
@@ -411,25 +413,78 @@ def is_value_of_variable_possible(variable, possible_values):
     if variable not in possible_values:
         raise ValueError(
             'The value of a variable is not among its possible values. Aborting')
-        
+
+def find_nearest_neighbour_in_array_of_points(array_of_points):
+    # finds nearest neighbour of each element in an array of points
+    # array_of_points must have the following shape:
+    # np.array([[x_0, y_0],
+    #           [x_1, y_1],
+    #           ...        ])
+    # returns (distances to nn, indices of nn) for each element in array
+    tree = cKDTree(array_of_points)
+    distances, indices = tree.query(array_of_points, k=2) # k=2 means we get up to the second neighbor
+    
+    # the closest points are themselves (k=1)
+    # So we need to chose the first neighbour (k=2)
+    return distances[:,1], indices[:,1]
+
+def find_nearest_point_in_other_array(source_point_array, target_point_array):
+    # For each point source point, finds the closest target point
+    # source and target should be np.arrays with the following shape:
+    # np.array([[x_0, y_0],
+    #           [x_1, y_1],
+    #           ...        ])
+    # returns (distance to target point, index of target point)
+    # for each elemen in the source point array
+    btree = cKDTree(target_point_array)
+    dist, idx = btree.query(source_point_array, k=1)
+    return dist, idx
+    
+    
+
 def find_nearest_point_in_other_geodataframe(gdA, gdB):
     # From https://gis.stackexchange.com/questions/222315/geopandas-find-nearest-point-in-other-dataframe
-    # gdA is the reference geodataframe, and we look for the closest point in gdB
+    # It looks for points in gdB that are closest to points of gdA
+    # So, the output will have the dimension of gdA. 
     # Both geodataframes need to have a column called 'geometry' that contains only POINTS (not MULTIPOINTS)
     nA = np.array(list(gdA.geometry.apply(lambda x: (x.x, x.y))))
     nB = np.array(list(gdB.geometry.apply(lambda x: (x.x, x.y))))
-    btree = cKDTree(nB)
-    dist, idx = btree.query(nA, k=1)
-    gdB_nearest = gdB.iloc[idx].drop(columns="geometry").reset_index(drop=True)
-    gdf = pd.concat(
-        [
-            gdA.reset_index(drop=True),
-            gdB_nearest,
-            pd.Series(dist, name='dist')
-        ], 
-        axis=1)
+    dist, idx = find_nearest_point_in_other_array(nA, nB)
+    gdB_nearest = gdB.iloc[idx].index
+    # output df
+    df = pd.DataFrame(index=gdA.index)
+    df['A'] = np.array(gdA.index)
+    df['B'] = np.array(gdB_nearest)
+    df['dist'] = np.array(dist)
 
-    return gdf
+    return df
+
+def multilinestring_to_linestring(geodataframe):
+    output_gdf = copy.deepcopy(geodataframe)
+    for index, row in geodataframe.iterrows():
+        output_gdf.loc[index, "geometry"] = row.geometry[0]
+        
+    return output_gdf
+
+def find_distance_of_points_in_geodataframe_to_nearest_line_in_geodataframe(gdf_points, gdf_lines):
+    # Adapted from: https://gis.stackexchange.com/questions/222315/finding-nearest-point-in-other-geodataframe-using-geopandas
+    A = np.concatenate(
+        [np.array(geom.coords) for geom in gdf_points.geometry.to_list()])
+    B = [np.array(geom.coords) for geom in gdf_lines.geometry.to_list()]
+    B_ix = tuple(itertools.chain.from_iterable(
+        [itertools.repeat(i, x) for i, x in enumerate(list(map(len, B)))]))
+    B = np.concatenate(B)
+    ckd_tree = cKDTree(B)
+    dist, idx = ckd_tree.query(A, k=1)
+    idx = itemgetter(*idx)(B_ix)
+
+    # output df
+    df = pd.DataFrame(index=gdf_points.index)
+    df['point'] = np.array(gdf_points.index)
+    df['line'] = np.array(gdf_lines.loc[list(idx)].index)
+    df['distance'] = dist
+    
+    return df
 
 def convert_networkx_graph_to_dataframe(graph): 
  	dict_nodes_to_attributes = dict(graph.nodes.data(True))

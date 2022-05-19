@@ -264,6 +264,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
             
             for i in tqdm(range(internal_timesteps)): # internal timestep
                 hydro, cwl_hydro = solution_function(hydro, cwl_hydro)
+
                 
         except Exception as e:
             if internal_timesteps == NORMAL_TIMESTEP:
@@ -289,7 +290,8 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
                 best_initial_zeta = hydro.zeta.value
                 best_fitness = current_fitness
                 
-                fn_pickle = output_folder_path.joinpath('best_initial_zeta_scaledversion.p')
+
+                fn_pickle = output_folder_path.joinpath('best_initial_zeta.p')
 
                 pickle.dump(best_initial_zeta, open(fn_pickle, 'wb'))
                 

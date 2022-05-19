@@ -294,9 +294,9 @@ plt.plot(S6, wt, 'r-', label='S6')
 plt.plot(S8, wt, 'g-', label='S8')
 plt.legend()
 
-# %% My S curve
+# %% My S curve, S EXPONENTIAL
 
-def S(zeta, s1, s2):
+def S_exp(zeta, s1, s2):
     # in terms of zeta = h - dem
     return s1*np.exp(s2*zeta)
 
@@ -308,7 +308,26 @@ s2, log_s1 = np.polyfit(x=wt, y=np.log(sto_curve), deg=1)
 s1 = np.exp(log_s1)
 
 plt.figure()
-plt.plot(S(wt, s1, s2), wt, label='parameterized S')
+plt.plot(S_exp(wt, s1, s2), wt, label='parameterized S')
+plt.plot(sto_curve, wt, '.', label='from data')
+plt.ylabel('wt(m)')
+plt.xlabel('storage coeff ')
+plt.legend()
+
+
+# %% My S curve, S LINEAR
+
+def S_linear(zeta, s1, s2):
+    return s1 - s2*zeta
+
+# Linear regression
+# S = s1 - s2 * wt
+sto_curve = S8
+s2_lin, s1_lin = np.polyfit(x=wt, y=sto_curve, deg=1)
+s2_lin = -s2_lin
+
+plt.figure()
+plt.plot(S_linear(wt, s1_lin, s2_lin), wt, label='parameterized S')
 plt.plot(sto_curve, wt, '.', label='from data')
 plt.ylabel('wt(m)')
 plt.xlabel('storage coeff ')
