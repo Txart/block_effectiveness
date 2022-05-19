@@ -502,6 +502,17 @@ class GmshMeshHydro(AbstractPeatlandHydro):
                 t1*numerix.exp(-self.b*t2)/(s1*numerix.exp(-self.dem*s2) + s2*theta)
                 )
         
+        # Set diff coeff with S=1 when water is ponding
+        if self.force_ponding_storage_equal_one:
+            zeta = self.zeta_from_theta(theta)
+            ponding_mask = 1*(zeta > 0) # 1 where ponding, 0 otherwise
+            not_ponding_mask = 1 - ponding_mask # 1 where not ponding, 0 otherwise
+            
+            diff_coeff_ponding = t1*((s2/s1*theta + numerix.exp(-s2*self.dem))**(t2/s2) -
+                                     numerix.exp(-t2*self.b)) # when S=1, D=T
+            
+            diff_coeff = diff_coeff * not_ponding_mask + diff_coeff_ponding * ponding_mask
+        
         # SCALES
         theta_C = theta.value.max()
         dif_C = diff_coeff.value.max()
@@ -865,8 +876,6 @@ def set_up_peatland_hydrology(mesh_fn,
                                     zeta_diri_bc=zeta_diri_bc,
                                     force_ponding_storage_equal_one=force_ponding_storage_equal_one)
     else:
-        if use_scaled_pde:
-            raise Warning('Scaled PDE version is only supported with gmsh mesh')
         return GmshMeshHydro(mesh_fn=mesh_fn,
                              peatland=peatland,
                              peat_hydro_params=peat_hydro_params,
