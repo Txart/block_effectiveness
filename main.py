@@ -20,6 +20,7 @@ from classes.channel_network import ChannelNetwork
 from classes.channel_hydrology import set_up_channel_hydrology, CWLHydroParameters
 from classes.peatland import Peatland
 from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_hydrology
+from classes.parameterizations import ExponentialBelowOneAboveStorageWithDepth
 
 if platform.system() == 'Linux': # Working on my own machine
     parent_directory = Path(r'/users/urzainqu/paper2')
@@ -100,11 +101,14 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit',
                                         cwl_params=cwl_params,
                                         cn=channel_network)
 
+parameterization = ExponentialBelowOneAboveStorageWithDepth(peat_hydro_params)
+
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
+                                  use_scaled_pde=False, zeta_diri_bc=-0.0,
+                                  force_ponding_storage_equal_one=False,
                                   peatland=peatland, peat_hydro_params=peat_hydro_params,
-                                  channel_network=channel_network, cwl_params=cwl_params,
-                                  zeta_diri_bc=-0.2, use_scaled_pde=True,
-                                  force_ponding_storage_equal_one=False)
+                                  parameterization=parameterization,
+                                  channel_network=channel_network, cwl_params=cwl_params)
 
 
 #%% Simulation functions
@@ -171,10 +175,7 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     hydro.zeta = hydro.create_zeta_from_theta(hydro.theta)
     
     new_y_at_canals = hydro.convert_zeta_to_y_at_canals(hydro.zeta)
-    old_y_at_canals = hydro.convert_zeta_to_y_at_canals(zeta_before)
-    # y_predicted = y_new + [change in y] = y_new + (y_new - y_old) = 2*y_new - y_old
-    y_predicted_at_canals = {key: 2*new_y_at_canals[key] - old_y_at_canals[key] for key in new_y_at_canals}
-    y_prediction_array = hydro.cn.from_nodedict_to_nparray(y_predicted_at_canals)
+    y_prediction_array = hydro.cn.from_nodedict_to_nparray(new_y_at_canals)
     q = cwl_hydro.predict_q_for_next_timestep(y_prediction_at_canals=y_prediction_array,
                                               y_at_canals=hydro.cn.y)
     # Add q to each component graph
