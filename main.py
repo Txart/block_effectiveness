@@ -63,7 +63,7 @@ fn_dem = Path(filenames_df[filenames_df.Content == 'DEM'].Path.values[0])
 dem = preprocess_data.read_raster(fn_dem)
 mesh_fn = Path(filenames_df[filenames_df.Content == 'mesh'].Path.values[0])
 
-graph_fn = Path(filenames_df[filenames_df.Content == 'graph'].Path.values[0])
+graph_fn = Path(filenames_df[filenames_df.Content == 'channel_network_graph_pickle'].Path.values[0])
 graph = pickle.load(open((graph_fn), "rb"))
 
 channel_network = ChannelNetwork(
@@ -112,58 +112,6 @@ hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
 
 
 #%% Simulation functions
-
-def simulate_one_timestep(hydro, cwl_hydro):
-    # results stored in hydro.zeta and other class attributes
-    
-    # "predictive" step: compute the CWL source term, q, using the peat hydro model
-    theta = hydro.create_theta_from_zeta(hydro.zeta)
-    theta_sol = hydro.run(mode='theta', fipy_var=theta)
-    
-    zeta_sol = hydro.zeta_from_theta(theta_sol)
-    y_prediction_at_canals = hydro.convert_zeta_to_y_at_canals(zeta_sol)
-    y_prediction_array = hydro.cn.from_nodedict_to_nparray(y_prediction_at_canals)
-    q = cwl_hydro.predict_q_for_next_timestep(y_prediction_at_canals=y_prediction_array,
-                                              y_at_canals=hydro.cn.y)
-    # Add q to each component graph
-    q_nodedict = hydro.cn.from_nparray_to_nodedict(q)
-    for component_cn in cwl_hydro.component_channel_networks:
-        component_cn.q = component_cn.from_nodedict_to_nparray(q_nodedict)
-    
-    # CWL solution step
-    # cwl_hydro.run() takes y, q and others from each component's attribute variables
-    cwl_hydro.run() # solution stored in cwl_hydro.y_solution (or Q_solution also if Preissmann)
-    y_solution_at_canals = cwl_hydro.y_solution # y is water height above common ref point
-    
-    # Append solution value at canals to each graph in the components
-    for component_cn in cwl_hydro.component_channel_networks:
-        component_cn.y = component_cn.from_nodedict_to_nparray(y_solution_at_canals)
-
-    # Here I append the computed cwl to the global channel_network, both as channel_network.y,
-    #  and also to each of the components in cwl_hydro.component_channel_networks
-    # The components part is needed for the cwl computation, and the global graph part
-    # is needed to taake into account nodes in the channel network outside the components
-    zeta_at_canals = cwl_hydro.convert_y_nodedict_to_zeta_at_canals(y_solution_at_canals)
-    mean_zeta_value = np.mean(list(zeta_at_canals.values()))
-    for n in cwl_hydro.nodes_not_in_components:
-        y_solution_at_canals[n] = mean_zeta_value + cwl_hydro.cn.graph.nodes[n]['DEM']
-    y_sol_all_canals = hydro.cn.from_nodedict_to_nparray(y_solution_at_canals)
-    hydro.cn.y = y_sol_all_canals 
-    
-    # Set solution of CWL simulation into fipy variable zeta for WTD simulation
-    zeta_at_canals = cwl_hydro.convert_y_nodedict_to_zeta_at_canals(y_solution_at_canals)
-    zeta_array = hydro.cn.from_nodedict_to_nparray(zeta_at_canals)
-    hydro.set_canal_values_in_fipy_var(channel_network_var=zeta_array, fipy_var=hydro.zeta)
-      
-    # Simulate WTD
-    hydro.theta = hydro.create_theta_from_zeta(hydro.zeta)
-    # set diri BC in theta
-    # hydro.theta = hydro.set_theta_diriBC_from_zeta_value(zeta_diri_BC=ZETA_DIRI_BC, theta_fipy=hydro.theta)
-    
-    hydro.theta = hydro.run(mode='theta', fipy_var=hydro.theta)  # solution is saved into class attribute
-    hydro.zeta = hydro.create_zeta_from_theta(hydro.theta)
-    
-    return hydro, cwl_hydro
 
 def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     # Alternative to simulate_one_timestep that only uses 1 fipy solution per timestep
