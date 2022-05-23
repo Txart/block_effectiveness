@@ -410,7 +410,6 @@ class ExponentialBelowOneAboveStorage(AbstractParameterization):
 
         return tra_pos*positives_mask + tra_neg*negatives_mask
 
-
 class ExponentialBelowOneAboveStorageWithDepth(AbstractParameterization):
     """
     Storage and transmissivity are piecewise functions with 2 pieces:

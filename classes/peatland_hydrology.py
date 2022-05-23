@@ -21,6 +21,8 @@ from classes.peat_hydro_params import PeatlandHydroParameters
 from classes.parameterizations import AbstractParameterization
 
 # %%
+
+
 class AbstractPeatlandHydro:
     def __init__(self,
                  peatland: Peatland,
@@ -141,7 +143,7 @@ class AbstractPeatlandHydro:
                 eq = self._set_equation_dirimode(theta)
             else:
                 raise ValueError('coupling mode not understood. Aborting.')
-        
+
         elif self.use_scaled_pde == True:
             if self.model_coupling == 'darcy':
                 eq = self._set_equation_darcymode_scaled(theta)
@@ -157,7 +159,8 @@ class AbstractPeatlandHydro:
     def _run_theta(self, theta):
         if self.zeta_diri_bc is not None:
             # Diri BC in theta. Compute theta from zeta
-            theta_face_values = self.parameterization.theta_from_zeta(self.zeta_diri_bc, self.dem.faceValue)
+            theta_face_values = self.parameterization.theta_from_zeta(
+                self.zeta_diri_bc, self.dem.faceValue)
             # constrain theta with those values
             theta.constrain(theta_face_values, where=self.mesh.exteriorFaces)
 
@@ -168,32 +171,31 @@ class AbstractPeatlandHydro:
         for sweep_number in range(self.ph_params.max_sweeps):
             old_residue = copy.deepcopy(residue)
             residue = eq.sweep(var=theta, dt=self.ph_params.dt)
-            
+
             if self.verbose:
                 print(sweep_number, residue)
-            
+
             # In general, the fipy residual < 1e-6 is a good way of estimating convergence
             # However, with internal diriBCs the residual doesn't become small.
             # So the decision to break from this loop has to be bifurcated
             if self.model_coupling == 'darcy':
                 if residue < self.ph_params.fipy_desired_residual:
                     break
-                
+
             elif self.model_coupling == 'dirichlet':
                 residue_diff = residue - old_residue
                 if self.verbose:
                     print('residue diff = ', residue_diff)
                 if abs(residue_diff) < 1e-7:
                     break
-                
+
         if sweep_number == self.ph_params.max_sweeps - 1:
             raise RuntimeError(
-                    'WTD computation did not converge in specified amount of sweeps')
+                'WTD computation did not converge in specified amount of sweeps')
         else:
             theta.updateOld()
 
             return theta
-
 
     def _run_theta_scaled(self, theta):
 
@@ -214,7 +216,8 @@ class AbstractPeatlandHydro:
 
         if self.zeta_diri_bc is not None:
             # Boundary conditions scaled as well!
-            theta_face_values = self.parameterization.theta_from_zeta(self.zeta_diri_bc, self.dem.faceValue)
+            theta_face_values = self.parameterization.theta_from_zeta(
+                self.zeta_diri_bc, self.dem.faceValue)
             # constrain theta with those values
             theta_scaled.constrain(
                 theta_face_values/theta_C, where=self.mesh.exteriorFaces)
@@ -226,28 +229,28 @@ class AbstractPeatlandHydro:
         for sweep_number in range(self.ph_params.max_sweeps):
             old_residue = copy.deepcopy(residue)
             residue = eq.sweep(var=theta_scaled, dt=dt_scaled)
-            
+
             if self.verbose:
                 print(sweep_number, residue)
-            
+
             # In general, the fipy residual < 1e-6 is a good way of estimating convergence
             # However, with internal diriBCs the residual doesn't become small.
             # So the decision to break from this loop has to be bifurcated
             if self.model_coupling == 'darcy':
                 if residue < self.ph_params.fipy_desired_residual:
                     break
-                
+
             elif self.model_coupling == 'dirichlet':
                 residue_diff = residue - old_residue
                 if self.verbose:
                     print('residue diff = ', residue_diff)
                 if abs(residue_diff) < 1e-7:
                     break
-                
+
         if sweep_number == self.ph_params.max_sweeps - 1:
             raise RuntimeError(
-                    'WTD computation did not converge in specified amount of sweeps')
-        
+                'WTD computation did not converge in specified amount of sweeps')
+
         else:
             theta_scaled.updateOld()
             # SCALE BACK
@@ -310,32 +313,19 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
         mesh_centroids_coords = np.column_stack(self.mesh.cellCenters.value)
 
-        dist, indices = utilities.find_nearest_neighbour_in_array_of_points(
-            mesh_centroids_coords)
-        self.average_dist_between_cell_centers = dist.mean()
-
         self.mesh_centroids_gdf = self._create_geodataframe_of_mesh_centroids()
-        nearest_mesh_cell_for_each_canal_point = self._get_nearest_mesh_cell_for_each_canal_point()
-        self.canal_node_numbers_to_mesh_indices = nearest_mesh_cell_for_each_canal_point['B'].to_dict(
-        )
-        self.mesh_cell_index_to_canal_node_number = self._get_nearest_canal_node_for_each_mesh_cell()[
-            'B'].to_dict()
-
-        self.mesh_indices_touched_by_channel_network = list(
-            self._get_mesh_cells_touched_by_canal_network()['point'])
-
+        
+        self.gdf_mesh_centers_corresponding_to_canals = self._get_geodataframe_mesh_centers_corresponding_to_canals()
+        canal_mesh_cell_indices = list(self.gdf_mesh_centers_corresponding_to_canals.index)
+        
         # Canal mask
-        canal_mask_value = np.zeros(
-            shape=mesh_centroids_coords.shape[0], dtype=int)
-        canal_mask_value[self.mesh_indices_touched_by_channel_network] = True
+        canal_mask_value = np.zeros(shape=mesh_centroids_coords.shape[0], dtype=int)
+        canal_mask_value[canal_mesh_cell_indices] = True
         self.canal_mask = fp.CellVariable(mesh=self.mesh, value=canal_mask_value)
-
-        # Each mesh cell can contain more than one canal node.
-        # In those cases, the arithmetic mean will be computed. For that, we
-        # first count the amount of points in a single mesh, and then multiply
-        # the cwl by 1/amount
-        self.mesh_index_count = nearest_mesh_cell_for_each_canal_point['B'].value_counts(
-        ).to_dict()
+        
+        # Maps from mesh to canals and viceversa
+        self.mesh_cell_index_to_canal_node_number = self._map_canal_mesh_cells_to_canal_nodes()
+        self.canal_node_numbers_to_mesh_indices = self._map_canal_nodes_to_mesh_cells()
 
         # Link mesh cell centers with canal network nodes
         self.burn_mesh_information_as_canal_graph_attributes()
@@ -377,8 +367,33 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
     def _create_geodataframe_of_mesh_centroids(self):
         return gpd.GeoDataFrame(geometry=gpd.points_from_xy(self.mesh.x, self.mesh.y))
+    
+    def _get_geodataframe_mesh_centers_corresponding_to_canals(self):
+            gdf_mesh_centers_corresponding_to_canals = gpd.read_file(
+                self.pl.fn_canal_mask_mesh_centroids)
+        
+            canal_mesh_cell_indices = utilities.find_nearest_point_in_other_geodataframe(
+                gdf_mesh_centers_corresponding_to_canals['geometry'], self.mesh_centroids_gdf['geometry'])['B'].values
+            
+            return gdf_mesh_centers_corresponding_to_canals.set_index(canal_mesh_cell_indices)
+    
+    def _get_nearest_canal_node_for_each_canal_mesh_cell(self):
+        # Build gdf from canal network node attributes
+        # First, create a dataframe with coords
+        graph_df = utilities.convert_networkx_graph_to_dataframe(self.cn.graph)
+        canal_nodes_gdf = gpd.GeoDataFrame(
+            graph_df, geometry=gpd.points_from_xy(graph_df.x, graph_df.y))
+        # Sort according to index. This sorting is very important for finding the mesh match later!
+        canal_nodes_gdf = canal_nodes_gdf.sort_index()
+        
+        return utilities.find_nearest_point_in_other_geodataframe(self.gdf_mesh_centers_corresponding_to_canals['geometry'],
+                                                                  canal_nodes_gdf['geometry'])
 
-    def _get_nearest_mesh_cell_for_each_canal_point(self):
+    def _map_canal_mesh_cells_to_canal_nodes(self):
+        return self._get_nearest_canal_node_for_each_canal_mesh_cell()['B'].to_dict()
+          
+        
+    def _get_nearest_mesh_cell_for_each_canal_node(self):
         # Build gdf from canal network node attributes
         # First, create a dataframe with coords
         graph_df = utilities.convert_networkx_graph_to_dataframe(self.cn.graph)
@@ -388,40 +403,15 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         canal_nodes_gdf = canal_nodes_gdf.sort_index()
 
         return utilities.find_nearest_point_in_other_geodataframe(canal_nodes_gdf['geometry'], self.mesh_centroids_gdf['geometry'])
-
-    def _get_nearest_canal_node_for_each_mesh_cell(self):
-        graph_df = utilities.convert_networkx_graph_to_dataframe(self.cn.graph)
-        canal_nodes_gdf = gpd.GeoDataFrame(
-            graph_df, geometry=gpd.points_from_xy(graph_df.x, graph_df.y))
-        # Sort according to index. This sorting is very important for finding the mesh match later!
-        canal_nodes_gdf = canal_nodes_gdf.sort_index()
-
-        return utilities.find_nearest_point_in_other_geodataframe(self.mesh_centroids_gdf['geometry'], canal_nodes_gdf['geometry'])
-
-    def _get_mesh_cells_touched_by_canal_network(self):
-        cn_lines = gpd.read_file(self.pl.fn_channel_network_lines)
-        try:
-            cn_lines_single = utilities.multilinestring_to_linestring(cn_lines)[
-            'geometry']
-        except:
-            cn_lines_single = cn_lines
-            
-        dist_df = utilities.find_distance_of_points_in_geodataframe_to_nearest_line_in_geodataframe(
-            gdf_points=self.mesh_centroids_gdf, gdf_lines=cn_lines_single)
-
-        # based on geometry of a mesh of equilateral triangles
-        threshold_size = self.average_dist_between_cell_centers *1 # According to geometry, the multiplication factor should be 1, but this way we get more mesh cells as canals
-        dist_df = dist_df[dist_df['distance'] < threshold_size]
-
-        return dist_df
-
+    
+    def _map_canal_nodes_to_mesh_cells(self):
+        return self._get_nearest_mesh_cell_for_each_canal_node()['B'].to_dict()
+    
     def burn_mesh_information_as_canal_graph_attributes(self):
         # Dict of attributes to add to the canal network nodes
         mesh_node_attributes = {}
         for n in range(self.cn.n_nodes):
-            mesh_node_attributes[n] = {'mesh_index': self.canal_node_numbers_to_mesh_indices[n],
-                                       'mesh_averaging_weight': 1/self.mesh_index_count[self.canal_node_numbers_to_mesh_indices[n]]}
-
+            mesh_node_attributes[n] = {'mesh_index': self.canal_node_numbers_to_mesh_indices[n]}
         nx.set_node_attributes(self.cn.graph, mesh_node_attributes)
 
         return None
@@ -487,11 +477,11 @@ class GmshMeshHydro(AbstractPeatlandHydro):
               self.canal_mask * largeValue * theta.value
               )
         return eq
-    
+
     def _set_equation_dirimode_scaled(self, theta):
         # compute diffusivity. Cell Variable
         diff_coeff = self.parameterization.diffusion(theta, self.dem, self.b)
-        
+
         # SCALES
         theta_C = theta.value.max()
         dif_C = diff_coeff.value.max()
@@ -515,11 +505,10 @@ class GmshMeshHydro(AbstractPeatlandHydro):
     def create_fipy_variable_from_graph_attribute(self, graph_attr_name):
         canal_fipy = fp.CellVariable(mesh=self.mesh, value=0.)
         canal_values_in_mesh = canal_fipy.value
-        for canal_node, mesh_pos in self.canal_node_numbers_to_mesh_indices.items():
-            # when more than one canal node in the same mesh cell, arithmetic mean
-            # is implemented using the mesh_averaging_weight node attribute
-            canal_values_in_mesh[mesh_pos] += (self.cn.graph.nodes()[canal_node][graph_attr_name] *
-                                               self.cn.graph.nodes()[canal_node]['mesh_averaging_weight'])
+        
+        for mesh_index, canal_node in self.mesh_cell_index_to_canal_node_number.items():
+            canal_values_in_mesh[mesh_index] = self.cn.graph.nodes()[canal_node][graph_attr_name]
+            
         canal_fipy.value = canal_values_in_mesh
 
         return canal_fipy
@@ -530,32 +519,16 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
         cn_dict = self.cn.from_nparray_to_nodedict(channel_network_var)
         # Step 1) we put nearest canal node value at each mesh cell touched by the channel network.
-        for mesh_index in self.mesh_indices_touched_by_channel_network:
-            canal_values_in_mesh[mesh_index] = cn_dict[self.mesh_cell_index_to_canal_node_number[mesh_index]]
-
-        # Step 2) we take care of multiple canal nodes in the same mesh cell.
-        # When more than one canal node in the same mesh cell, arithmetic mean
-        # is implemented using the mesh_averaging_weight node attribute
-        mesh_avg_weight_vector = self.cn.from_graph_attribute_to_nparray(
-            'mesh_averaging_weight')
-        mesh_averaged_channel_network_var = mesh_avg_weight_vector * channel_network_var
-        mesh_avg_var_nodedict = self.cn.from_nparray_to_nodedict(
-            mesh_averaged_channel_network_var)
-
-        # We first set to zero all canal nodes from step 1) to avoid double counting
-        for canal_node, mesh_pos in self.canal_node_numbers_to_mesh_indices.items():
-            canal_values_in_mesh[mesh_pos] = 0
-        # Then, we update with the averages
-        for canal_node, mesh_pos in self.canal_node_numbers_to_mesh_indices.items():
-            canal_values_in_mesh[mesh_pos] += mesh_avg_var_nodedict[canal_node]
+        for mesh_index, canal_node in self.mesh_cell_index_to_canal_node_number.items():
+            canal_values_in_mesh[mesh_index] = cn_dict[canal_node]
 
         canal_fipy.setValue = canal_values_in_mesh
 
         return canal_fipy
 
     def _get_fipy_variable_values_at_graph_nodes(self, fipy_var):
-        fipy_var_values_at_canal_nodes = fipy_var.value[list(
-            self.canal_node_numbers_to_mesh_indices.values())]
+        # This formulation is a bit more cumbersome, but much more efficient
+        fipy_var_values_at_canal_nodes = fipy_var.value[list(self.canal_node_numbers_to_mesh_indices.values())]
         return {canal_node: value for canal_node, value in zip(self.canal_node_numbers_to_mesh_indices.keys(), fipy_var_values_at_canal_nodes)}
 
     def burn_fipy_variable_value_in_graph_attribute(self, fipy_var, graph_attr_name):
@@ -647,20 +620,21 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         return gpd.GeoDataFrame({'val': fipy_var},
                                 geometry=gpd.points_from_xy(x_cell_centers, y_cell_centers))
 
-    def save_fipy_var_in_raster_file(self, fipy_var, out_raster_fn, interpolate: bool):
+    def save_fipy_var_in_raster_file(self, fipy_var, out_raster_fn, interpolation:str):
         template_raster_fn = self.pl.fn_dem
         gdf = self._create_geodataframe_from_fipy_variable(fipy_var)
 
         raster = utilities.rasterize_geodataframe_with_template(template_raster_fn, out_raster_fn,
-                                                                gdf, gdf_column_name='val')
+                                                                gdf, gdf_column_name='val',
+                                                                interpolation=interpolation)
 
-        if interpolate:
-            interpolation_mask = np.logical_or(
-                (self.pl.dem < 0), (raster > -1e5))
-            interpolated = fill.fillnodata(raster, mask=interpolation_mask)
-            interpolated[interpolated < -1e10] = interpolated[0, 0]
+        # fix interpolation stuff
+        interpolation_mask = np.logical_or(
+            (self.pl.dem < 0), (raster > -1e5))
+        interpolated = fill.fillnodata(raster, mask=interpolation_mask)
+        interpolated[interpolated < -1e10] = interpolated[0, 0]
 
-            raster = interpolated
+        raster = interpolated
 
         utilities.write_raster_from_array(array_to_rasterize=raster,
                                           out_filename=out_raster_fn,

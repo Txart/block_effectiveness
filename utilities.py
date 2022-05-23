@@ -413,6 +413,7 @@ def is_value_of_variable_possible(variable, possible_values):
     if variable not in possible_values:
         raise ValueError(
             'The value of a variable is not among its possible values. Aborting')
+        
 
 def find_nearest_neighbour_in_array_of_points(array_of_points):
     # finds nearest neighbour of each element in an array of points
@@ -486,6 +487,13 @@ def find_distance_of_points_in_geodataframe_to_nearest_line_in_geodataframe(gdf_
     
     return df
 
+def extract_coords_from_geopandas_dataframe(gpd_dataframe:gpd.GeoDataFrame) -> np.ndarray:
+    # gpd_dataframe needs to have a column of simple geometries
+    # If MULTI geometries present, use something like gpd.explode()
+    x_coords = gpd_dataframe.geometry.x.to_numpy()
+    y_coords = gpd_dataframe.geometry.y.to_numpy()
+    return np.column_stack((x_coords, y_coords))
+
 def convert_networkx_graph_to_dataframe(graph): 
  	dict_nodes_to_attributes = dict(graph.nodes.data(True))
  	df = pd.DataFrame.from_dict(dict_nodes_to_attributes, orient='index')
@@ -496,23 +504,11 @@ def sample_raster_from_coords(raster_filename:str, coords:np.ndarray) ->np.ndarr
     raster_src = rasterio.open(raster_filename)
     return np.array([raster_value[0] for raster_value in raster_src.sample(coords)])
 
-def rasterize_geodataframe_with_template(template_raster_fn:str, out_raster_fn:str, gdf:gpd.GeoDataFrame, gdf_column_name:'str')->np.ndarray:
-    """Takes geodataframe and template raster and returns raster of the geodataframe values.
-
-    Args:
-        template_raster_fn (str): filename of the template raster from which metadata is copied
-        out_raster_fn (str): filename outpur raster
-        gdf (gpd.GeoDataFrame): geodataframe with values to rasterize. Must contain a geometry column.
-        gdf_column_name (str): Name of the geodataframe column to burn in the raster
-        interpolate (bool): If True, interpolate between no datas in the raster in a specific way
-
-    Returns:
-        raster
-    """    
+def _rasterize_geodataframe_nearest_neighbour_interpolation(gdf, gdf_column_name, template_raster_fn, out_raster_fn):
     # Open template raster and copy its metadata
     trst = rasterio.open(template_raster_fn)
     template_metadata = trst.meta.copy()
-
+    
     # Extract values and their position from geodataframe 
     shapes = ((geom, val) for geom, val in zip(gdf['geometry'], gdf[gdf_column_name]))
 
@@ -522,3 +518,67 @@ def rasterize_geodataframe_with_template(template_raster_fn:str, out_raster_fn:s
         raster = features.rasterize(shapes=shapes, fill=0, out=out_arr, transform=out.transform)
 
         return raster
+    
+    
+def _rasterize_geodataframe_linear_interpolation(gdf, gdf_column_name, template_raster_fn, out_raster_fn):
+    # Inspiration from 
+    # https://stackoverflow.com/questions/71665265/creating-a-lat-lon-grid-from-lat-lon-point-data-of-a-given-variable-in-python
+    from scipy import interpolate
+    from shapely.geometry import Point
+    
+    # Open template raster and copy its metadata
+    trst = rasterio.open(template_raster_fn)
+    template_raster = trst.read(1)
+    template_metadata = trst.meta.copy()
+
+    xs, ys = gdf.geometry.x, gdf.geometry.y
+    coords = np.column_stack((np.array(xs), np.array(ys)))
+    values = gdf[gdf_column_name]
+
+    # define raster resolution based on template raster
+    rRes = template_metadata['transform'][0]
+
+    # create coord ranges over the desired raster extension
+    xRange = np.arange(xs.min(), xs.max(), rRes)
+    yRange = np.arange(ys.min(), ys.max(), rRes)
+
+    # create arrays of x,y over the raster extension
+    gridX, gridY = np.meshgrid(xRange, yRange)
+
+    # interpolate over the grid
+    gridPh = interpolate.griddata(coords, values, (gridX, gridY), method='linear')
+    gridPh = gridPh[::-1] # For some reason, it's upside down
+
+    area_mask = 1*(template_raster > -1)
+    # Convert 0s in area_mask to NaNs
+    area_mask = area_mask.astype('float') # needs to be float because Nan is float
+    area_mask[area_mask == 0] = np.nan
+
+    return gridPh * area_mask
+
+def rasterize_geodataframe_with_template(template_raster_fn:str, out_raster_fn:str,
+                                         gdf:gpd.GeoDataFrame, gdf_column_name:'str',
+                                         interpolation='nearest_neighbour')->np.ndarray:
+    """Takes geodataframe and template raster and returns raster of the geodataframe values.
+
+    Args:
+        template_raster_fn (str): filename of the template raster from which metadata is copied
+        out_raster_fn (str): filename outpur raster
+        gdf (gpd.GeoDataFrame): geodataframe with values to rasterize. Must contain a geometry column.
+        gdf_column_name (str): Name of the geodataframe column to burn in the raster
+        interpolation (str): Options are "nearest_neighbour" and "linear". nn takes the closest
+            value in the gdf and burns it directly. Linear does a linear interpolation
+
+    Returns:
+        raster
+    """    
+    
+    if interpolation == 'nearest_neighbour':
+        return _rasterize_geodataframe_nearest_neighbour_interpolation(gdf, gdf_column_name,
+                                                         template_raster_fn, out_raster_fn)
+    elif interpolation == 'linear':
+        return _rasterize_geodataframe_linear_interpolation(gdf, gdf_column_name, template_raster_fn, out_raster_fn)
+    
+    else:
+        raise ValueError('interpolation type not understood')
+
