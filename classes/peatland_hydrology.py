@@ -330,14 +330,9 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         # Link mesh cell centers with canal network nodes
         self.burn_mesh_information_as_canal_graph_attributes()
 
-        # Sample dem ad depth rasters at mesh centroids from corresponding rasters
-        if self.ph_params.bigger_dem_raster_fn is not None:
-            dem_raster_fn_to_sample_mesh = self.ph_params.bigger_dem_raster_fn
-        else:
-            dem_raster_fn_to_sample_mesh = self.pl.fn_dem
         dem_value = utilities.sample_raster_from_coords(
             # raster_filename=self.pl.fn_dem,
-            raster_filename=dem_raster_fn_to_sample_mesh,
+            raster_filename=self.pl.fn_dem,
             coords=mesh_centroids_coords)
         self.dem = fp.CellVariable(
             name='dem', mesh=self.mesh, value=dem_value, hasOld=False)

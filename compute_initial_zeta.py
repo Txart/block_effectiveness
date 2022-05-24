@@ -30,14 +30,8 @@ if platform.system() == 'Linux': # Working on my own machine
     parser = argparse.ArgumentParser(description='Run 2d calibration')
     
     parser.add_argument('--ncpu', default=1, help='(int) Number of processors', type=int)
-    parser.add_argument('--pickled-ini-zeta', help='Use best_initial_zeta.p. This is the default behaviour.', dest='ini_zetaOpt', action='store_true')
-    parser.add_argument('--no-pickled-ini-zeta', help='Do not use previously computed initial condition. Calculate it',
-                        dest='ini_zetaOpt', action='store_false')
 
     args = parser.parse_args()
-    
-    parser.set_defaults(ini_zetaOpt=True)
-    ini_zetaOpt = args.ini_zetaOpt
     
     N_CPU = args.ncpu    
 
@@ -72,10 +66,6 @@ peat_hydro_params = PeatlandHydroParameters(
     nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-5,
     s1= 0.0, s2=0.0, t1=0, t2=0,
     use_several_weather_stations=True)
-
-# Mesh has some cell centers outside of the dem. This is a quickfix.
-peat_hydro_params.bigger_dem_raster_fn = Path(filenames_df[filenames_df.Content == 'bigger_dem_raster'].Path.values[0])
-
 
 # Set up cwl computation
 cwl_params = CWLHydroParameters(g=9.8, # g in meters per second
@@ -282,7 +272,7 @@ def write_output_zeta_raster(zeta, full_folder_path, day):
     return None
 
 
-def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt):
+def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory):
     hydro.ph_params.s1 = PARAMS.loc[param_number, 's1']
     hydro.ph_params.s2 = PARAMS.loc[param_number, 's2']
     hydro.ph_params.t1 = PARAMS.loc[param_number, 't1']
@@ -298,14 +288,8 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
     out_rasters_folder_name = f"params_number_{param_number}"
     full_folder_path = Path.joinpath(output_directory, out_rasters_folder_name)
     
-    # Get best initial condition with these params
-    if ini_zetaOpt:
-        # Read from pickle
-        fn_pickle = full_folder_path.joinpath("best_initial_zeta.p")
-        best_initial_zeta_value = pickle.load(open(fn_pickle, 'rb'))
-    
-    elif not ini_zetaOpt:
-        best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,
+
+    best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,
                                                         hydro, cwl_hydro,
                                                         parent_directory, full_folder_path)
 
@@ -376,14 +360,14 @@ if platform.system() == 'Linux':
     if N_PARAMS > 1:
         hydro.verbose = False
         param_numbers = range(0, N_PARAMS)
-        multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
+        multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
         with mp.Pool(processes=N_CPU) as pool:
             pool.starmap(produce_family_of_rasters, multiprocessing_arguments)
     
     elif N_PARAMS == 1:
         hydro.verbose = False
         param_numbers = range(0, N_PARAMS)
-        arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
+        arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
         for args in arguments:
             produce_family_of_rasters(*args)    
     
@@ -392,10 +376,9 @@ if platform.system() == 'Linux':
 #%% Run Windows
 if platform.system() == 'Windows':
     hydro.verbose = True
-    ini_zetaOpt = False # True: start from pickled zeta
     N_PARAMS = 1
     param_numbers = range(0, N_PARAMS)
-    arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt) for param_number in param_numbers]
+    arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
 
     for args in arguments:
         produce_family_of_rasters(*args)
