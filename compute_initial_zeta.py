@@ -30,16 +30,11 @@ if platform.system() == 'Linux': # Working on my own machine
     parser = argparse.ArgumentParser(description='Run 2d calibration')
     
     parser.add_argument('--ncpu', default=1, help='(int) Number of processors', type=int)
-    parser.add_argument('--yes-blocks', help='Use status quo blocks. This is the default behaviour.', dest='blockOpt', action='store_true')
-    parser.add_argument('--no-blocks', help='Do not use any block', dest='blockOpt', action='store_false')
     parser.add_argument('--pickled-ini-zeta', help='Use best_initial_zeta.p. This is the default behaviour.', dest='ini_zetaOpt', action='store_true')
     parser.add_argument('--no-pickled-ini-zeta', help='Do not use previously computed initial condition. Calculate it',
                         dest='ini_zetaOpt', action='store_false')
 
     args = parser.parse_args()
-
-    parser.set_defaults(blockOpt=True)
-    blockOpt = args.blockOpt
     
     parser.set_defaults(ini_zetaOpt=True)
     ini_zetaOpt = args.ini_zetaOpt
@@ -51,8 +46,6 @@ elif platform.system() == 'Windows':
     data_parent_folder = Path(r"data\Raw csv")
     fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
     N_CPU = 1
-    
-    blockOpt = True # use existing blocks
     
 #%% Read weather data
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
@@ -69,7 +62,7 @@ graph = pickle.load(open((graph_fn), "rb"))
 channel_network = ChannelNetwork(
     graph, block_height_from_surface=0.0, block_coeff_k=2000.0,
     y_ini_below_DEM=-0.0, Q_ini_value=0.0, channel_bottom_below_DEM=8.0,
-    y_BC_below_DEM=-0.0, Q_BC=0.0, channel_width=3.5, work_without_blocks= not blockOpt)
+    y_BC_below_DEM=-0.0, Q_BC=0.0, channel_width=3.5, work_without_blocks=False)
 
 peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 
@@ -94,7 +87,7 @@ cwl_params = CWLHydroParameters(g=9.8, # g in meters per second
                                 n1=5, # params for n_manning
                                 n2=1,
                                 max_niter_newton=int(1e5), max_niter_inexact=int(50),
-                                rel_tol=1e-3, abs_tol=1e-3, weight_A=5e-2, weight_Q=5e-2, ncpus=1,
+                                rel_tol=1e-5, abs_tol=1e-5, weight_A=5e-2, weight_Q=5e-2, ncpus=1,
                                 downstream_diri_BC=False)
 
 cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
@@ -174,7 +167,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     hydro.parameterization = ExponentialBelowOneAboveStorageWithDepth(hydro.ph_params)
     
     # Begin from complete saturation
-    hydro.zeta = hydro.create_uniform_fipy_var(uniform_value=-0.1, var_name='zeta')
+    hydro.zeta = hydro.create_uniform_fipy_var(uniform_value=-0.0, var_name='zeta')
     
     # Initialize returned variable
     best_initial_zeta = hydro.zeta.value
@@ -245,8 +238,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
                 print(f"zeta at day {day} is better than the previous best, with a fitness difference of {best_fitness - current_fitness} points")
                 best_initial_zeta = hydro.zeta.value
                 best_fitness = current_fitness
-                
-
+            
                 fn_pickle = output_folder_path.joinpath('best_initial_zeta.p')
 
                 pickle.dump(best_initial_zeta, open(fn_pickle, 'wb'))
@@ -319,7 +311,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
 
     hydro.zeta = fp.CellVariable(name='zeta', mesh=hydro.mesh, value=best_initial_zeta_value, hasOld=True)
     
-    N_DAYS = 2
+    N_DAYS = 0
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24 # Hourly
