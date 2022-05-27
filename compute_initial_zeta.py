@@ -78,7 +78,7 @@ cwl_params = CWLHydroParameters(g=9.8, # g in meters per second
                                 n2=1,
                                 max_niter_newton=int(1e5), max_niter_inexact=int(50),
                                 rel_tol=1e-5, abs_tol=1e-5, weight_A=5e-2, weight_Q=5e-2, ncpus=1,
-                                downstream_diri_BC=False)
+                                downstream_diri_BC=0.0)
 
 cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
                                         cwl_params=cwl_params,
@@ -107,8 +107,11 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     
     new_y_at_canals = hydro.convert_zeta_to_y_at_canals(hydro.zeta)
     y_prediction_array = hydro.cn.from_nodedict_to_nparray(new_y_at_canals)
-    q = cwl_hydro.predict_q_for_next_timestep(y_prediction_at_canals=y_prediction_array,
-                                              y_at_canals=hydro.cn.y)
+    theta_prediction_array = hydro.parameterization.theta_from_zeta(zeta=y_prediction_array - hydro.cn.dem, dem=hydro.cn.dem)
+    theta_previous_array = hydro.parameterization.theta_from_zeta(zeta=hydro.cn.y - hydro.cn.dem, dem=hydro.cn.dem)
+    theta_diff = theta_prediction_array - theta_previous_array
+    q = cwl_hydro.predict_q_for_next_timestep(theta_difference=theta_diff, seconds_per_timestep=hydro.cn_params.dt)
+    
     # Add q to each component graph
     q_nodedict = hydro.cn.from_nparray_to_nodedict(q)
     for component_cn in cwl_hydro.component_channel_networks:
@@ -118,6 +121,14 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     # cwl_hydro.run() takes y, q and others from each component's attribute variables
     cwl_hydro.run() # solution stored in cwl_hydro.y_solution (or Q_solution also if Preissmann)
     y_solution_at_canals = cwl_hydro.y_solution # y is water height above common ref point
+    
+    # New: eliminate ponding water in canals
+    PONDING_CANAL_WATER_CUTOFF = 0.5 # m. All water above this quantity will be erased
+    zeta_at_canals = cwl_hydro.convert_y_nodedict_to_zeta_at_canals(y_solution_at_canals)
+    for k,v in zeta_at_canals.items():
+        if v > PONDING_CANAL_WATER_CUTOFF:
+            zeta_at_canals[k] = PONDING_CANAL_WATER_CUTOFF
+    y_solution_at_canals = cwl_hydro.convert_zeta_nodedict_to_y_at_canals(zeta_at_canals)
     
     # Append solution value at canals to each graph in the components
     for component_cn in cwl_hydro.component_channel_networks:
@@ -132,7 +143,7 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     for n in cwl_hydro.nodes_not_in_components:
         y_solution_at_canals[n] = mean_zeta_value + cwl_hydro.cn.graph.nodes[n]['DEM']
     y_sol_all_canals = hydro.cn.from_nodedict_to_nparray(y_solution_at_canals)
-    hydro.cn.y = y_sol_all_canals 
+    hydro.cn.y = y_sol_all_canals
     
     # Set solution of CWL simulation into fipy variable zeta for WTD simulation
     zeta_at_canals = cwl_hydro.convert_y_nodedict_to_zeta_at_canals(y_solution_at_canals)
@@ -366,7 +377,7 @@ if platform.system() == 'Linux':
     
     elif N_PARAMS == 1:
         hydro.verbose = False
-        param_numbers = range(0, N_PARAMS)
+        param_numbers = [9]
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
         for args in arguments:
             produce_family_of_rasters(*args)    
@@ -377,7 +388,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = range(0, N_PARAMS)
+    param_numbers = [9]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory) for param_number in param_numbers]
 
     for args in arguments:

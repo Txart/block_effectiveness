@@ -592,9 +592,9 @@ class GmshMeshHydro(AbstractPeatlandHydro):
     def compute_pan_ET_from_ponding_water(self, zeta):
         # pan ET stands for increased ET when WT is above the surface.
         # Here implemented as a linear function of ponding WT height
-        MAX_PAN_ET_mm_per_day = 0.003
-        ZETA_FOR_MAX_PAN_ET_metres = 0.3  # zeta at which max pan ET occurs.
-        pan_ET_func = interp1d(x=[0, ZETA_FOR_MAX_PAN_ET_metres], y=[0, MAX_PAN_ET_mm_per_day],
+        MAX_PAN_ET_mm_per_day = 0.004
+        ZETA_FOR_MAX_PAN_ET_metres = 0  # zeta at which max pan ET occurs.
+        pan_ET_func = interp1d(x=[-0.1, ZETA_FOR_MAX_PAN_ET_metres], y=[0, MAX_PAN_ET_mm_per_day],
                                bounds_error=False, fill_value=(0, MAX_PAN_ET_mm_per_day))
 
         return pan_ET_func(zeta)

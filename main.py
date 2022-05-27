@@ -80,10 +80,6 @@ peat_hydro_params = PeatlandHydroParameters(
     s1= 0.0, s2=0.0, t1=0, t2=0,
     use_several_weather_stations=True)
 
-# Mesh has some cell centers outside of the dem. This is a quickfix.
-peat_hydro_params.bigger_dem_raster_fn = Path(filenames_df[filenames_df.Content == 'bigger_dem_raster'].Path.values[0])
-
-
 # Set up cwl computation
 cwl_params = CWLHydroParameters(g=9.8, # g in meters per second
                                 dt=3600, # dt in seconds
@@ -124,8 +120,11 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     
     new_y_at_canals = hydro.convert_zeta_to_y_at_canals(hydro.zeta)
     y_prediction_array = hydro.cn.from_nodedict_to_nparray(new_y_at_canals)
-    q = cwl_hydro.predict_q_for_next_timestep(y_prediction_at_canals=y_prediction_array,
-                                              y_at_canals=hydro.cn.y)
+    theta_prediction_array = hydro.parameterization.theta_from_zeta(zeta=y_prediction_array - hydro.cn.dem, dem=hydro.cn.dem)
+    theta_previous_array = hydro.parameterization.theta_from_zeta(zeta=hydro.cn.y - hydro.cn.dem, dem=hydro.cn.dem)
+    theta_diff = theta_prediction_array - theta_previous_array
+    q = cwl_hydro.predict_q_for_next_timestep(theta_difference=theta_diff, seconds_per_timestep=hydro.cn_params.dt)
+    
     # Add q to each component graph
     q_nodedict = hydro.cn.from_nparray_to_nodedict(q)
     for component_cn in cwl_hydro.component_channel_networks:
@@ -135,6 +134,14 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     # cwl_hydro.run() takes y, q and others from each component's attribute variables
     cwl_hydro.run() # solution stored in cwl_hydro.y_solution (or Q_solution also if Preissmann)
     y_solution_at_canals = cwl_hydro.y_solution # y is water height above common ref point
+    
+    # New: eliminate ponding water in canals
+    PONDING_CANAL_WATER_CUTOFF = 0.5 # m. All water above this quantity will be erased
+    zeta_at_canals = cwl_hydro.convert_y_nodedict_to_zeta_at_canals(y_solution_at_canals)
+    for k,v in zeta_at_canals.items():
+        if v > PONDING_CANAL_WATER_CUTOFF:
+            zeta_at_canals[k] = PONDING_CANAL_WATER_CUTOFF
+    y_solution_at_canals = cwl_hydro.convert_zeta_nodedict_to_y_at_canals(zeta_at_canals)
     
     # Append solution value at canals to each graph in the components
     for component_cn in cwl_hydro.component_channel_networks:
@@ -369,9 +376,6 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
     return 0
 
 # %% Params
-
-
-
 hydro.ph_params.dt = 1/24 # dt in days
 hydro.cn_params.dt = 3600 # dt in seconds
 

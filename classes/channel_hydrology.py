@@ -1,3 +1,4 @@
+import numpy as np
 from tqdm import tqdm
 import multiprocessing as mp
 import networkx as nx
@@ -119,8 +120,20 @@ class AbstractChannelHydrology:
                           dem_dict[node] for node, y_value in y_nodedict.items()}
         return zeta_at_canals
     
-    def predict_q_for_next_timestep(self, y_prediction_at_canals, y_at_canals):
-        return self.cn.B * (y_prediction_at_canals - y_at_canals)/self.cwl_params.dt # m^2/s volumetric lateral inflow rate
+    def convert_zeta_nodedict_to_y_at_canals(self, zeta_nodedict):
+        # Compute zeta = y - dem
+        dem_dict = nx.get_node_attributes(self.cn.graph, 'DEM')
+        y_at_canals = {node: zeta_value +
+                          dem_dict[node] for node, zeta_value in zeta_nodedict.items()}
+        return y_at_canals
+    
+    def predict_q_for_next_timestep(self, theta_difference, seconds_per_timestep):
+        # Returns volumetric lateral inflow per unit length that goes into canal in time dt (m^2/s)
+        # theta difference (and not h difference!)
+        # gives change in cell water volume per unit area between t and t + dt (m/timestep)
+        # B (m) is a geometric quantity derived from geometric reasoning of canal and triangle shapes.
+        # seconds_per_timestep changes units from timesteps to seconds.
+        return self.cn.B * theta_difference / seconds_per_timestep
         
 
 
