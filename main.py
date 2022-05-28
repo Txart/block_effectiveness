@@ -135,12 +135,10 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     cwl_hydro.run() # solution stored in cwl_hydro.y_solution (or Q_solution also if Preissmann)
     y_solution_at_canals = cwl_hydro.y_solution # y is water height above common ref point
     
-    # New: eliminate ponding water in canals
-    PONDING_CANAL_WATER_CUTOFF = 0.5 # m. All water above this quantity will be erased
+    # Distribute canal ponding water throughout the cell
     zeta_at_canals = cwl_hydro.convert_y_nodedict_to_zeta_at_canals(y_solution_at_canals)
-    for k,v in zeta_at_canals.items():
-        if v > PONDING_CANAL_WATER_CUTOFF:
-            zeta_at_canals[k] = PONDING_CANAL_WATER_CUTOFF
+    ponding_canal_nodes = cwl_hydro._find_zeta_in_ponding_canal_nodes(y_solution_at_canals)
+    zeta_at_canals = hydro.distribute_canal_ponding_water_throughout_cell(zeta_at_canals, ponding_canal_nodes)
     y_solution_at_canals = cwl_hydro.convert_zeta_nodedict_to_y_at_canals(zeta_at_canals)
     
     # Append solution value at canals to each graph in the components
