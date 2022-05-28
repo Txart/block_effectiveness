@@ -135,6 +135,11 @@ class AbstractChannelHydrology:
         # seconds_per_timestep changes units from timesteps to seconds.
         return self.cn.B * theta_difference / seconds_per_timestep
         
+    def _find_zeta_in_ponding_canal_nodes(self, y_canal_nodedict):
+        zeta_at_canals = self.convert_y_nodedict_to_zeta_at_canals(y_canal_nodedict)
+        ponding_canal_nodes = {node:zeta for node, zeta in zeta_at_canals.items() if zeta > 0}
+        return ponding_canal_nodes
+
 
 
 class PreissmanModel(AbstractChannelHydrology):

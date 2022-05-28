@@ -90,7 +90,7 @@ cwl_params = CWLHydroParameters(g=9.8, # g in meters per second
                                 n1=5, # params for n_manning
                                 n2=1,
                                 max_niter_newton=int(1e5), max_niter_inexact=int(50),
-                                rel_tol=1e-3, abs_tol=1e-3, weight_A=5e-2, weight_Q=5e-2, ncpus=1,
+                                rel_tol=1e-7, abs_tol=1e-7, weight_A=5e-2, weight_Q=5e-2, ncpus=1,
                                 downstream_diri_BC=False)
 
 cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
@@ -311,11 +311,11 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
     out_rasters_folder_name = f"params_number_{param_number}"
     full_folder_path = Path.joinpath(output_directory, out_rasters_folder_name)
     
-    # Get best initial condition with these params
+    # Get initial zeta
     if ini_zetaOpt:
         # Read from pickle
-        fn_pickle = full_folder_path.joinpath("best_initial_zeta.p")
-        best_initial_zeta_value = pickle.load(open(fn_pickle, 'rb'))
+        initial_zeta_pickle_fn = Path(filenames_df[filenames_df.Content == 'initial_zeta_pickle'].Path.values[0])
+        best_initial_zeta_value = pickle.load(open(initial_zeta_pickle_fn, 'rb'))
     
     elif not ini_zetaOpt:
         best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,

@@ -318,6 +318,12 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         self.gdf_mesh_centers_corresponding_to_canals = self._get_geodataframe_mesh_centers_corresponding_to_canals()
         canal_mesh_cell_indices = list(self.gdf_mesh_centers_corresponding_to_canals.index)
         
+        # Geometrical quantities for cells and canals
+        mean_cell_centroid_distance = self.mesh.scaledCellToCellDistances.mean()
+        self.avg_canal_area = mean_cell_centroid_distance * self.cn.B # assuming rectangular shape
+        self.avg_cell_area = np.sqrt(3)/4 * mean_cell_centroid_distance**2 # approximating equilateral triangles
+        
+        
         # Canal mask
         canal_mask_value = np.zeros(shape=mesh_centroids_coords.shape[0], dtype=int)
         canal_mask_value[canal_mesh_cell_indices] = True
@@ -614,6 +620,18 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         x_cell_centers, y_cell_centers = self.mesh.cellCenters.value
         return gpd.GeoDataFrame({'val': fipy_var},
                                 geometry=gpd.points_from_xy(x_cell_centers, y_cell_centers))
+
+        
+    def distribute_canal_ponding_water_throughout_cell(self, zeta_canal_nodedict, ponding_canal_zeta_nodedict):
+        # input:
+        #   - dictionary of (canal node, zeta at node)
+        #   - dictionary with the same structure that contain only those canal nodes that have ponding water
+        
+        for node, zeta in ponding_canal_zeta_nodedict.items():
+            zeta_canal_nodedict[node] = self.avg_canal_area[node]/self.avg_cell_area * zeta
+            
+        return zeta_canal_nodedict
+    
 
     def save_fipy_var_in_raster_file(self, fipy_var, out_raster_fn, interpolation:str):
         template_raster_fn = self.pl.fn_dem
