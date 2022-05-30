@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from fipy import numerix
 
 
-from classes.peatland_hydrology import PeatlandHydroParameters
+from classes.peat_hydro_params import PeatlandHydroParameters
 
 
 class AbstractParameterization:
