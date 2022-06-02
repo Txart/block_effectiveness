@@ -35,15 +35,14 @@ parser.add_argument('--yes-blocks', help='Use status quo blocks. This is the def
 parser.add_argument('--no-blocks', help='Do not use any block',
                     dest='blockOpt', action='store_false')
 
-parser.add_argument('--precip_data', help='Options: "weather_stations" (default), for onsite weather stations; "wet" and "dry" for Sultan Thaha airport precip data for 2013 and 1997 years',
+parser.add_argument('--precip-data', help='Options: "weather_stations" for onsite weather stations; "wet" and "dry" for Sultan Thaha airport precip data for 2013 and 1997 years',
                     dest='precip_data')
-parser.add_argument('--ncpu', required=True, 
-                        help='(int) Number of processors', type=int)
+parser.add_argument('--ncpu', required=True,
+                    help='(int) Number of processors', type=int)
 
 args = parser.parse_args()
 
 parser.set_defaults(blockOpt=True)
-parser.set_defaults(precip_data='weather_stations')
 blockOpt = args.blockOpt
 precip_data = args.precip_data
 N_CPU = args.ncpu
@@ -59,21 +58,25 @@ elif platform.system() == 'Windows':
     fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
 
     if N_CPU != 1:
-        raise ValueError('Multiprocessing not impletmeented in Windows. n_cpus in must be equal to 1')
+        raise ValueError(
+            'Multiprocessing not impletmeented in Windows. n_cpus in must be equal to 1')
 
 
 # %% Read weather data
 if precip_data == 'weather_stations':
-    df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
+    net_daily_source = get_data.get_P_minus_ET_dataframe(data_parent_folder)
 
 elif precip_data == 'wet':
-    net_daily_source =  read_weather_data.get_daily_net_source(year_type='normal')
+    net_daily_source = read_weather_data.get_daily_net_source(
+        year_type='normal')
 
 elif precip_data == 'dry':
-    net_daily_source =  read_weather_data.get_daily_net_source(year_type='elnino')
+    net_daily_source = read_weather_data.get_daily_net_source(
+        year_type='elnino')
 
 else:
-    raise ValueError('Weather data origin not understood from command line. See -h for help.')
+    raise ValueError(
+        'Weather data origin not understood from command line. See -h for help.')
 # %% Prepare data
 filenames_df = pd.read_excel(
     fn_pointers, header=2, dtype=str, engine='openpyxl')
@@ -309,7 +312,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
 
 # %% main function
 
-def run_daily_computations(hydro, cwl_hydro, df_p_minus_et, internal_timesteps, day):
+def run_daily_computations(hydro, cwl_hydro, net_daily_source, internal_timesteps, day):
 
     hydro.ph_params.dt = 1/internal_timesteps  # dt in days
     cwl_hydro.cwl_params.dt = 86400/internal_timesteps  # dt in seconds
@@ -317,14 +320,14 @@ def run_daily_computations(hydro, cwl_hydro, df_p_minus_et, internal_timesteps, 
     if precip_data == 'weather_stations':
         hydro.ph_params.use_several_weather_stations = True
         # # P-ET sink/source term at each weather station
-        sources_dict = df_p_minus_et.loc[day].to_dict()
+        sources_dict = net_daily_source.loc[day].to_dict()
         hydro.set_sourcesink_variable(value=sources_dict)
         hydro.sourcesink = hydro.sourcesink - \
             hydro.compute_pan_ET_from_ponding_water(hydro.zeta)  # Add pan ET
     else:
         hydro.ph_params.use_several_weather_stations = False
         hydro.set_sourcesink_variable(value=net_daily_source[day])
-        
+
     zeta_t0 = hydro.zeta.value
 
     solution_function = simulate_one_timestep_simple_two_step
@@ -346,7 +349,7 @@ def write_output_zeta_raster(zeta, full_folder_path, day):
     return None
 
 
-def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory):
+def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_source, parent_directory):
     hydro.ph_params.s1 = PARAMS.loc[param_number, 's1']
     hydro.ph_params.s2 = PARAMS.loc[param_number, 's2']
     hydro.ph_params.t1 = PARAMS.loc[param_number, 't1']
@@ -392,7 +395,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
 
         try:
             hydro_test, cwl_hydro_test = run_daily_computations(
-                hydro_test, cwl_hydro_test, df_p_minus_et, internal_timesteps, day)
+                hydro_test, cwl_hydro_test, net_daily_source, internal_timesteps, day)
 
         except Exception as e:
             if internal_timesteps == NORMAL_TIMESTEP:
@@ -416,17 +419,22 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
 
             # write zeta to file
             if channel_network.work_without_blocks:
-                print(
-                    f' writing output raster to {full_folder_path.joinpath("no_blocks")}')
-                write_output_zeta_raster(
-                    hydro.zeta, full_folder_path.joinpath('no_blocks'), day)
-            else:
-                print(f' writing to {full_folder_path.joinpath("yes_blocks")}')
-                write_output_zeta_raster(
-                    hydro.zeta, full_folder_path.joinpath('yes_blocks'), day)
+                foldername = 'no_blocks'
+            elif not channel_network.work_without_blocks:
+                foldername = 'yes_blocks'
+
+            if precip_data == 'dry':
+                foldername = foldername + '_dry'
+            elif precip_data == 'wet':
+                foldername = foldername + '_wet'
+
+            full_write_foldername = full_folder_path.joinpath(foldername)
+            print(f' writing output raster to {full_write_foldername}')
+
+            write_output_zeta_raster(
+                hydro.zeta, full_write_foldername, day)
 
             continue
-
     return 0
 
 
@@ -443,7 +451,7 @@ if platform.system() == 'Linux':
     if N_PARAMS > 1:
         hydro.verbose = True
         param_numbers = range(0, N_PARAMS)
-        multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
+        multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                                       parent_directory) for param_number in param_numbers]
         with mp.Pool(processes=N_CPU) as pool:
             pool.starmap(produce_family_of_rasters, multiprocessing_arguments)
@@ -451,7 +459,7 @@ if platform.system() == 'Linux':
     elif N_PARAMS == 1:
         hydro.verbose = True
         param_numbers = range(0, N_PARAMS)
-        arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
+        arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                       parent_directory) for param_number in param_numbers]
         for args in arguments:
             produce_family_of_rasters(*args)
@@ -462,7 +470,7 @@ if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
     param_numbers = range(0, N_PARAMS)
-    arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
+    arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 
     for args in arguments:
