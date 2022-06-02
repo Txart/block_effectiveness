@@ -376,7 +376,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     hydro.zeta = fp.CellVariable(
         name='zeta', mesh=hydro.mesh, value=best_initial_zeta_value, hasOld=True)
 
-    N_DAYS = 2
+    N_DAYS = 365
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24  # Hourly
