@@ -41,18 +41,11 @@ if platform.system() == 'Linux':  # Working on my own machine
                         dest='blockOpt', action='store_true')
     parser.add_argument('--no-blocks', help='Do not use any block',
                         dest='blockOpt', action='store_false')
-    parser.add_argument('--pickled-ini-zeta', help='Use best_initial_zeta.p. This is the default behaviour.',
-                        dest='ini_zetaOpt', action='store_true')
-    parser.add_argument('--no-pickled-ini-zeta', help='Do not use previously computed initial condition. Calculate it',
-                        dest='ini_zetaOpt', action='store_false')
 
     args = parser.parse_args()
 
     parser.set_defaults(blockOpt=True)
     blockOpt = args.blockOpt
-
-    parser.set_defaults(ini_zetaOpt=True)
-    ini_zetaOpt = args.ini_zetaOpt
 
     N_CPU = args.ncpu
 
@@ -60,9 +53,19 @@ elif platform.system() == 'Windows':
     parent_directory = Path(r"C:\Users\03125327\github\paper2")
     data_parent_folder = Path(r"data\Raw csv")
     fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
-    N_CPU = 1
+    
+    parser = argparse.ArgumentParser(description='Run 2d calibration')
+    parser.add_argument('--yes-blocks', help='Use status quo blocks. This is the default behaviour.',
+                        dest='blockOpt', action='store_true')
+    parser.add_argument('--no-blocks', help='Do not use any block',
+                        dest='blockOpt', action='store_false')
 
-    blockOpt = True  # use existing blocks
+    args = parser.parse_args()
+
+    parser.set_defaults(blockOpt=True)
+    blockOpt = args.blockOpt
+
+    N_CPU = 1
 
 # %% Read weather data
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
@@ -88,7 +91,7 @@ peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 peat_hydro_params = PeatlandHydroParameters(
     dt=1/24,  # dt in days
     dx=50,  # dx in meters, only used if structured mesh
-    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-5,
+    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-7,
     s1=0.0, s2=0.0, t1=0, t2=0,
     use_several_weather_stations=True)
 
@@ -336,7 +339,7 @@ def write_output_zeta_raster(zeta, full_folder_path, day):
     return None
 
 
-def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory, ini_zetaOpt):
+def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et, parent_directory):
     hydro.ph_params.s1 = PARAMS.loc[param_number, 's1']
     hydro.ph_params.s2 = PARAMS.loc[param_number, 's2']
     hydro.ph_params.t1 = PARAMS.loc[param_number, 't1']
@@ -354,18 +357,11 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
     out_rasters_folder_name = f"params_number_{param_number}"
     full_folder_path = Path.joinpath(output_directory, out_rasters_folder_name)
 
-    # Get initial zeta
-    if ini_zetaOpt:
-        # Read from pickle
-        initial_zeta_pickle_fn = Path(
-            filenames_df[filenames_df.Content == 'initial_zeta_pickle'].Path.values[0])
-        best_initial_zeta_value = pickle.load(
-            open(initial_zeta_pickle_fn, 'rb'))
-
-    elif not ini_zetaOpt:
-        best_initial_zeta_value = find_best_initial_condition(param_number, PARAMS,
-                                                              hydro, cwl_hydro,
-                                                              parent_directory, full_folder_path)
+    # Read from pickle
+    initial_zeta_pickle_fn = Path(
+        filenames_df[filenames_df.Content == 'initial_zeta_pickle'].Path.values[0])
+    best_initial_zeta_value = pickle.load(
+        open(initial_zeta_pickle_fn, 'rb'))
 
     hydro.zeta = fp.CellVariable(
         name='zeta', mesh=hydro.mesh, value=best_initial_zeta_value, hasOld=True)
@@ -413,9 +409,11 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
 
             # write zeta to file
             if channel_network.work_without_blocks:
+                print(f' writing output raster to {full_folder_path.joinpath("no_blocks")}')
                 write_output_zeta_raster(
                     hydro.zeta, full_folder_path.joinpath('no_blocks'), day)
             else:
+                print(f' writing to {full_folder_path.joinpath("yes_blocks")}')
                 write_output_zeta_raster(
                     hydro.zeta, full_folder_path.joinpath('yes_blocks'), day)
 
@@ -438,7 +436,7 @@ if platform.system() == 'Linux':
         hydro.verbose = False
         param_numbers = range(0, N_PARAMS)
         multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
-                                      parent_directory, ini_zetaOpt) for param_number in param_numbers]
+                                      parent_directory) for param_number in param_numbers]
         with mp.Pool(processes=N_CPU) as pool:
             pool.starmap(produce_family_of_rasters, multiprocessing_arguments)
 
@@ -446,7 +444,7 @@ if platform.system() == 'Linux':
         hydro.verbose = False
         param_numbers = range(0, N_PARAMS)
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
-                      parent_directory, ini_zetaOpt) for param_number in param_numbers]
+                      parent_directory) for param_number in param_numbers]
         for args in arguments:
             produce_family_of_rasters(*args)
 
@@ -454,11 +452,10 @@ if platform.system() == 'Linux':
 # %% Run Windows
 if platform.system() == 'Windows':
     hydro.verbose = True
-    ini_zetaOpt = False  # True: start from pickled zeta
     N_PARAMS = 1
     param_numbers = range(0, N_PARAMS)
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
-                  parent_directory, ini_zetaOpt) for param_number in param_numbers]
+                  parent_directory) for param_number in param_numbers]
 
     for args in arguments:
         produce_family_of_rasters(*args)

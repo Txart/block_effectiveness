@@ -634,7 +634,7 @@ class GmshMeshHydro(AbstractPeatlandHydro):
     
 
     def save_fipy_var_in_raster_file(self, fipy_var, out_raster_fn, interpolation:str):
-        template_raster_fn = self.pl.fn_dem
+        template_raster_fn = self.pl.fn_template_output_raster
         gdf = self._create_geodataframe_from_fipy_variable(fipy_var)
 
         raster = utilities.rasterize_geodataframe_with_template(template_raster_fn, out_raster_fn,
@@ -643,7 +643,7 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
         # fix interpolation stuff
         interpolation_mask = np.logical_or(
-            (self.pl.dem < 0), (raster > -1e5))
+            (self.pl.template_output_raster < 0), (raster > -1e5))
         interpolated = fill.fillnodata(raster, mask=interpolation_mask)
         interpolated[interpolated < -1e10] = interpolated[0, 0]
 

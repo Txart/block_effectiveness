@@ -19,11 +19,14 @@ class Peatland:
         # fn_peat_type = filenames_df[filenames_df.Content == 'peat_type_raster'].Path.values[0]
         self.fn_weather_station_locations = filenames_df[filenames_df.Content == 'weather_station_coords'].Path.values[0]
         self.fn_canal_mask_mesh_centroids = filenames_df[filenames_df.Content == 'canal_mask_mesh_centroids'].Path.values[0]
+        self.fn_template_output_raster =   filenames_df[filenames_df.Content == 'template_output_raster'].Path.values[0]
+
         
         # Arrays
         self.dem = self.read_and_preprocess_dem(self.fn_dem)
         self.peat_depth = self.read_and_preprocess_peat_depth(self.fn_depth)
-        # self.peat_type = self.read_and_preprocess_peat_type(fn_peat_type)
+        self.template_output_raster = self.read_and_preprocess_dem(self.fn_template_output_raster)
+
 
         # Quantities derived from arrays
         self.catchment_mask = self.dem >= 0

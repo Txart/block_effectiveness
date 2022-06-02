@@ -531,6 +531,7 @@ def _rasterize_geodataframe_linear_interpolation(gdf, gdf_column_name, template_
     template_raster = trst.read(1)
     template_metadata = trst.meta.copy()
 
+    # Get coords and values of mesh cell centers
     xs, ys = gdf.geometry.x, gdf.geometry.y
     coords = np.column_stack((np.array(xs), np.array(ys)))
     values = gdf[gdf_column_name]
@@ -538,14 +539,14 @@ def _rasterize_geodataframe_linear_interpolation(gdf, gdf_column_name, template_
     # define raster resolution based on template raster
     rRes = template_metadata['transform'][0]
 
-    # create coord ranges over the desired raster extension
-    xRange = np.arange(xs.min(), xs.max(), rRes)
-    yRange = np.arange(ys.min(), ys.max(), rRes)
+    # create coord ranges over the desired raster extension, given by the template raster
+    xRange = np.arange(trst.bounds[0], trst.bounds[2], rRes)
+    yRange = np.arange(trst.bounds[1], trst.bounds[3], rRes)
 
     # create arrays of x,y over the raster extension
     gridX, gridY = np.meshgrid(xRange, yRange)
 
-    # interpolate over the grid
+    # interpolate mesh cell values over the grid
     gridPh = interpolate.griddata(coords, values, (gridX, gridY), method='linear')
     gridPh = gridPh[::-1] # For some reason, it's upside down
 
