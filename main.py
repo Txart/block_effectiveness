@@ -25,27 +25,31 @@ import os
 os.environ["FIPY_SOLVERS"] = "scipy"
 
 
-# %%
+# %% Parse cmd line arguments
 
+parser = argparse.ArgumentParser(description='Run 2d calibration')
+
+parser.add_argument('--yes-blocks', help='Use status quo blocks. This is the default behaviour.',
+                    dest='blockOpt', action='store_true')
+parser.add_argument('--no-blocks', help='Do not use any block',
+                    dest='blockOpt', action='store_false')
+
+parser.add_argument('--precip_data', help='Options: "weather_stations" (default), for onsite weather stations; "wet" and "dry" for Sultan Thaha airport precip data for 2013 and 1997 years',
+                    dest='precip_data')
 
 if platform.system() == 'Linux':  # Working on my own machine
     parent_directory = Path(r'/users/urzainqu/paper2')
     data_parent_folder = parent_directory.joinpath('data/Raw csv')
     fn_pointers = parent_directory.joinpath(r'file_pointers_csc.xlsx')
 
-    parser = argparse.ArgumentParser(description='Run 2d calibration')
-
     parser.add_argument('--ncpu', default=1,
                         help='(int) Number of processors', type=int)
-    parser.add_argument('--yes-blocks', help='Use status quo blocks. This is the default behaviour.',
-                        dest='blockOpt', action='store_true')
-    parser.add_argument('--no-blocks', help='Do not use any block',
-                        dest='blockOpt', action='store_false')
 
     args = parser.parse_args()
 
     parser.set_defaults(blockOpt=True)
     blockOpt = args.blockOpt
+    weather_type = args.weather_type
 
     N_CPU = args.ncpu
 
@@ -53,19 +57,16 @@ elif platform.system() == 'Windows':
     parent_directory = Path(r"C:\Users\03125327\github\paper2")
     data_parent_folder = Path(r"data\Raw csv")
     fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
-    
-    parser = argparse.ArgumentParser(description='Run 2d calibration')
-    parser.add_argument('--yes-blocks', help='Use status quo blocks. This is the default behaviour.',
-                        dest='blockOpt', action='store_true')
-    parser.add_argument('--no-blocks', help='Do not use any block',
-                        dest='blockOpt', action='store_false')
-
-    args = parser.parse_args()
-
-    parser.set_defaults(blockOpt=True)
-    blockOpt = args.blockOpt
 
     N_CPU = 1
+
+
+args = parser.parse_args()
+
+parser.set_defaults(blockOpt=True)
+parset.set_defaults(precip_data='weather_stations')
+blockOpt = args.blockOpt
+precip_data = args.precip_data
 
 # %% Read weather data
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
@@ -409,7 +410,8 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
 
             # write zeta to file
             if channel_network.work_without_blocks:
-                print(f' writing output raster to {full_folder_path.joinpath("no_blocks")}')
+                print(
+                    f' writing output raster to {full_folder_path.joinpath("no_blocks")}')
                 write_output_zeta_raster(
                     hydro.zeta, full_folder_path.joinpath('no_blocks'), day)
             else:
