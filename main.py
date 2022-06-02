@@ -36,30 +36,8 @@ parser.add_argument('--no-blocks', help='Do not use any block',
 
 parser.add_argument('--precip_data', help='Options: "weather_stations" (default), for onsite weather stations; "wet" and "dry" for Sultan Thaha airport precip data for 2013 and 1997 years',
                     dest='precip_data')
-
-if platform.system() == 'Linux':  # Working on my own machine
-    parent_directory = Path(r'/users/urzainqu/paper2')
-    data_parent_folder = parent_directory.joinpath('data/Raw csv')
-    fn_pointers = parent_directory.joinpath(r'file_pointers_csc.xlsx')
-
-    parser.add_argument('--ncpu', default=1,
+parser.add_argument('--ncpu', default=1,
                         help='(int) Number of processors', type=int)
-
-    args = parser.parse_args()
-
-    parser.set_defaults(blockOpt=True)
-    blockOpt = args.blockOpt
-    weather_type = args.weather_type
-
-    N_CPU = args.ncpu
-
-elif platform.system() == 'Windows':
-    parent_directory = Path(r"C:\Users\03125327\github\paper2")
-    data_parent_folder = Path(r"data\Raw csv")
-    fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
-
-    N_CPU = 1
-
 
 args = parser.parse_args()
 
@@ -67,6 +45,21 @@ parser.set_defaults(blockOpt=True)
 parset.set_defaults(precip_data='weather_stations')
 blockOpt = args.blockOpt
 precip_data = args.precip_data
+N_CPU = args.ncpu
+
+if platform.system() == 'Linux':  # Working on my own machine
+    parent_directory = Path(r'/users/urzainqu/paper2')
+    data_parent_folder = parent_directory.joinpath('data/Raw csv')
+    fn_pointers = parent_directory.joinpath(r'file_pointers_csc.xlsx')
+
+elif platform.system() == 'Windows':
+    parent_directory = Path(r"C:\Users\03125327\github\paper2")
+    data_parent_folder = Path(r"data\Raw csv")
+    fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
+
+    if N_CPU != 1:
+        raise ValueError('Multiprocessing not impletmeented in Windows. n_cpus in must be equal to 1')
+
 
 # %% Read weather data
 df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
