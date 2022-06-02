@@ -9,9 +9,9 @@ def _year_type_to_file_name(year_type: str) -> str:
     data_folder = Path('data/Raw csv')
 
     if year_type == 'elnino':
-        filename = data_folder.joinpath('SultanThaha_1997_Precip.xlsx')
+        filename = data_folder.joinpath('SultanThaha_1997_Precip.csv')
     elif year_type == 'normal':
-        filename = data_folder.joinpath('SultanThaha_2013_Precip.xlsx')
+        filename = data_folder.joinpath('SultanThaha_2013_Precip.csv')
     else:
         raise ValueError(
             'Unrecognized year type. Possible values: "elnino", "lanina"')
@@ -30,7 +30,7 @@ def _fill_nodatas_with_mean(precip:np.ndarray) -> np.ndarray:
 
 def get_sultan_thaha_precip(year_type: str) -> np.ndarray:
     filename = _year_type_to_file_name(year_type)
-    df = pd.read_excel(filename, skiprows=8)
+    df = pd.read_csv(filename, sep=',')
 
     precip_array = df['RR'].to_numpy()
     precip_array = _fill_nodatas_with_mean(precip_array)
@@ -48,3 +48,4 @@ def constant_ET():
 
 def get_daily_net_source(year_type:str) ->np.ndarray:
     return get_sultan_thaha_precip(year_type=year_type) - constant_ET()
+# %%
