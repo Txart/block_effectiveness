@@ -436,7 +436,7 @@ if platform.system() == 'Linux':
             pool.starmap(produce_family_of_rasters, multiprocessing_arguments)
 
     elif N_PARAMS == 1:
-        hydro.verbose = False
+        hydro.verbose = True
         param_numbers = range(0, N_PARAMS)
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
                       parent_directory) for param_number in param_numbers]
