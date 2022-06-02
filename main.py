@@ -36,13 +36,13 @@ parser.add_argument('--no-blocks', help='Do not use any block',
 
 parser.add_argument('--precip_data', help='Options: "weather_stations" (default), for onsite weather stations; "wet" and "dry" for Sultan Thaha airport precip data for 2013 and 1997 years',
                     dest='precip_data')
-parser.add_argument('--ncpu', default=1,
+parser.add_argument('--ncpu', required=True, 
                         help='(int) Number of processors', type=int)
 
 args = parser.parse_args()
 
 parser.set_defaults(blockOpt=True)
-parset.set_defaults(precip_data='weather_stations')
+parser.set_defaults(precip_data='weather_stations')
 blockOpt = args.blockOpt
 precip_data = args.precip_data
 N_CPU = args.ncpu
@@ -428,7 +428,7 @@ N_PARAMS = N_CPU
 # %% Run multiprocessing csc
 if platform.system() == 'Linux':
     if N_PARAMS > 1:
-        hydro.verbose = False
+        hydro.verbose = True
         param_numbers = range(0, N_PARAMS)
         multiprocessing_arguments = [(param_number, PARAMS, hydro, cwl_hydro, df_p_minus_et,
                                       parent_directory) for param_number in param_numbers]
