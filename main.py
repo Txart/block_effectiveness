@@ -19,6 +19,7 @@ import copy
 import networkx as nx
 from pathlib import Path
 import numpy as np
+import read_weather_data
 
 import os
 # necessary to set the same solver also in csc
@@ -62,8 +63,17 @@ elif platform.system() == 'Windows':
 
 
 # %% Read weather data
-df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
+if precip_data == 'weather_stations':
+    df_p_minus_et = get_data.get_P_minus_ET_dataframe(data_parent_folder)
 
+elif precip_data == 'wet':
+    net_daily_source =  read_weather_data.get_daily_net_source(year_type='normal')
+
+elif precip_data == 'dry':
+    net_daily_source =  read_weather_data.get_daily_net_source(year_type='elnino')
+
+else:
+    raise ValueError('Weather data origin not understood from command line. See -h for help.')
 # %% Prepare data
 filenames_df = pd.read_excel(
     fn_pointers, header=2, dtype=str, engine='openpyxl')
@@ -85,7 +95,7 @@ peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 peat_hydro_params = PeatlandHydroParameters(
     dt=1/24,  # dt in days
     dx=50,  # dx in meters, only used if structured mesh
-    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-7,
+    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-5,
     s1=0.0, s2=0.0, t1=0, t2=0,
     use_several_weather_stations=True)
 
@@ -304,14 +314,17 @@ def run_daily_computations(hydro, cwl_hydro, df_p_minus_et, internal_timesteps, 
     hydro.ph_params.dt = 1/internal_timesteps  # dt in days
     cwl_hydro.cwl_params.dt = 86400/internal_timesteps  # dt in seconds
 
-    # # P-ET sink/source term at each weather station
-    hydro.ph_params.use_several_weather_stations = True
-    # sources_dict = {'Ramin':1.0, 'Serindit':0.002, 'Buring':0.5, 'Lestari':-0.004, 'Sialang':1, 'MainCamp':2}
-    sources_dict = df_p_minus_et.loc[day].to_dict()
-    hydro.set_sourcesink_variable(value=sources_dict)
-    hydro.sourcesink = hydro.sourcesink - \
-        hydro.compute_pan_ET_from_ponding_water(hydro.zeta)  # Add pan ET
-
+    if precip_data == 'weather_stations':
+        hydro.ph_params.use_several_weather_stations = True
+        # # P-ET sink/source term at each weather station
+        sources_dict = df_p_minus_et.loc[day].to_dict()
+        hydro.set_sourcesink_variable(value=sources_dict)
+        hydro.sourcesink = hydro.sourcesink - \
+            hydro.compute_pan_ET_from_ponding_water(hydro.zeta)  # Add pan ET
+    else:
+        hydro.ph_params.use_several_weather_stations = False
+        hydro.set_sourcesink_variable(value=net_daily_source[day])
+        
     zeta_t0 = hydro.zeta.value
 
     solution_function = simulate_one_timestep_simple_two_step

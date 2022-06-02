@@ -28,7 +28,7 @@ def _fill_nodatas_with_mean(precip:np.ndarray) -> np.ndarray:
     precip[nodata_points] = 0
     return precip
 
-def get_sultan_thaha_weather(year_type: str) -> np.ndarray:
+def get_sultan_thaha_precip(year_type: str) -> np.ndarray:
     filename = _year_type_to_file_name(year_type)
     df = pd.read_excel(filename, skiprows=8)
 
@@ -41,8 +41,10 @@ def get_sultan_thaha_weather(year_type: str) -> np.ndarray:
     precip_array = precip_array/1000  # mm/day -> m/day
 
     return precip_array
-# %%
-nino = get_sultan_thaha_weather('elnino')
-normal = get_sultan_thaha_weather('normal')
 
-# %%
+def constant_ET():
+    # Hirano 2015 daily mean ET 4.17 mm
+    return 4.17/1000
+
+def get_daily_net_source(year_type:str) ->np.ndarray:
+    return get_sultan_thaha_precip(year_type=year_type) - constant_ET()
