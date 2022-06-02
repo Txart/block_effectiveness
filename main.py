@@ -231,7 +231,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     hydro.ph_params.use_several_weather_stations = False
     hydro.set_sourcesink_variable(value=MEAN_P_MINUS_ET)
 
-    N_DAYS = 100
+    N_DAYS = 0
     day = 0
     # If True, start day0 with a small timestep to smooth things
     needs_smaller_timestep = True
@@ -366,7 +366,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, df_p_minus
     hydro.zeta = fp.CellVariable(
         name='zeta', mesh=hydro.mesh, value=best_initial_zeta_value, hasOld=True)
 
-    N_DAYS = 2
+    N_DAYS = 365
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24  # Hourly
