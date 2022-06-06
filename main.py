@@ -380,7 +380,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24  # Hourly
-    SMALLER_TIMESTEP = 1000
+    SMALLER_TIMESTEP = 500
 
     while day < N_DAYS:
         print(f'\n computing day {day}')
@@ -469,7 +469,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = range(0, N_PARAMS)
+    param_numbers = [9]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 
