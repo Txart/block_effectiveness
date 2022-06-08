@@ -332,7 +332,7 @@ def run_daily_computations(hydro, cwl_hydro, net_daily_source, internal_timestep
 
     solution_function = simulate_one_timestep_simple_two_step
 
-    for hour in range(internal_timesteps):  # hourly timestep
+    for hour in tqdm(range(internal_timesteps)):
         hydro, cwl_hydro = solution_function(hydro, cwl_hydro)
 
     zeta_t1 = hydro.zeta.value
@@ -380,7 +380,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24  # Hourly
-    SMALLER_TIMESTEP = 500
+    SMALLER_TIMESTEP = 100
 
     while day < N_DAYS:
         print(f'\n computing day {day}')
@@ -469,7 +469,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [9]
+    param_numbers = [2]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 
