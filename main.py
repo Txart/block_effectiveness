@@ -204,14 +204,13 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
 
 
 def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_directory, output_folder_path):
-    hydro.ph_params.s1 = PARAMS.loc[param_number, 's1']
-    hydro.ph_params.s2 = PARAMS.loc[param_number, 's2']
-    hydro.ph_params.t1 = PARAMS.loc[param_number, 't1']
-    hydro.ph_params.t2 = PARAMS.loc[param_number, 't2']
-    cwl_hydro.cwl_params.porous_threshold_below_dem = PARAMS.loc[param_number,
-                                                                 'porous_threshold']
-    cwl_hydro.cwl_params.n1 = PARAMS.loc[param_number, 'n1']
-    cwl_hydro.cwl_params.n2 = PARAMS.loc[param_number, 'n2']
+    hydro.ph_params.s1 = float(PARAMS[PARAMS.number == param_number].s1)
+    hydro.ph_params.s2 = float(PARAMS[PARAMS.number == param_number].s2)
+    hydro.ph_params.t1 = float(PARAMS[PARAMS.number == param_number].t1)
+    hydro.ph_params.t2 = float(PARAMS[PARAMS.number == param_number].t2)
+    cwl_hydro.cwl_params.porous_threshold_below_dem = float(PARAMS[PARAMS.number == param_number].porous_threshold)
+    cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
+    cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
     hydro.parameterization = ExponentialBelowOneAboveStorageWithDepth(
         hydro.ph_params)
@@ -350,14 +349,13 @@ def write_output_zeta_raster(zeta, full_folder_path, day):
 
 
 def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_source, parent_directory):
-    hydro.ph_params.s1 = PARAMS.loc[param_number, 's1']
-    hydro.ph_params.s2 = PARAMS.loc[param_number, 's2']
-    hydro.ph_params.t1 = PARAMS.loc[param_number, 't1']
-    hydro.ph_params.t2 = PARAMS.loc[param_number, 't2']
-    cwl_hydro.cwl_params.porous_threshold_below_dem = PARAMS.loc[param_number,
-                                                                 'porous_threshold']
-    cwl_hydro.cwl_params.n1 = PARAMS.loc[param_number, 'n1']
-    cwl_hydro.cwl_params.n2 = PARAMS.loc[param_number, 'n2']
+    hydro.ph_params.s1 = float(PARAMS[PARAMS.number == param_number].s1)
+    hydro.ph_params.s2 = float(PARAMS[PARAMS.number == param_number].s2)
+    hydro.ph_params.t1 = float(PARAMS[PARAMS.number == param_number].t1)
+    hydro.ph_params.t2 = float(PARAMS[PARAMS.number == param_number].t2)
+    cwl_hydro.cwl_params.porous_threshold_below_dem = float(PARAMS[PARAMS.number == param_number].porous_threshold)
+    cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
+    cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
     hydro.parameterization = ExponentialBelowOneAboveStorageWithDepth(
         hydro.ph_params)
@@ -469,7 +467,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [2]
+    param_numbers = [0]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 

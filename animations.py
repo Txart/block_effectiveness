@@ -9,8 +9,21 @@ import seaborn as sns
 import rasterio
 import copy
 from tqdm import tqdm
+import argparse
 
-import fc_get_data
+import read_weather_data
+
+#%% Parseparser = argparse.ArgumentParser(description='Run 2d calibration')
+parser = argparse.ArgumentParser(description='plot animations for a chosen set of parameters')
+
+parser.add_argument('-p', '--param',
+                    help='Number of set of params to animate',
+                    type=int,
+                    required=True)
+
+args = parser.parse_args()
+
+param_to_plot = args.param
 
 #%% Funcs
 def read_raster(fn):
@@ -41,34 +54,41 @@ def map_coordinates_to_element_position_in_raster_array(list_of_coords, filename
             pos_raster_array.append((px, py))
             
     return pos_raster_array
-    
+#%% Directories
+parent_directory = Path(r"C:\Users\03125327\github\paper2")
+data_parent_folder = parent_directory.joinpath('data') 
+output_folder = parent_directory.joinpath('output/plots')
     
 #%% Get P - ET
-parent_directory = Path(r"C:\Users\03125327\github\blopti_dev")
-data_parent_folder = Path(r"C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\0. Raw Data\Raw csv")
+dry_sourcesink = read_weather_data.get_daily_net_source(year_type='elnino')
+wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
 
-df_p_minus_et = fc_get_data.get_P_minus_ET_dataframe(data_parent_folder)
+#%% Choose params to plot
+WTD_rasters_main_directory = parent_directory.joinpath(f'output/params_number_{param_to_plot}') 
 
-#%% 
-WTD_rasters_main_directory = Path(r"C:\Users\03125327\github\blopti_dev\ForestCarbon2022\2d_calibration_output\params_number_0")
+noblocks_dry_directory = WTD_rasters_main_directory.joinpath("no_blocks_dry")
+noblock_dry_filenames = [noblocks_dry_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
 
-noblocks_rasters_directory = WTD_rasters_main_directory.joinpath("no_blocks_diriBC_full_diriBCexterior")
-noblock_raster_filenames = [noblocks_rasters_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
+noblocks_wet_directory = WTD_rasters_main_directory.joinpath("no_blocks_wet")
+noblock_wet_filenames = [noblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
 
-yesblocks_rasters_directory = WTD_rasters_main_directory.joinpath("yes_blocks_diriBC_full_diriBCexterior")
-yesblock_raster_filenames = [yesblocks_rasters_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
+yesblocks_dry_directory = WTD_rasters_main_directory.joinpath("yes_blocks_dry")
+yesblock_dry_filenames = [yesblocks_dry_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
+yesblocks_wet_directory = WTD_rasters_main_directory.joinpath("yes_blocks_wet")
+yesblock_wet_filenames = [yesblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
 
 
 #%% Choose what to plot
 # Animations
 PLOT_YES_AND_NO = False
-PLOT_DIFF = False
+PLOT_DIFF = True
 
 # Static plots
-PLOT_REPORT_PLOTS = True
+PLOT_REPORT_PLOTS = False
 
 #%% Animation with and without blocks over time
 if PLOT_YES_AND_NO:
+    raise NotImplementedError('not implemented for p2')
     # WTD max and min values for visualization
     MAX_ZETA = 1
     MIN_ZETA = -2
@@ -77,7 +97,7 @@ if PLOT_YES_AND_NO:
     PLOTROWS = 2
     FIGSIZE = (10,10)
     DPI = 300
-    NDAYS = 365 # days to plot
+    NDAYS = 10 # days to plot
 
     # Create fig layout
     fig, axes = plt.subplots(PLOTROWS, PLOTCOLS, dpi=DPI, figsize=FIGSIZE,
@@ -158,6 +178,7 @@ if PLOT_YES_AND_NO:
     # Noblocks
     frames = [] # this is a list of images
 
+    
     for day in tqdm(range(NDAYS)):
         # no blocks raster
         no_filename = noblock_raster_filenames[day]
@@ -187,15 +208,29 @@ if PLOT_YES_AND_NO:
         
         # Append to list of frames
         frames.append([no_image, yes_image, line_in_wtd])
-        
+    
+    print('Rasters read. Rendering (this may take a while)...')    
+    
     ani = anim.ArtistAnimation(fig, frames, interval=50, blit=True,
-                                    repeat_delay=1000)
-
+                                    repeat_delay=1000)    
+    
     output_fn = WTD_rasters_main_directory.joinpath('PLOTS/with_and_without_time_evolution.mp4')
     ani.save(str(output_fn))
 
 #%% Animation difference with and without over time
-if PLOT_DIFF:
+def anim_diff(weather_type) -> None:
+    if weather_type=='wet':
+        sourcesink = wet_sourcesink
+        noblock_raster_filenames = noblock_wet_filenames
+        yesblock_raster_filenames = yesblock_wet_filenames
+        out_fn = f'wet_diff_time_evolution_param_{param_to_plot}.mp4'
+         
+    else:
+        sourcesink = dry_sourcesink
+        noblock_raster_filenames = noblock_dry_filenames
+        yesblock_raster_filenames = yesblock_dry_filenames
+        out_fn = f'dry_diff_time_evolution_param_{param_to_plot}.mp4'
+    
     MAX_ZETA = 1
     MIN_ZETA = -1
     # Set figure
@@ -209,35 +244,37 @@ if PLOT_DIFF:
     fig, axes = plt.subplots(PLOTROWS, PLOTCOLS, dpi=DPI, figsize=FIGSIZE,
                             gridspec_kw={'width_ratios': [20, 1],
                                         'height_ratios': [4,1]})
+    fig.suptitle(f'blocks - no blocks, {weather_type} year. Parameter {param_to_plot}')
     gs = axes[1,1].get_gridspec()
     for ax in axes[1,:]: # remove axes in the bottom row
         ax.remove()
     ax_rain = fig.add_subplot(gs[1, :]) # create axis in bottom row spanning all the columns
     ax_rain.spines['right'].set_visible(False)
     ax_rain.spines['top'].set_visible(False)
-    ax_rain.set_xlabel('time (days)')
-    ax_rain.set_ylabel('avg P - ET (mm/day)')
+    ax_rain.set_xlabel('time (d)')
+    ax_rain.set_ylabel('P - ET (mm/day)')
 
     ax_diff = axes[0,0] # extend plot to axes 1 to 3
     ax_diff.axis('off')
-    ax_diff.set_title('With blocks - without blocks')
+    # ax_diff.set_title('With blocks - without blocks')
     
     ax_bar =  axes[0,1]
-    ax_bar.set_xlabel('WTD difference (m)')
+    ax_bar.set_xlabel('$\zeta$ difference (m)')
 
 
     # Set colormap for raster figs
-    CMAP = copy.copy(cm.plasma)
+    CMAP = copy.copy(cm.RdBu)
     CMAP.set_bad(color='white') # mask color
 
     # Plot static rainfall figure
-    source_average_accross_weather_stations = df_p_minus_et.mean(axis=1).values[:NDAYS]
+    source_average_accross_weather_stations = sourcesink[:NDAYS]
     rain_image = ax_rain.bar(x=np.arange(NDAYS), height=source_average_accross_weather_stations)
 
     # make list of images
     # Noblocks
     frames = [] # this is a list of images
 
+    print('Reading rasters...')
     for day in tqdm(range(NDAYS)):
         # difference raster
         no_filename = noblock_raster_filenames[day]
@@ -246,7 +283,7 @@ if PLOT_DIFF:
         yes_raster = read_raster(yes_filename)
         diff_raster = yes_raster - no_raster
         masked_diff_raster = np.ma.masked_where(yes_raster < -1e10, diff_raster)
-        
+
         diff_image = ax_diff.imshow(masked_diff_raster, cmap=CMAP, animated=True,
                                         vmin=MIN_ZETA, vmax=MAX_ZETA)
         
@@ -260,17 +297,26 @@ if PLOT_DIFF:
         
         # Append to list of frames
         frames.append([diff_image, line_in_rain])
+    
+    print('Rasters read. Rendering (this may take a while)...')
         
     ani = anim.ArtistAnimation(fig, frames, interval=50, blit=True,
                                     repeat_delay=1000)
 
-    output_fn = WTD_rasters_main_directory.joinpath('PLOTS/diff_time_evolution.mp4')
+    output_fn = output_folder.joinpath(out_fn)
     ani.save(str(output_fn))
 
+    print(f'Rendered and saved to {str(output_fn)}')
 
-# %% FOR FOREST CARBON REPORT 2022. Static plot of one point through a year. WITH BLOCKS.
+    return None
+
+if PLOT_DIFF:
+    anim_diff(weather_type='wet')
+    anim_diff(weather_type='dry')
+
+# %% Static plot of one point through a year. WITH BLOCKS.
 if PLOT_REPORT_PLOTS:
-    
+    raise NotImplementedError('Not implemented for p2')
     sns.set_context("paper", font_scale=1.5)
     
     POINT_COORDS = [(399751.76044, 9769571.79923), (396751.76044, 9775571.79923), (408251.76044, 9780071.79923)]
