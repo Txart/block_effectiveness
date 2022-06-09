@@ -467,7 +467,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [0]
+    param_numbers = [4]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 
