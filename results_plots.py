@@ -14,12 +14,17 @@ plt.rc('font', family='serif')
 sns.set_context('paper', font_scale=1.5)
 
 # %% Params
+
 N_DAYS = 365
+
 N_PARAMS = 2
 params_to_plot = [1, 2]
 
 # Output folder
 output_folder = Path('output/plots')
+# Data folder
+data_folder = Path('output')
+# data_folder = Path('hydro_for_plots')
 
 # colormap
 # see https://matplotlib.org/3.5.0/tutorials/colors/colormaps.html
@@ -62,8 +67,8 @@ def plot_repeated_labels_only_once_in_legend():
 
 #%% Read data
 # Get raster dimensions from first raster file
-template_rfn = Path(
-    f'output/params_number_1/{modes[0]["foldername"]}/zeta_after_1_DAYS.tif')
+template_rfn = data_folder.joinpath(
+    f'params_number_1/{modes[0]["foldername"]}/zeta_after_1_DAYS.tif')
 with rasterio.open(template_rfn, 'r') as src:
     template_raster = src.read(1)
 raster_shape = template_raster.shape
@@ -74,7 +79,7 @@ def read_data(n_params, modes, n_days, rasters_shape):
     data = np.zeros(shape=(n_params, len(modes), n_days,
                     rasters_shape[0], rasters_shape[1]))
     for n_param in range(N_PARAMS):
-        param_folder = Path(f'output/params_number_{int(n_param + 1)}')
+        param_folder = data_folder.joinpath(f'params_number_{int(n_param + 1)}')
         for n_mode, mode_foldername in enumerate([mode['foldername'] for mode in modes]):
             foldername = param_folder.joinpath(mode_foldername)
             for day in range(0, N_DAYS):
@@ -101,6 +106,21 @@ data = np.nan_to_num(data, nan=0.0)
 spatial_average = np.mean(data, axis=(3, 4))
 temporal_average = np.mean(data, axis=2)
 spatiotemporal_average = np.mean(spatial_average, axis=2)
+
+# cap wtd at zero for CO2 emission calculation
+data_capped_at_zero = data[:]
+data_capped_at_zero[data > 0] = 0.0
+
+# CO2 emission calc. Params from Jauhiainen 2012
+alpha = 74.11/365 # Mg/ha/m/day
+beta = 29.34/365 # Mg/ha/day
+m_CO2_daily = -alpha * np.mean(data_capped_at_zero, axis=(3,4)) + beta # Mg/ha/day
+cum_CO2_daily = np.cumsum(m_CO2_daily, axis=2)
+
+avoided_wet_CO2_daily = m_CO2_daily[:, 3, :] - m_CO2_daily[:, 1, :] # blocked - noblocked
+avoided_dry_CO2_daily = m_CO2_daily[:, 2, :] - m_CO2_daily[:, 0, :] 
+cum_avoided_wet_CO2_daily = np.cumsum(avoided_wet_CO2_daily, axis=1)
+cum_avoided_dry_CO2_daily = np.cumsum(avoided_dry_CO2_daily, axis=1)
 
 # Translate numpy array to pandas dataframe for various plots
 # spatial average
@@ -153,6 +173,29 @@ df_daily_spatialaverage['avg_zeta'] = df_daily_spatialaverage['avg_zeta'].astype
     'float')
 df_daily_spatialaverage['day'] = df_daily_spatialaverage['day'].astype('int')
 
+# CO2 dataframe
+co2_columns = ['day', 'avoided_CO2', 'cum_avoided_CO2', 'weather', 'param']
+df_daily_dry_CO2 = pd.DataFrame(columns=co2_columns, index=range(N_DAYS * N_PARAMS))
+df_daily_wet_CO2 = pd.DataFrame(columns=co2_columns, index=range(N_DAYS * N_PARAMS))
+
+new_df = pd.DataFrame(columns=co2_columns, index=range(N_DAYS))
+
+for i_param, param_name in enumerate(params_to_plot):
+    # dry
+    new_df['day'] = np.arange(1, N_DAYS+1)
+    new_df['avoided_CO2'] = avoided_dry_CO2_daily[i_param] 
+    new_df['cum_avoided_CO2'] = cum_avoided_dry_CO2_daily[i_param] 
+    new_df['weather'] = 'dry'
+    new_df['param'] = param_name
+    df_daily_dry_CO2 = pd.concat([df_daily_dry_CO2, new_df], ignore_index=True)
+    # wet
+    new_df['day'] = np.arange(1, N_DAYS+1)
+    new_df['avoided_CO2'] = avoided_wet_CO2_daily[i_param] 
+    new_df['cum_avoided_CO2'] = cum_avoided_wet_CO2_daily[i_param] 
+    new_df['weather'] = 'wet'
+    new_df['param'] = param_name
+    df_daily_wet_CO2 = pd.concat([df_daily_wet_CO2, new_df], ignore_index=True)
+
 # %%------------------------------
 # One param spatial_average vs time
 # --------------------------------
@@ -181,6 +224,28 @@ for param_to_plot in params_to_plot:
                      alpha=0.1)
     plt.legend()
     plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_param_{param_to_plot}'),
+                bbox_inches='tight')
+    plt.show()
+
+# -----------------------------------------
+# One param cumulative saved WTD over time
+# -----------------------------------------
+
+for i_param, param_to_plot in enumerate(params_to_plot):
+    plt.figure()
+    plt.title(f'parameter number {param_to_plot}')
+    plt.xlabel('time (d)')
+    plt.ylabel('cum CO2 emissions $(Mg ha^{-1})$')
+    plt.plot(range(N_DAYS), cum_avoided_dry_CO2_daily[i_param], 
+                 label='el Niño',
+                 color=modes[0]['color']
+                 )
+    plt.plot(range(N_DAYS), cum_avoided_wet_CO2_daily[i_param], 
+                 label='wet',
+                 color=modes[1]['color']
+                 )
+    plt.legend()
+    plt.savefig(output_folder.joinpath(f'daily_cumulative_CO2_param_{param_to_plot}'),
                 bbox_inches='tight')
     plt.show()
 
@@ -216,6 +281,33 @@ p.set_ylabel(r'$\bar{\langle\zeta\rangle} (m)$')
 plot_repeated_labels_only_once_in_legend()
 plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_DRY_all_params'),
                 bbox_inches='tight')
+plt.show()
+
+
+# -----------------------------------------
+# One param cumulative saved CO2 over time
+# -----------------------------------------
+plt.figure()
+plt.title(f'All parameters, cumulative CO_2 emissions')
+plt.xlabel('time (d)')
+plt.ylabel('cum CO2 emissions $(Mg ha^{-1})$')
+p = sns.lineplot(
+        data=df_daily_dry_CO2,
+        x='day', y='cum_avoided_CO2',
+        label='dry',
+        color=modes[2]['color'],
+        ci='sd'
+        )
+p = sns.lineplot(
+        data=df_daily_wet_CO2,
+        x='day', y='cum_avoided_CO2',
+        label='wet',
+        color=modes[3]['color'],
+        ci='sd'
+        )
+plt.legend()
+plt.savefig(output_folder.joinpath(f'daily_cumulative_CO2_all_params'),
+            bbox_inches='tight')
 plt.show()
 
 # ---------------------------------------
@@ -276,4 +368,32 @@ sns.stripplot(
 plot_repeated_labels_only_once_in_legend()
 plt.show()
 
-# %%
+# %% All params figure
+# TODO: REPLACE WITH TRUE FUNCS AND VALUES
+# param_fn = '/home/txart/Programming/github/paper2/2d_calibration_parameters.xlsx'
+# df_params = pd.read_excel(param_fn)
+df_params = pd.DataFrame(columns=['s1', 's2', 't1', 't2'], index=range(8))
+df_params.loc[:] = np.random.rand(8,4)
+unique_s1_values = df
+
+def sto(zeta, s1, s2):
+    return s1*zeta**s2
+
+zz = np.linspace(-2, 0.3, num=1000)
+
+
+fig, axes = plt.subplots(nrows=1, ncols=3, sharey=True)
+# storage 
+axes[0].set_xlabel(r'$S$')
+axes[0].set_ylabel(r'$\zeta (m)$')
+axes[0].plot(sto())
+
+# Transmissivity 
+axes[1].set_xlabel(r'$T(m^2 d^{-1})$')
+# axes[1].set_ylabel(r'$\zeta$')
+
+# conductivity 
+axes[2].set_xlabel(r'$K(md^{-1})$')
+# axes[2].set_ylabel(r'$\zeta$')
+
+plt.show()
