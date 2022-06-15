@@ -65,6 +65,10 @@ elif platform.system() == 'Windows':
 # %% Read weather data
 if precip_data == 'weather_stations':
     net_daily_source = get_data.get_P_minus_ET_dataframe(data_parent_folder)
+    # Fill few missing NaNs with data.
+    net_daily_source = net_daily_source.fillna(net_daily_source.mean())
+    # Choose 2021 data (dataset starts at 1Jan2020, and it was a leap year)
+    net_daily_source = net_daily_source[366:]
 
 elif precip_data == 'wet':
     net_daily_source = read_weather_data.get_daily_net_source(
@@ -378,7 +382,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24  # Hourly
-    SMALLER_TIMESTEP = 100
+    SMALLER_TIMESTEP = 1000
 
     while day < N_DAYS:
         print(f'\n computing day {day}')
@@ -467,7 +471,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [1]
+    param_numbers = [5,6,7,8]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 

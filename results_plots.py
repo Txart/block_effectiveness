@@ -17,8 +17,8 @@ sns.set_context('paper', font_scale=1.5)
 
 N_DAYS = 365
 
-N_PARAMS = 3
-params_to_plot = [2, 3, 4]
+N_PARAMS = 4
+params_to_plot = [1, 2, 3, 4]
 
 parent_folder = Path('.')
 output_folder = Path('output/plots')
