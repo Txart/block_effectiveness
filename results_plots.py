@@ -7,6 +7,9 @@ import rasterio
 from pathlib import Path
 from collections import OrderedDict
 import seaborn as sns
+import copy
+
+import read_weather_data
 
 # %% Define style
 plt.style.use('seaborn-paper')
@@ -15,10 +18,10 @@ sns.set_context('paper', font_scale=1.5)
 
 # %% Params
 
-N_DAYS = 365
+N_DAYS = 30
 
-N_PARAMS = 4
-params_to_plot = [1, 2, 3, 4]
+N_PARAMS = 2 
+params_to_plot = [1, 2]
 
 parent_folder = Path('.')
 output_folder = Path('output/plots')
@@ -28,6 +31,10 @@ data_folder = Path('output')
 # colormap
 # see https://matplotlib.org/3.5.0/tutorials/colors/colormaps.html
 cmap = cm.get_cmap('Dark2')
+cmap_parameterization = plt.get_cmap('Set1')
+cmap_wtd_raster = copy.copy(plt.get_cmap('Blues_r')) # reversed blues  
+
+param_colors = [cmap_parameterization(i) for i in range(len(params_to_plot))]
 
 # Foldernames
 modes = ([
@@ -97,6 +104,7 @@ def read_data(n_params, modes, n_days, rasters_shape):
 data = read_data(params_to_plot, modes, N_DAYS, raster_shape)
 
 # Change raster nans to zeros
+data_with_nan = data[:]
 data = np.nan_to_num(data, nan=0.0)
 
 # %% Compute averages
@@ -114,10 +122,14 @@ data_capped_at_zero = data[:]
 data_capped_at_zero[data > 0] = 0.0
 
 # CO2 emission calc. Params from Jauhiainen 2012
-alpha = 74.11/365  # Mg/ha/m/day
-beta = 29.34/365  # Mg/ha/day
-m_CO2_daily = -alpha * \
-    np.mean(data_capped_at_zero, axis=(3, 4)) + beta  # Mg/ha/day
+def mCO2_per_hectare_per_day_from_zeta(zeta):
+    # zeta must be daily data
+    alpha = 74.11/365  # Mg/ha/m/day
+    beta = 29.34/365  # Mg/ha/day
+    # m_CO2_daily = -alpha * zeta + beta 
+    return -alpha * zeta + beta 
+
+m_CO2_daily = mCO2_per_hectare_per_day_from_zeta(zeta = np.mean(data_capped_at_zero, axis=(3, 4)))  # Mg/ha/day
 cum_CO2_daily = np.cumsum(m_CO2_daily, axis=2)
 
 # unblocked - blocked
@@ -262,6 +274,7 @@ for i_param, param_to_plot in enumerate(params_to_plot):
 plt.figure()
 plt.title('All parameters, wet, daily avg zeta over time')
 p = sns.lineplot(
+
     data=df_daily_spatialaverage[df_daily_spatialaverage['weather'] == 'wet'],
     x='day', y='avg_zeta',
     style='blocks', style_order=(['blocks', 'no blocks']),
@@ -292,29 +305,54 @@ plt.show()
 
 
 # -----------------------------------------
-# One param cumulative saved CO2 over time
+# Avg params cumulative saved CO2 over time
 # -----------------------------------------
-plt.figure()
-plt.title(f'All parameters, sequestered CO_2')
+fig, ax = plt.subplots()
+ax.set_title(f'All parameters, sequestered CO_2')
 p = sns.lineplot(
     data=df_daily_dry_CO2,
     x='day', y='cum_sequestered_CO2',
     label='dry',
     color=modes[2]['color'],
-    ci='sd'
+    ci='sd',
+    ax=ax
 )
 p = sns.lineplot(
     data=df_daily_wet_CO2,
     x='day', y='cum_sequestered_CO2',
     label='wet',
     color=modes[3]['color'],
-    ci='sd'
+    ci='sd',
+    ax=ax
 )
 p.set_xlabel('time (d)')
-p.set_ylabel('sequestered CO2 $(Mg ha^{-1})$')
+p.set_ylabel('sequestered $CO_2 (Mg ha^{-1})$')
 plt.legend()
 plt.savefig(output_folder.joinpath(f'daily_cumulative_CO2_all_params'),
             bbox_inches='tight')
+
+plt.show()
+
+# ------------------------------------------
+# All params cumulativesaved CO2 over time
+# -----------------------------------------
+plt.figure()
+plt.title('Sequestered $CO_2$ per parameter')
+plt.ylabel('sequestered $CO_2 (Mg ha^{-1})$')
+plt.xlabel('time (d)')
+
+for ip, p in enumerate(params_to_plot):
+    df = df_daily_dry_CO2[df_daily_dry_CO2['param'] == p]
+    plt.plot(df.day, df.cum_sequestered_CO2,
+            color=param_colors[ip],
+            label=f'parameter {p}',
+            linestyle='dashed')
+    df = df_daily_wet_CO2[df_daily_dry_CO2['param'] == p]
+    plt.plot(df.day, df.cum_sequestered_CO2,
+            color=param_colors[ip],
+            label=f'parameter {p}',
+            linestyle='solid')
+plt.legend()
 plt.show()
 
 # ---------------------------------------
@@ -445,7 +483,6 @@ unique_t2_values = [2.5, 7.5]
 
 zz = np.linspace(-1, 0.3, num=1000)
 
-cmap_parameterization = plt.get_cmap('Set1')
 fig, axes = plt.subplots(nrows=2, ncols=3, sharey=True, figsize=(16, 9))
 
 gs = axes[1,0].get_gridspec()
@@ -466,6 +503,7 @@ axes[0,0].plot(S(zz, unique_s1_values[1], s2), zz,
 axes[0,1].grid(visible=True)
 axes[0,1].set_xlabel(r'$T(m^2 d^{-1})$')
 axes[0,1].set_xscale('log')
+
 axes[0,1].plot(T(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0]), zz,
              color=cmap_parameterization(0), linestyle='solid',
              label='param_1')
@@ -478,6 +516,7 @@ axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[
 axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0]), zz,
              color=cmap_parameterization(3), linestyle='solid',
              label='param_4')
+
 # axes[1].set_ylabel(r'$\zeta$')
 
 # conductivity
@@ -485,13 +524,13 @@ axes[0,2].grid(visible=True)
 axes[0,2].set_xlabel(r'$K(md^{-1})$')
 axes[0,2].set_xscale('log')
 axes[0,2].plot(K(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0]), zz,
-             color=cmap_parameterization(0), linestyle='solid')
+             color=param_colors[0], linestyle='solid')
 axes[0,2].plot(K(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0]), zz,
-             color=cmap_parameterization(1), linestyle='solid')
+             color=param_colors[1], linestyle='solid')
 axes[0,2].plot(K(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0]), zz,
-             color=cmap_parameterization(2), linestyle='solid')
+             color=param_colors[2], linestyle='solid')
 axes[0,2].plot(K(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0]), zz,
-             color=cmap_parameterization(3), linestyle='solid')
+             color=param_colors[3], linestyle='solid')
 # axes[2].set_ylabel(r'$\zeta$')
 
 # Diffusivity
@@ -500,28 +539,28 @@ ax_D.set_xlabel(r'$D(m^{2}d^{-1})$')
 ax_D.set_ylabel(r'$\zeta (m)$')
 # ax_D.set_xscale('log')
 ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[1], s2), zz,
-             color=cmap_parameterization(0), linestyle='dashed',
+             color=param_colors[0], linestyle='solid',
              label='param_1')
 ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[1], s2), zz,
-             color=cmap_parameterization(1), linestyle='dashed',
+             color=param_colors[1], linestyle='solid',
              label='param_2')
 ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[1], s2), zz,
-             color=cmap_parameterization(2), linestyle='dashed',
+             color=param_colors[2], linestyle='solid',
              label='param_3')
 ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[1], s2), zz,
-             color=cmap_parameterization(3), linestyle='dashed',
+             color=param_colors[3], linestyle='solid',
              label='param_4')
 ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0], s2), zz,
-             color=cmap_parameterization(0), linestyle='solid',
+             color=param_colors[4], linestyle='solid',
              label='param_5')
 ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0], s2), zz,
-             color=cmap_parameterization(1), linestyle='solid',
+             color=param_colors[5], linestyle='solid',
              label='param_6')
 ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0], s2), zz,
-             color=cmap_parameterization(2), linestyle='solid',
+             color=param_colors[6], linestyle='solid',
              label='param_7')
 ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0], s2), zz,
-             color=cmap_parameterization(3), linestyle='solid',
+             color=param_colors[7], linestyle='solid',
              label='param_8')
 
 
@@ -532,4 +571,67 @@ fig.tight_layout()
 plt.savefig(output_folder.joinpath(f'parameterization'), bbox_inches='tight')
 plt.show()
 
-# %%
+# %% WTD rasters 
+day = 10
+parameter = 1
+mode = 0 #nodry, nowet, yesdry, yeswet
+
+plt.figure()
+plt.title(f'day {day}, param {parameter}, {modes[mode]["name"]}')
+cmap_wtd_raster.set_bad(color='white')
+plt.axis('off')
+
+plt.imshow(data_with_nan[parameter, mode, day, :, :],
+
+        cmap=cmap_wtd_raster)
+plt.colorbar()
+plt.show()
+
+
+# %% Precipitation & ET
+dry_sourcesink = read_weather_data.get_daily_net_source(year_type='elnino')
+wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
+# mm to m
+dry_sourcesink, wet_sourcesink = 1000*dry_sourcesink, 1000*wet_sourcesink
+
+fig, ax = plt.subplots(nrows=2, ncols=1,
+        sharex=True, constrained_layout=True)
+ax_wet = ax[0]
+ax_dry = ax[1]
+ax_dry.set_xlabel('time (d)')
+ax_dry.set_ylabel(r'$P - ET (mm) $')
+ax_wet.set_ylabel(r'$P - ET (mm) $')
+ax_wet_twin = ax_wet.twinx()
+ax_wet_twin.set_ylabel('cumulative $P - ET$ (mm)')
+ax_dry_twin = ax_dry.twinx()
+ax_dry_twin.set_ylabel('cumulative $P - ET$ (mm)')
+
+ax_left_limits = [min(wet_sourcesink) - 5, max(wet_sourcesink) + 5]
+ax_right_limits = [min(np.cumsum(dry_sourcesink)) - 10, np.sum(wet_sourcesink) + 10]
+ax_wet.set_ylim(ax_left_limits)
+ax_wet_twin.set_ylim(ax_right_limits)
+ax_dry.set_ylim(ax_left_limits)
+ax_dry_twin.set_ylim(ax_right_limits)
+
+ax_wet_twin.axhline(y=0, color='black', alpha=0.1)
+ax_dry_twin.axhline(y=0, color='black', alpha=0.1)
+
+ax_wet.bar(x=range(len(wet_sourcesink)),
+        height=wet_sourcesink,
+        label='wet year',
+        alpha=0.4,
+        color=modes[1]['color']
+        )
+ax_wet_twin.plot(range(len(wet_sourcesink)), np.cumsum(wet_sourcesink),
+        color=modes[1]['color'])
+ax_dry.bar(x=range(len(dry_sourcesink)),
+        height=dry_sourcesink,
+        label='dry year',
+        alpha=0.4,
+        color=modes[0]['color']
+        )
+ax_dry_twin.plot(range(len(dry_sourcesink)), np.cumsum(dry_sourcesink),
+        color=modes[0]['color'])
+ax_dry.legend(loc='upper right')
+ax_wet.legend(loc='upper right')
+plt.show()
