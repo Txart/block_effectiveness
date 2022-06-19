@@ -436,9 +436,9 @@ def D(zeta, t1, t2, s1, s2):
     return T(zeta, t1, t2, s1)/S(zeta, s1, s2)
 
 # Read params
-param_fn = parent_folder.joinpath('2d_calibration_parameters.xlsx')
-df_params = pd.read_excel(param_fn)
-unique_s1_values = [0.3, 0.6] 
+# param_fn = parent_folder.joinpath('2d_calibration_parameters.xlsx')
+# df_params = pd.read_excel(param_fn)
+unique_s1_values = [0.6] 
 s2 = 0.5 
 unique_t1_values = [50, 500] 
 unique_t2_values = [2.5, 7.5]
@@ -466,30 +466,18 @@ axes[0,0].plot(S(zz, unique_s1_values[1], s2), zz,
 axes[0,1].grid(visible=True)
 axes[0,1].set_xlabel(r'$T(m^2 d^{-1})$')
 axes[0,1].set_xscale('log')
-axes[0,1].plot(T(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[1]), zz,
-             color=cmap_parameterization(0), linestyle='dashed',
-             label='param_1')
-axes[0,1].plot(T(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[1]), zz,
-             color=cmap_parameterization(1), linestyle='dashed',
-             label='param_2')
-axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[1]), zz,
-             color=cmap_parameterization(2), linestyle='dashed',
-             label='param_3')
-axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[1]), zz,
-             color=cmap_parameterization(3), linestyle='dashed',
-             label='param_4')
 axes[0,1].plot(T(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0]), zz,
              color=cmap_parameterization(0), linestyle='solid',
-             label='param_5')
+             label='param_1')
 axes[0,1].plot(T(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0]), zz,
              color=cmap_parameterization(1), linestyle='solid',
-             label='param_6')
+             label='param_2')
 axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0]), zz,
              color=cmap_parameterization(2), linestyle='solid',
-             label='param_7')
+             label='param_3')
 axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0]), zz,
              color=cmap_parameterization(3), linestyle='solid',
-             label='param_8')
+             label='param_4')
 # axes[1].set_ylabel(r'$\zeta$')
 
 # conductivity
