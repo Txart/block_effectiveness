@@ -18,10 +18,10 @@ sns.set_context('paper', font_scale=1.5)
 
 # %% Params
 
-N_DAYS = 30
+N_DAYS = 365
 
-N_PARAMS = 2 
-params_to_plot = [1, 2]
+params_to_plot = [1, 2, 3, 4]
+N_PARAMS = len(params_to_plot)
 
 parent_folder = Path('.')
 output_folder = Path('output/plots')
@@ -496,8 +496,6 @@ axes[0,0].set_xlabel(r'$S$')
 axes[0,0].set_ylabel(r'$\zeta (m)$')
 axes[0,0].plot(S(zz, unique_s1_values[0], s2), zz,
              color='black', linestyle='solid')
-axes[0,0].plot(S(zz, unique_s1_values[1], s2), zz,
-             color='black', linestyle='dashed')
 
 # Transmissivity
 axes[0,1].grid(visible=True)
@@ -538,31 +536,18 @@ ax_D.grid(visible=True)
 ax_D.set_xlabel(r'$D(m^{2}d^{-1})$')
 ax_D.set_ylabel(r'$\zeta (m)$')
 # ax_D.set_xscale('log')
-ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[1], s2), zz,
+ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0], s2), zz,
              color=param_colors[0], linestyle='solid',
              label='param_1')
-ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[1], s2), zz,
+ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0], s2), zz,
              color=param_colors[1], linestyle='solid',
              label='param_2')
-ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[1], s2), zz,
+ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0], s2), zz,
              color=param_colors[2], linestyle='solid',
              label='param_3')
-ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[1], s2), zz,
+ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0], s2), zz,
              color=param_colors[3], linestyle='solid',
              label='param_4')
-ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0], s2), zz,
-             color=param_colors[4], linestyle='solid',
-             label='param_5')
-ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0], s2), zz,
-             color=param_colors[5], linestyle='solid',
-             label='param_6')
-ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0], s2), zz,
-             color=param_colors[6], linestyle='solid',
-             label='param_7')
-ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0], s2), zz,
-             color=param_colors[7], linestyle='solid',
-             label='param_8')
-
 
 # legend
 ax_D.legend()
@@ -634,4 +619,8 @@ ax_dry_twin.plot(range(len(dry_sourcesink)), np.cumsum(dry_sourcesink),
         color=modes[0]['color'])
 ax_dry.legend(loc='upper right')
 ax_wet.legend(loc='upper right')
+
+plt.savefig(output_folder.joinpath(f'P_minus_ET'), bbox_inches='tight')
 plt.show()
+
+# %%

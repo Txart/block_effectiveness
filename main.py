@@ -1,5 +1,5 @@
 # %%
-from classes.parameterizations import ExponentialBelowOneAboveStorageWithDepth
+from classes.parameterizations import ExponentialBelowOneAboveStorageWithDepth, ExponentialBelowOneAboveStorage 
 from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_hydrology
 from classes.peatland import Peatland
 from classes.channel_hydrology import set_up_channel_hydrology, CWLHydroParameters
@@ -95,7 +95,7 @@ graph = pickle.load(open((graph_fn), "rb"))
 channel_network = ChannelNetwork(
     graph, block_height_from_surface=0.0, block_coeff_k=2000.0,
     y_ini_below_DEM=-0.0, Q_ini_value=0.0, channel_bottom_below_DEM=8.0,
-    y_BC_below_DEM=-0.0, Q_BC=0.0, channel_width=3.5, work_without_blocks=not blockOpt)
+    y_BC_below_DEM=-0.5, Q_BC=0.0, channel_width=3.5, work_without_blocks=not blockOpt)
 
 peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 
@@ -124,7 +124,9 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
                                      cwl_params=cwl_params,
                                      cn=channel_network)
 
-parameterization = ExponentialBelowOneAboveStorageWithDepth(peat_hydro_params)
+# If you change this, change also other occurrences below!!
+# parameterization = ExponentialBelowOneAboveStorageWithDepth(peat_hydro_params)
+parameterization = ExponentialBelowOneAboveStorage(peat_hydro_params)
 
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
                                   use_scaled_pde=False, zeta_diri_bc=-0.2,
@@ -216,7 +218,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ExponentialBelowOneAboveStorageWithDepth(
+    hydro.parameterization = ExponentialBelowOneAboveStorage(
         hydro.ph_params)
 
     # Begin from complete saturation
@@ -361,7 +363,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ExponentialBelowOneAboveStorageWithDepth(
+    hydro.parameterization = ExponentialBelowOneAboveStorage(
         hydro.ph_params)
 
     # Outputs will go here
@@ -471,7 +473,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [7,8]
+    param_numbers = [1,2,3]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 
