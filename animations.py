@@ -54,41 +54,75 @@ def map_coordinates_to_element_position_in_raster_array(list_of_coords, filename
             pos_raster_array.append((px, py))
             
     return pos_raster_array
+
+def triage_wtd_files(weather_type, param_to_plot, blocked_status):
+
+    noblocks_dry_directory = WTD_rasters_main_directory.joinpath("no_blocks_dry")
+    noblock_dry_filenames = [noblocks_dry_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
+
+    noblocks_wet_directory = WTD_rasters_main_directory.joinpath("no_blocks_wet")
+    noblock_wet_filenames = [noblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
+
+    yesblocks_dry_directory = WTD_rasters_main_directory.joinpath("yes_blocks_dry")
+    yesblock_dry_filenames = [yesblocks_dry_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
+    yesblocks_wet_directory = WTD_rasters_main_directory.joinpath("yes_blocks_wet")
+    yesblock_wet_filenames = [yesblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
+    if weather_type=='wet':
+        if blocked_status == 'yesblocks':
+            return noblock_wet_filenames
+        elif blocked_status == 'noblocks':
+            return yesblock_wet_filenames
+         
+    elif weather_type=='dry':
+        if blocked_status == 'yesblocks':
+            return noblock_dry_filenames
+        elif blocked_status == 'noblocks':
+            return  yesblock_dry_filenames
+
+    raise ValueError('weather_type or blocked_status not recognized')
+
+def triage_weather_files(weather_type):
+    if weather_type=='wet':
+        sourcesink = wet_sourcesink
+    else:
+        sourcesink = dry_sourcesink
+    return sourcesink
+
 #%% Directories
-parent_directory = Path(r"C:\Users\03125327\github\paper2")
+parent_directory = Path(".")
 data_parent_folder = parent_directory.joinpath('data') 
 output_folder = parent_directory.joinpath('output/plots')
+WTD_rasters_main_directory = parent_directory.joinpath(f'output/params_number_{param_to_plot}') 
     
 #%% Get P - ET
 dry_sourcesink = read_weather_data.get_daily_net_source(year_type='elnino')
 wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
 
-#%% Choose params to plot
-WTD_rasters_main_directory = parent_directory.joinpath(f'output/params_number_{param_to_plot}') 
-
-noblocks_dry_directory = WTD_rasters_main_directory.joinpath("no_blocks_dry")
-noblock_dry_filenames = [noblocks_dry_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
-
-noblocks_wet_directory = WTD_rasters_main_directory.joinpath("no_blocks_wet")
-noblock_wet_filenames = [noblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
-
-yesblocks_dry_directory = WTD_rasters_main_directory.joinpath("yes_blocks_dry")
-yesblock_dry_filenames = [yesblocks_dry_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
-yesblocks_wet_directory = WTD_rasters_main_directory.joinpath("yes_blocks_wet")
-yesblock_wet_filenames = [yesblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
-
 
 #%% Choose what to plot
 # Animations
-PLOT_YES_AND_NO = False
-PLOT_DIFF = True
+PLOT_YES_AND_NO = True
+PLOT_DIFF = False
 
 # Static plots
 PLOT_REPORT_PLOTS = False
 
+# Global params
+NDAYS = 365 # days to plot
+
 #%% Animation with and without blocks over time
-if PLOT_YES_AND_NO:
-    raise NotImplementedError('not implemented for p2')
+def anim_wtd(weather_type, param_to_plot):
+    noblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot, blocked_status='noblocks') 
+    yesblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot,  blocked_status='yesblocks') 
+
+    sourcesink = triage_weather_files(weather_type)
+
+    output_fn = output_folder.joinpath(f'{weather_type}_with_and_without_time_evolution_param_{param_to_plot}.mp4')
+
+    if weather_type=='wet':
+        out_fn = f'wet_diff_time_evolution_param_{param_to_plot}.mp4'
+    else:
+        out_fn = f'dry_diff_time_evolution_param_{param_to_plot}.mp4'
     # WTD max and min values for visualization
     MAX_ZETA = 1
     MIN_ZETA = -2
@@ -97,7 +131,6 @@ if PLOT_YES_AND_NO:
     PLOTROWS = 2
     FIGSIZE = (10,10)
     DPI = 300
-    NDAYS = 10 # days to plot
 
     # Create fig layout
     fig, axes = plt.subplots(PLOTROWS, PLOTCOLS, dpi=DPI, figsize=FIGSIZE,
@@ -214,23 +247,24 @@ if PLOT_YES_AND_NO:
     ani = anim.ArtistAnimation(fig, frames, interval=50, blit=True,
                                     repeat_delay=1000)    
     
-    output_fn = WTD_rasters_main_directory.joinpath('PLOTS/with_and_without_time_evolution.mp4')
     ani.save(str(output_fn))
 
+    print(f'Rendering done. Saved to: {output_fn}')
+
+    return None
+
 #%% Animation difference with and without over time
-def anim_diff(weather_type) -> None:
+def anim_diff(weather_type, param_to_plot) -> None:
+    noblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot, blocked_status='noblock') 
+    yesblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot, blocked_status='yesblock') 
+
+    sourcesink = triage_weather_files(weather_type)
+
     if weather_type=='wet':
-        sourcesink = wet_sourcesink
-        noblock_raster_filenames = noblock_wet_filenames
-        yesblock_raster_filenames = yesblock_wet_filenames
         out_fn = f'wet_diff_time_evolution_param_{param_to_plot}.mp4'
-         
     else:
-        sourcesink = dry_sourcesink
-        noblock_raster_filenames = noblock_dry_filenames
-        yesblock_raster_filenames = yesblock_dry_filenames
         out_fn = f'dry_diff_time_evolution_param_{param_to_plot}.mp4'
-    
+
     MAX_ZETA = 1
     MIN_ZETA = -1
     # Set figure
@@ -238,7 +272,6 @@ def anim_diff(weather_type) -> None:
     PLOTROWS = 2
     FIGSIZE = (10,10)
     DPI = 200
-    NDAYS = 365 # days to plot
 
     # Create fig layout
     fig, axes = plt.subplots(PLOTROWS, PLOTCOLS, dpi=DPI, figsize=FIGSIZE,
@@ -311,8 +344,12 @@ def anim_diff(weather_type) -> None:
     return None
 
 if PLOT_DIFF:
-    anim_diff(weather_type='wet')
-    anim_diff(weather_type='dry')
+    anim_diff(weather_type='wet', param_to_plot=param_to_plot)
+    anim_diff(weather_type='dry', param_to_plot=param_to_plot)
+
+if PLOT_YES_AND_NO:
+    anim_wtd(weather_type='wet', param_to_plot=param_to_plot)
+    anim_wtd(weather_type='dry', param_to_plot=param_to_plot)
 
 # %% Static plot of one point through a year. WITH BLOCKS.
 if PLOT_REPORT_PLOTS:
@@ -321,7 +358,6 @@ if PLOT_REPORT_PLOTS:
     
     POINT_COORDS = [(399751.76044, 9769571.79923), (396751.76044, 9775571.79923), (408251.76044, 9780071.79923)]
     POINT_COLORS = ['tab:orange', 'tab:olive', 'tab:red']
-    NDAYS = 365
     
     #######################
     # Map and wtd in 3 points

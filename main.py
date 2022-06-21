@@ -327,12 +327,13 @@ def run_daily_computations(hydro, cwl_hydro, net_daily_source, internal_timestep
         # # P-ET sink/source term at each weather station
         sources_dict = net_daily_source.loc[day].to_dict()
         hydro.set_sourcesink_variable(value=sources_dict)
-        hydro.sourcesink = hydro.sourcesink - \
-            hydro.compute_pan_ET_from_ponding_water(hydro.zeta)  # Add pan ET
     else:
         hydro.ph_params.use_several_weather_stations = False
         hydro.set_sourcesink_variable(value=net_daily_source[day])
 
+    # Add pan ET  
+    hydro.sourcesink = hydro.sourcesink - \
+            hydro.compute_pan_ET_from_ponding_water(hydro.zeta)
     zeta_t0 = hydro.zeta.value
 
     solution_function = simulate_one_timestep_simple_two_step
