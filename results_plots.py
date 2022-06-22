@@ -427,8 +427,11 @@ def _mask_array_piecewise(arr, mask_1, mask_2):
     return arr*mask_1, arr*mask_2
 
 
-def S(zeta, s1, s2):
+def S(zeta, params):
     # in terms of zeta = h - dem
+
+    s1, s2, t1, t2 = params
+    
     positives_mask, negatives_mask = _get_piecewise_masks_in_zeta(zeta)
     zeta_pos, zeta_neg = _mask_array_piecewise(
         zeta, positives_mask, negatives_mask)
@@ -439,49 +442,50 @@ def S(zeta, s1, s2):
     return sto_pos * positives_mask + sto_neg * negatives_mask
 
 
-def T(zeta, t1, t2, s1):
+def T(zeta, params):
     # in terms of zeta = h - dem
+    s1, s2, t1, t2 = params
     positives_mask = 1*(zeta > 0)
     negatives_mask = 1 - positives_mask
     zeta_pos, zeta_neg = _mask_array_piecewise(
         zeta, positives_mask, negatives_mask)
 
-    alpha = t1*t2
-    beta = t1/s1
+    t3 = t1/s1 
+    t4 = (t2-s2)/s1 
 
-    tra_pos = alpha*zeta_pos + beta
+    tra_pos = t3*(np.exp(t4*zeta))
     tra_neg = t1*np.exp(t2*zeta)
 
     return tra_pos*positives_mask + tra_neg*negatives_mask
 
 
-def K(zeta, t1, t2, s1):
+def K(zeta, params):
     # in terms of zeta = h - dem
+    s1, s2, t1, t2 = params
     positives_mask = 1*(zeta > 0)
     negatives_mask = 1 - positives_mask
     zeta_pos, zeta_neg = _mask_array_piecewise(
         zeta, positives_mask, negatives_mask)
 
-    alpha = t1*t2
-    beta = t1/s1
+    t3 = t1/s1 
+    t4 = (t2-s2)/s1 
 
-    k_pos = alpha
+    k_pos = t3*t4*np.exp(t4*zeta)
     k_neg = t1*t2*np.exp(t2*zeta)
 
     return k_pos*positives_mask + k_neg*negatives_mask
 
-def D(zeta, t1, t2, s1, s2):
-    return T(zeta, t1, t2, s1)/S(zeta, s1, s2)
+def D(zeta, params):
+    return T(zeta, params)/S(zeta, params)
 
 # Read params
 # param_fn = parent_folder.joinpath('2d_calibration_parameters.xlsx')
 # df_params = pd.read_excel(param_fn)
-unique_s1_values = [0.6] 
-s2 = 0.5 
-unique_t1_values = [50, 500] 
-unique_t2_values = [2.5, 7.5]
+p1 = [0.7, 0.9, 68.53, 18.97]
+p2 = [0.7, 0.9, 286.57, 4.54]
+p3 = [0.7, 0.9, 641.66, 2.03]
 
-zz = np.linspace(-1, 0.3, num=1000)
+zz = np.linspace(-1, 0.2, num=1000)
 
 fig, axes = plt.subplots(nrows=2, ncols=3, sharey=True, figsize=(16, 9))
 
@@ -494,7 +498,7 @@ ax_D = fig.add_subplot(gs[1, :]) # create axis in top row spanning all the colum
 axes[0,0].grid(visible=True)
 axes[0,0].set_xlabel(r'$S$')
 axes[0,0].set_ylabel(r'$\zeta (m)$')
-axes[0,0].plot(S(zz, unique_s1_values[0], s2), zz,
+axes[0,0].plot(S(zz, p1), zz,
              color='black', linestyle='solid')
 
 # Transmissivity
@@ -502,18 +506,15 @@ axes[0,1].grid(visible=True)
 axes[0,1].set_xlabel(r'$T(m^2 d^{-1})$')
 axes[0,1].set_xscale('log')
 
-axes[0,1].plot(T(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0]), zz,
+axes[0,1].plot(T(zz, p1), zz,
              color=cmap_parameterization(0), linestyle='solid',
              label='param_1')
-axes[0,1].plot(T(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0]), zz,
+axes[0,1].plot(T(zz,  p2), zz,
              color=cmap_parameterization(1), linestyle='solid',
              label='param_2')
-axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0]), zz,
+axes[0,1].plot(T(zz, p3), zz,
              color=cmap_parameterization(2), linestyle='solid',
              label='param_3')
-axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0]), zz,
-             color=cmap_parameterization(3), linestyle='solid',
-             label='param_4')
 
 # axes[1].set_ylabel(r'$\zeta$')
 
@@ -521,14 +522,12 @@ axes[0,1].plot(T(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[
 axes[0,2].grid(visible=True)
 axes[0,2].set_xlabel(r'$K(md^{-1})$')
 axes[0,2].set_xscale('log')
-axes[0,2].plot(K(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0]), zz,
+axes[0,2].plot(K(zz, p1), zz,
              color=param_colors[0], linestyle='solid')
-axes[0,2].plot(K(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0]), zz,
+axes[0,2].plot(K(zz, p2), zz,
              color=param_colors[1], linestyle='solid')
-axes[0,2].plot(K(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0]), zz,
+axes[0,2].plot(K(zz, p3), zz,
              color=param_colors[2], linestyle='solid')
-axes[0,2].plot(K(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0]), zz,
-             color=param_colors[3], linestyle='solid')
 # axes[2].set_ylabel(r'$\zeta$')
 
 # Diffusivity
@@ -536,19 +535,15 @@ ax_D.grid(visible=True)
 ax_D.set_xlabel(r'$D(m^{2}d^{-1})$')
 ax_D.set_ylabel(r'$\zeta (m)$')
 # ax_D.set_xscale('log')
-ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[0], unique_s1_values[0], s2), zz,
+ax_D.plot(D(zz, p1), zz,
              color=param_colors[0], linestyle='solid',
              label='param_1')
-ax_D.plot(D(zz, unique_t1_values[0], unique_t2_values[1], unique_s1_values[0], s2), zz,
+ax_D.plot(D(zz, p2), zz,
              color=param_colors[1], linestyle='solid',
              label='param_2')
-ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[0], unique_s1_values[0], s2), zz,
+ax_D.plot(D(zz, p3), zz,
              color=param_colors[2], linestyle='solid',
              label='param_3')
-ax_D.plot(D(zz, unique_t1_values[1], unique_t2_values[1], unique_s1_values[0], s2), zz,
-             color=param_colors[3], linestyle='solid',
-             label='param_4')
-
 # legend
 ax_D.legend()
 
