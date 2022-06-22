@@ -69,15 +69,15 @@ def triage_wtd_files(weather_type, param_to_plot, blocked_status):
     yesblock_wet_filenames = [yesblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
     if weather_type=='wet':
         if blocked_status == 'yesblocks':
-            return noblock_wet_filenames
-        elif blocked_status == 'noblocks':
             return yesblock_wet_filenames
+        elif blocked_status == 'noblocks':
+            return noblock_wet_filenames
          
     elif weather_type=='dry':
         if blocked_status == 'yesblocks':
-            return noblock_dry_filenames
+            return yesblock_dry_filenames
         elif blocked_status == 'noblocks':
-            return  yesblock_dry_filenames
+            return  noblock_dry_filenames
 
     raise ValueError('weather_type or blocked_status not recognized')
 
