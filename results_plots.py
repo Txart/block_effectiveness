@@ -2,6 +2,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
 from matplotlib import cm
 import rasterio
 from pathlib import Path
@@ -20,7 +22,7 @@ sns.set_context('paper', font_scale=1.5)
 
 N_DAYS = 365
 
-params_to_plot = [1, 2, 3, 4]
+params_to_plot = [11, 12, 13, 14]
 N_PARAMS = len(params_to_plot)
 
 parent_folder = Path('.')
@@ -33,6 +35,7 @@ data_folder = Path('output')
 cmap = cm.get_cmap('Dark2')
 cmap_parameterization = plt.get_cmap('Set1')
 cmap_wtd_raster = copy.copy(plt.get_cmap('Blues_r')) # reversed blues  
+cmap_diff = copy.copy(cm.RdBu)
 
 param_colors = [cmap_parameterization(i) for i in range(len(params_to_plot))]
 
@@ -40,21 +43,29 @@ param_colors = [cmap_parameterization(i) for i in range(len(params_to_plot))]
 modes = ([
     {'foldername': 'no_blocks_dry',
         'name': 'el Niño, no blocks',
+        'weather': 'dry',
+        'blocks': 'no blocks',
         'color': cmap(1),
         'marker': 'x',
         'linestyle': 'dashed'},
     {'foldername': 'no_blocks_wet',
         'name': 'wet, no blocks',
+        'weather': 'wet',
+        'blocks': 'no blocks',
         'color': cmap(0),
         'marker': 'x',
         'linestyle': 'dashed'},
     {'foldername': 'yes_blocks_dry',
         'name': 'el Niño, blocks',
+        'weather': 'dry',
+        'blocks': 'blocks',
         'color': cmap(1),
         'marker': 'o',
         'linestyle': 'solid'},
     {'foldername': 'yes_blocks_wet',
         'name': 'wet, blocks',
+        'weather': 'wet',
+        'blocks': 'blocks',
         'color': cmap(0),
         'marker': 'o',
         'linestyle': 'solid'},
@@ -215,48 +226,81 @@ for i_param, param_name in enumerate(params_to_plot):
     new_df['param'] = param_name
     df_daily_wet_CO2 = pd.concat([df_daily_wet_CO2, new_df], ignore_index=True)
 
+# %% Compute differences
+dry_diffs = data_with_nan[:,2,:,:,:] - data_with_nan[:,0,:,:,:] 
+wet_diffs = data_with_nan[:,3,:,:,:] - data_with_nan[:,1,:,:,:] 
 
+all_avg_dry_diffs = np.mean(dry_diffs, axis=(0,1))
+all_avg_wet_diffs = np.mean(wet_diffs, axis=(0,1))
+
+all_avg_diffs = 0.5 * (all_avg_dry_diffs + all_avg_wet_diffs) 
+
+#%% --------------------------------
+# All averaged into one WTD raster
+# -----------------------------------
+MIN_DIFF = -1.0
+MAX_DIFF = 1.0
+cmap_diff.set_bad(color='white') # mask color
+plt.figure()
+plt.axis('off')
+plt.title('Differences averaged over everything')
+plt.imshow(all_avg_diffs, cmap=cmap_diff,
+           vmin=MIN_DIFF, vmax=MAX_DIFF)
+plt.colorbar()
+plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
+                bbox_inches='tight')
+plt.show()
 # %%------------------------------
 # Every param spatial_average vs time, wet and dry
 # --------------------------------
-    fig, axes = plt.subplots(nrows=1, ncols=2)
-    ax_wet, ax_dry = axes
-    ax_wet.set_title('Wet')
-    ax_dry.set_title('Dry')
-    for ax in axes:
-        ax.set_xlabel('time (d)')
-        ax.set_ylabel(r'$\langle\zeta\rangle (m)$')
-    for i_mode, mode in enumerate(modes):
-        for i_param, param_to_plot in enumerate(params_to_plot):
-            if i_mode == 0 or 2: # dry
-                # plot lines
-                ax_dry.plot(range(N_DAYS), spatial_average[i_param, i_mode],
-                     label=mode['name'],
-                     color=param_colors[i_param],
-                     linestyle=mode['linestyle']) 
-                # fill diff with color 
-                ax_dry.fill_between(x=range(N_DAYS),
-                     y1=spatial_average[i_param, 2],
-                     y2=spatial_average[i_param, 0],
-                     color=param_colors[i_param],
-                     alpha=0.1)
- 
-            if i_mode == 1 or 3: # wet
-                # plot lines
-                ax_wet.plot(range(N_DAYS), spatial_average[i_param, i_mode],
-                     label=mode['name'],
-                     color=param_colors[i_param],
-                     linestyle=mode['linestyle']) 
-                # fill diff with color 
-                ax_wet.fill_between(x=range(N_DAYS),
-                     y1=spatial_average[i_param, 2],
-                     y2=spatial_average[i_param, 0],
-                     color=param_colors[i_param],
-                     alpha=0.1)
-    plt.legend()
-    plt.savefig(output_folder.joinpath(f'every_param_wet_and_dry'),
-                bbox_inches='tight')
-    plt.show()
+fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(9,12))
+ax_wet, ax_dry = axes
+ax_wet.set_title('Wet')
+ax_dry.set_title('Dry')
+ax_dry.set_xlabel('time (d)')
+ax_dry.set_ylabel(r'$\langle\zeta\rangle (m)$')
+ax_wet.set_ylabel(r'$\langle\zeta\rangle (m)$')
+for ax in axes:
+    ax.grid(visible='True')
+
+for i_mode, mode in enumerate(modes):
+    for i_param, param_to_plot in enumerate(params_to_plot):
+        if i_mode == 0 or i_mode == 2: # dry
+            # plot lines
+            ax_dry.plot(range(N_DAYS), spatial_average[i_param, i_mode],
+                    label=mode['name'],
+                    color=param_colors[i_param],
+                    linestyle=mode['linestyle']) 
+            # fill diff with color 
+            ax_dry.fill_between(x=range(N_DAYS),
+                    y1=spatial_average[i_param, 2],
+                    y2=spatial_average[i_param, 0],
+                    color=param_colors[i_param],
+                    alpha=0.1)
+
+        if i_mode == 1 or i_mode == 3: # wet
+            # plot lines
+            ax_wet.plot(range(N_DAYS), spatial_average[i_param, i_mode],
+                    label=mode['name'],
+                    color=param_colors[i_param],
+                    linestyle=mode['linestyle']) 
+            # fill diff with color 
+            ax_wet.fill_between(x=range(N_DAYS),
+                    y1=spatial_average[i_param, 3],
+                    y2=spatial_average[i_param, 1],
+                    color=param_colors[i_param],
+                    alpha=0.1)
+# Plot custom legend
+color_legend_elements = [Patch(facecolor=pc, edgecolor=pc, label=f'param {i+1}') for i,pc in enumerate(param_colors)] 
+linestyle_legend_elements = [Line2D([],[], color='black', lw=2, linestyle='solid', label='blocked'),
+                                Line2D([],[], color='black', lw=2, linestyle='dashed', label='not blocked')]
+legend_elements = color_legend_elements + linestyle_legend_elements
+ax_wet.legend(handles=legend_elements)
+
+fig.tight_layout()
+plt.savefig(output_folder.joinpath(f'every_param_wet_and_dry'),
+            bbox_inches='tight')
+plt.show()
 
 # %%------------------------------
 # One param spatial_average vs time
@@ -314,35 +358,34 @@ for i_param, param_to_plot in enumerate(params_to_plot):
 # ---------------------------------------
 # All params spatial average vs days
 # --------------------------------------
-plt.figure()
-plt.title('All parameters, wet, daily avg zeta over time')
+fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(9,12))
+ax_wet, ax_dry = axes
+ax_wet.set_title('All parameters, wet, daily avg zeta over time')
 p = sns.lineplot(
-
     data=df_daily_spatialaverage[df_daily_spatialaverage['weather'] == 'wet'],
     x='day', y='avg_zeta',
     style='blocks', style_order=(['blocks', 'no blocks']),
     ci='sd',
+    ax=ax_wet,
     color=modes[1]['color'],
 )
-p.set_xlabel('time (d)')
 p.set_ylabel(r'$\langle\zeta\rangle (m)$')
 plot_repeated_labels_only_once_in_legend()
 plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_WET_all_params'),
             bbox_inches='tight')
-plt.show()
 
-plt.figure()
-plt.title('All parameters, dry, daily avg zeta over time')
+ax_dry.set_title('All parameters, dry, daily avg zeta over time')
 p = sns.lineplot(
     data=df_daily_spatialaverage[df_daily_spatialaverage['weather'] == 'dry'],
     x='day', y='avg_zeta',
     style='blocks', style_order=(['blocks', 'no blocks']),
     color=modes[2]['color'],
+    ax=ax_dry,
     ci='sd')
 p.set_xlabel('time (d)')
 p.set_ylabel(r'$\langle\zeta\rangle (m)$')
 plot_repeated_labels_only_once_in_legend()
-plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_DRY_all_params'),
+plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_wet_and_dry_all_params'),
             bbox_inches='tight')
 plt.show()
 
@@ -607,9 +650,28 @@ plt.imshow(data_with_nan[parameter, mode, day, :, :],
 
         cmap=cmap_wtd_raster)
 plt.colorbar()
+fig.tight_layout()
 plt.show()
 
+# %% WTD Reality check different times
+# TODO. In the future, this should take reality check WTDs
+days = [10, 100, 200, 300]
+parameter = 1
+mode = 0 #nodry, nowet, yesdry, yeswet
 
+cmap_wtd_raster.set_bad(color='white')
+
+fig, axes = plt.subplots(nrows=2, ncols=2)
+for ax, day in zip(axes.flat, days):
+    ax.axis('off')
+    ax.set_title(f'day {day}')
+
+    im = ax.imshow(data_with_nan[parameter, mode, day, :, :],
+            cmap=cmap_wtd_raster)
+
+fig.colorbar(im, ax=axes.ravel().tolist())
+plt.savefig(output_folder.joinpath(f'reality_check_wtd_several_days.png'), bbox_inches='tight')
+plt.show()
 # %% Precipitation & ET
 dry_sourcesink = read_weather_data.get_daily_net_source(year_type='elnino')
 wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
@@ -659,5 +721,12 @@ ax_wet.legend(loc='upper right')
 
 plt.savefig(output_folder.joinpath(f'P_minus_ET'), bbox_inches='tight')
 plt.show()
+
+# %% Single plot average of all WTDs
+# Axes:
+# 0:param_number
+# 1:block_and_precip_type
+# 2:day_number
+# (3,4): raster
 
 # %%
