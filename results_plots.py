@@ -215,6 +215,49 @@ for i_param, param_name in enumerate(params_to_plot):
     new_df['param'] = param_name
     df_daily_wet_CO2 = pd.concat([df_daily_wet_CO2, new_df], ignore_index=True)
 
+
+# %%------------------------------
+# Every param spatial_average vs time, wet and dry
+# --------------------------------
+    fig, axes = plt.subplots(nrows=1, ncols=2)
+    ax_wet, ax_dry = axes
+    ax_wet.set_title('Wet')
+    ax_dry.set_title('Dry')
+    for ax in axes:
+        ax.set_xlabel('time (d)')
+        ax.set_ylabel(r'$\langle\zeta\rangle (m)$')
+    for i_mode, mode in enumerate(modes):
+        for i_param, param_to_plot in enumerate(params_to_plot):
+            if i_mode == 0 or 2: # dry
+                # plot lines
+                ax_dry.plot(range(N_DAYS), spatial_average[i_param, i_mode],
+                     label=mode['name'],
+                     color=param_colors[i_param],
+                     linestyle=mode['linestyle']) 
+                # fill diff with color 
+                ax_dry.fill_between(x=range(N_DAYS),
+                     y1=spatial_average[i_param, 2],
+                     y2=spatial_average[i_param, 0],
+                     color=param_colors[i_param],
+                     alpha=0.1)
+ 
+            if i_mode == 1 or 3: # wet
+                # plot lines
+                ax_wet.plot(range(N_DAYS), spatial_average[i_param, i_mode],
+                     label=mode['name'],
+                     color=param_colors[i_param],
+                     linestyle=mode['linestyle']) 
+                # fill diff with color 
+                ax_wet.fill_between(x=range(N_DAYS),
+                     y1=spatial_average[i_param, 2],
+                     y2=spatial_average[i_param, 0],
+                     color=param_colors[i_param],
+                     alpha=0.1)
+    plt.legend()
+    plt.savefig(output_folder.joinpath(f'every_param_wet_and_dry'),
+                bbox_inches='tight')
+    plt.show()
+
 # %%------------------------------
 # One param spatial_average vs time
 # --------------------------------
@@ -222,7 +265,7 @@ for i_param, param_to_plot in enumerate(params_to_plot):
     plt.figure()
     plt.title(f'parameter number {param_to_plot}')
     plt.xlabel('time (d)')
-    plt.ylabel(r'$\bar{\langle\zeta\rangle} (m)$')
+    plt.ylabel(r'$\langle\zeta\rangle (m)$')
     for i_mode, mode in enumerate(modes):
         plt.plot(range(N_DAYS), spatial_average[i_param, i_mode],
                  label=mode['name'],
@@ -282,7 +325,7 @@ p = sns.lineplot(
     color=modes[1]['color'],
 )
 p.set_xlabel('time (d)')
-p.set_ylabel(r'$\bar{\langle\zeta\rangle} (m)$')
+p.set_ylabel(r'$\langle\zeta\rangle (m)$')
 plot_repeated_labels_only_once_in_legend()
 plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_WET_all_params'),
             bbox_inches='tight')
@@ -297,7 +340,7 @@ p = sns.lineplot(
     color=modes[2]['color'],
     ci='sd')
 p.set_xlabel('time (d)')
-p.set_ylabel(r'$\bar{\langle\zeta\rangle} (m)$')
+p.set_ylabel(r'$\langle\zeta\rangle (m)$')
 plot_repeated_labels_only_once_in_legend()
 plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_DRY_all_params'),
             bbox_inches='tight')
@@ -419,7 +462,6 @@ plt.show()
 def _get_piecewise_masks_in_zeta(zeta):
     positives_mask = 1*(zeta >= 0)
     negatives_mask = 1 - positives_mask
-
     return positives_mask, negatives_mask
 
 
@@ -427,56 +469,53 @@ def _mask_array_piecewise(arr, mask_1, mask_2):
     return arr*mask_1, arr*mask_2
 
 
-def S(zeta, params):
+def S(zeta, param):
     # in terms of zeta = h - dem
-
-    s1, s2, t1, t2 = params
-    
+    s1, s2, t1, t2 = param
     positives_mask, negatives_mask = _get_piecewise_masks_in_zeta(zeta)
     zeta_pos, zeta_neg = _mask_array_piecewise(
         zeta, positives_mask, negatives_mask)
-
     sto_pos = 1
     sto_neg = s1*np.exp(s2*zeta)
-
     return sto_pos * positives_mask + sto_neg * negatives_mask
 
 
-def T(zeta, params):
+def T(zeta, param):
     # in terms of zeta = h - dem
-    s1, s2, t1, t2 = params
+    s1, s2, t1, t2 = param
     positives_mask = 1*(zeta > 0)
     negatives_mask = 1 - positives_mask
     zeta_pos, zeta_neg = _mask_array_piecewise(
         zeta, positives_mask, negatives_mask)
 
-    t3 = t1/s1 
-    t4 = (t2-s2)/s1 
+    t3 = t1/s1
+    t4 = (t2-s2)/s1
 
-    tra_pos = t3*(np.exp(t4*zeta))
+    tra_pos = t3*np.exp(t4*zeta)
     tra_neg = t1*np.exp(t2*zeta)
 
     return tra_pos*positives_mask + tra_neg*negatives_mask
 
 
-def K(zeta, params):
+def K(zeta, param):
     # in terms of zeta = h - dem
-    s1, s2, t1, t2 = params
+    s1, s2, t1, t2 = param
+
     positives_mask = 1*(zeta > 0)
     negatives_mask = 1 - positives_mask
     zeta_pos, zeta_neg = _mask_array_piecewise(
         zeta, positives_mask, negatives_mask)
 
-    t3 = t1/s1 
-    t4 = (t2-s2)/s1 
+    t3 = t1/s1
+    t4 = (t2-s2)/s1
 
-    k_pos = t3*t4*np.exp(t4*zeta)
-    k_neg = t1*t2*np.exp(t2*zeta)
+    k_pos = t3*t4*np.exp(t4*zeta_pos)
+    k_neg = t1*t2*np.exp(t2*zeta_neg)
 
     return k_pos*positives_mask + k_neg*negatives_mask
 
-def D(zeta, params):
-    return T(zeta, params)/S(zeta, params)
+def D(zeta, param):
+    return T(zeta, param)/S(zeta, param)
 
 # Read params
 # param_fn = parent_folder.joinpath('2d_calibration_parameters.xlsx')
@@ -484,6 +523,8 @@ def D(zeta, params):
 p1 = [0.7, 0.9, 68.53, 18.97]
 p2 = [0.7, 0.9, 286.57, 4.54]
 p3 = [0.7, 0.9, 641.66, 2.03]
+# p2 = [0.7, 0.9, 286.57, 4.54]
+# p3 = [0.7, 0.9, 641.66, 2.03]
 
 zz = np.linspace(-1, 0.2, num=1000)
 
@@ -509,7 +550,7 @@ axes[0,1].set_xscale('log')
 axes[0,1].plot(T(zz, p1), zz,
              color=cmap_parameterization(0), linestyle='solid',
              label='param_1')
-axes[0,1].plot(T(zz,  p2), zz,
+axes[0,1].plot(T(zz, p2), zz,
              color=cmap_parameterization(1), linestyle='solid',
              label='param_2')
 axes[0,1].plot(T(zz, p3), zz,
@@ -531,6 +572,7 @@ axes[0,2].plot(K(zz, p3), zz,
 # axes[2].set_ylabel(r'$\zeta$')
 
 # Diffusivity
+ax_D.set_xscale('log')
 ax_D.grid(visible=True)
 ax_D.set_xlabel(r'$D(m^{2}d^{-1})$')
 ax_D.set_ylabel(r'$\zeta (m)$')

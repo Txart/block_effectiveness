@@ -69,15 +69,15 @@ def triage_wtd_files(weather_type, param_to_plot, blocked_status):
     yesblock_wet_filenames = [yesblocks_wet_directory.joinpath(f"zeta_after_{i}_DAYS.tif") for i in range(1, 366)]
     if weather_type=='wet':
         if blocked_status == 'yesblocks':
-            return noblock_wet_filenames
-        elif blocked_status == 'noblocks':
             return yesblock_wet_filenames
+        elif blocked_status == 'noblocks':
+            return noblock_wet_filenames
          
     elif weather_type=='dry':
         if blocked_status == 'yesblocks':
-            return noblock_dry_filenames
+            return yesblock_dry_filenames
         elif blocked_status == 'noblocks':
-            return  yesblock_dry_filenames
+            return  noblock_dry_filenames
 
     raise ValueError('weather_type or blocked_status not recognized')
 
@@ -102,7 +102,7 @@ wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
 #%% Choose what to plot
 # Animations
 PLOT_YES_AND_NO = True
-PLOT_DIFF = False
+PLOT_DIFF = True
 
 # Static plots
 PLOT_REPORT_PLOTS = False
@@ -255,8 +255,8 @@ def anim_wtd(weather_type, param_to_plot):
 
 #%% Animation difference with and without over time
 def anim_diff(weather_type, param_to_plot) -> None:
-    noblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot, blocked_status='noblock') 
-    yesblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot, blocked_status='yesblock') 
+    noblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot, blocked_status='noblocks') 
+    yesblock_raster_filenames = triage_wtd_files(weather_type, param_to_plot, blocked_status='yesblocks') 
 
     sourcesink = triage_weather_files(weather_type)
 
