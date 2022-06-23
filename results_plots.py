@@ -227,13 +227,19 @@ for i_param, param_name in enumerate(params_to_plot):
     df_daily_wet_CO2 = pd.concat([df_daily_wet_CO2, new_df], ignore_index=True)
 
 # %% Compute differences
-dry_diffs = data_with_nan[:,2,:,:,:] - data_with_nan[:,0,:,:,:] 
-wet_diffs = data_with_nan[:,3,:,:,:] - data_with_nan[:,1,:,:,:] 
+dry_diffs = data[:,2,:,:,:] - data[:,0,:,:,:] 
+wet_diffs = data[:,3,:,:,:] - data[:,1,:,:,:] 
+dry_diffs_with_nan = data_with_nan[:,2,:,:,:] - data_with_nan[:,0,:,:,:] 
+wet_diffs_with_nan = data_with_nan[:,3,:,:,:] - data_with_nan[:,1,:,:,:] 
 
-all_avg_dry_diffs = np.mean(dry_diffs, axis=(0,1))
-all_avg_wet_diffs = np.mean(wet_diffs, axis=(0,1))
+dry_diffs_spatial_avg = np.mean(dry_diffs, axis=(-2, -1))
+wet_diffs_spatial_avg = np.mean(wet_diffs, axis=(-2, -1))
 
-all_avg_diffs = 0.5 * (all_avg_dry_diffs + all_avg_wet_diffs) 
+
+all_avg_dry_diffs_with_nan = np.mean(dry_diffs_with_nan, axis=(0,1))
+all_avg_wet_diffs_with_nan = np.mean(wet_diffs_with_nan, axis=(0,1))
+
+all_avg_diffs = 0.5 * (all_avg_dry_diffs_with_nan + all_avg_wet_diffs_with_nan) 
 
 #%% --------------------------------
 # All averaged into one WTD raster
@@ -301,6 +307,35 @@ fig.tight_layout()
 plt.savefig(output_folder.joinpath(f'every_param_wet_and_dry'),
             bbox_inches='tight')
 plt.show()
+
+# Every param cumulative diff over time, wet and dry
+fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(9,12))
+ax_wet, ax_dry = axes
+ax_wet.set_title('Wet')
+ax_dry.set_title('Dry')
+ax_dry.set_xlabel('time (d)')
+ax_dry.set_ylabel(r'$\langle \Delta \zeta\rangle (m)$')
+ax_wet.set_ylabel(r'$\langle \Delta \zeta\rangle (m)$')
+for ax in axes:
+    ax.grid(visible='True')
+
+for i_param, param_to_plot in enumerate(params_to_plot):
+    # plot dry lines
+    ax_dry.plot(range(N_DAYS), dry_diffs_spatial_avg[i_param, :],
+            label=f'param {param_to_plot}',
+            color=param_colors[i_param])
+    # plot wet lines
+    ax_wet.plot(range(N_DAYS), wet_diffs_spatial_avg[i_param, :],
+            label=f'param {param_to_plot}',
+            color=param_colors[i_param])
+    
+ax_wet.legend()
+
+fig.tight_layout()
+plt.savefig(output_folder.joinpath(f'every_param_diff_vs_time_wet_and_dry.png'),
+            bbox_inches='tight')
+plt.show()
+
 
 # %%------------------------------
 # One param spatial_average vs time
@@ -722,11 +757,100 @@ ax_wet.legend(loc='upper right')
 plt.savefig(output_folder.joinpath(f'P_minus_ET'), bbox_inches='tight')
 plt.show()
 
-# %% Single plot average of all WTDs
-# Axes:
-# 0:param_number
-# 1:block_and_precip_type
-# 2:day_number
-# (3,4): raster
+# %% Compute Spatial extent of block effects
+import geopandas as gpd
+import rasterio
+from scipy.spatial import distance_matrix
+# block positions
+fn_block_positions = Path(r"C:\Users\03125327\github\paper2\data\new_area\dams.gpkg")
+fn_dtm = Path(r"C:\Users\03125327\github\paper2\data\new_area\new_area_dtm.tif")
 
+block_gdf = gpd.read_file(fn_block_positions)
+block_gdf.to_crs(crs='EPSG:32748', inplace=True)
+block_x_coords = block_gdf.geometry.x.to_numpy()
+block_y_coords = block_gdf.geometry.y.to_numpy()
+
+with rasterio.open(fn_dtm) as src:
+    dtm_array = src.read(1)
+    pixel_size = src.transform[0]
+    top_left_corner_coords = src.transform * (0,0)
+    bottom_right_corner_coords = src.transform * (src.width, src.height)
+
+x_indices = np.arange(start=top_left_corner_coords[0],
+                      stop=bottom_right_corner_coords[0],
+                      step=pixel_size)
+y_indices = np.arange(start=bottom_right_corner_coords[1],
+                      stop=top_left_corner_coords[1],
+                      step=pixel_size)
+catchment_x, catchment_y = np.meshgrid(x_indices, y_indices)
+
+block_coordinates = np.array([block_x_coords, block_y_coords]).T  
+catchment_coordinates = np.array([catchment_x, catchment_y]).T
+newshape = (catchment_coordinates.shape[0]*catchment_coordinates.shape[1], 2)
+catchment_coordinates_flat = catchment_coordinates.reshape(newshape)
+dist_mat = distance_matrix(block_coordinates, catchment_coordinates_flat)
+min_dist = np.min(dist_mat, axis=0)
+min_dist_array_to_blocks = min_dist.reshape(catchment_coordinates.shape[0], catchment_coordinates.shape[1]).T[::-1]
+# min_dist_array_to_blocks contains the shortest distance to a block for each pixel. Try:
+# plt.imshow(min_dist_array); plt.colorbar()
+
+# %% Compute binned mean distance
+BIN_WIDTH_IN_METERS = 20
+bins = np.arange(start=0, stop=np.max(min_dist_array_to_blocks), step=BIN_WIDTH_IN_METERS)
+bin_indices = np.digitize(min_dist_array_to_blocks.ravel(), bins=bins)
+
+wet_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
+dry_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
+for i_param, _ in enumerate(params_to_plot):
+    for i_bin, _ in enumerate(bins):
+        wet_mean_diff_binned[i_param, i_bin] = np.mean(wet_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
+        dry_mean_diff_binned[i_param, i_bin] = np.mean(dry_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
+
+# %% Plot WTD diff vs distance to blocks for all params and weathers.
+dry_diffs_temporal_avg = np.mean(dry_diffs, axis=(1))
+wet_diffs_temporal_avg = np.mean(wet_diffs, axis=(1))
+
+fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(9,12))
+axes_wet = axes[:,0]
+axes_dry = axes[:,1]
+axes_wet[0].set_title('Wet')
+axes_dry[0].set_title('Dry')
+for ax in axes_wet:
+    ax.set_ylabel(r'$\bar{ \Delta \zeta} (m)$')
+for ax in axes[-1]:
+    ax.set_xlabel('distance to nearest block (m)')
+for ax in axes.flat:
+    ax.grid(visible='True')
+    ax.set_xlim([0, 2000])
+
+for i_param, param_to_plot in enumerate(params_to_plot):
+    # plot dry points
+    axes_dry[i_param].plot(min_dist_array_to_blocks.ravel(), np.abs(dry_diffs_temporal_avg[i_param, :, :]).ravel(),
+            label=f'param {param_to_plot}',
+            color=param_colors[i_param],
+            alpha=0.1,
+            marker='.', linestyle='None')
+    # plot dry mean line
+    axes_dry[i_param].plot(bins, dry_mean_diff_binned[i_param],
+            color='black')
+    
+    # plot wet points
+    axes_wet[i_param].plot(min_dist_array_to_blocks.ravel(), np.abs(wet_diffs_temporal_avg[i_param, :, :]).ravel(),
+            label=f'param {param_to_plot}',
+            color=param_colors[i_param],
+            alpha=0.1,
+            marker='.', linestyle='None')
+    axes_wet[i_param].plot(bins, wet_mean_diff_binned[i_param],
+            color='black')
+
+for ax in axes.flat:   
+    ax.legend()
+
+fig.tight_layout()
+plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect.png'),
+            bbox_inches='tight')
+plt.show()
+
+
+# %%
 # %%
