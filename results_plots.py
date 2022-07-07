@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 from matplotlib import cm
+import matplotlib
 import rasterio
 from pathlib import Path
 from collections import OrderedDict
@@ -14,9 +15,11 @@ import copy
 import read_weather_data
 
 # %% Define style
-plt.style.use('seaborn-paper')
-plt.rc('font', family='serif')
-sns.set_context('paper', font_scale=1.5)
+# plt.style.use('seaborn-paper')
+# plt.rc('font', family='serif')
+# sns.set_context('paper', font_scale=1.5)
+
+plt.style.use('paper_plot_style.mplstyle')
 
 # %% Params
 
@@ -244,15 +247,17 @@ all_avg_diffs = 0.5 * (all_avg_dry_diffs_with_nan + all_avg_wet_diffs_with_nan)
 #%% --------------------------------
 # All averaged into one WTD raster
 # -----------------------------------
+
 MIN_DIFF = -1.0
 MAX_DIFF = 1.0
 cmap_diff.set_bad(color='white') # mask color
-plt.figure()
+plt.figure(figsize=(4,4), dpi=600)
 plt.axis('off')
-plt.title('Differences averaged over everything')
-plt.imshow(all_avg_diffs, cmap=cmap_diff,
+plt.title('Diffs avged over everything', fontsize=10)
+im = plt.imshow(all_avg_diffs, cmap=cmap_diff,
            vmin=MIN_DIFF, vmax=MAX_DIFF)
-plt.colorbar()
+cb = plt.colorbar(im, shrink=0.7)
+cb.ax.tick_params(labelsize=10)
 plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
                 bbox_inches='tight')
 plt.show()
@@ -309,13 +314,21 @@ plt.savefig(output_folder.joinpath(f'every_param_wet_and_dry'),
 plt.show()
 
 # Every param cumulative diff over time, wet and dry
-fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(9,12))
+fig, axes = plt.subplots(nrows=1, ncols=2, sharex=True, sharey=True, figsize=(4*1.69,4))
 ax_wet, ax_dry = axes
-ax_wet.set_title('Wet')
-ax_dry.set_title('Dry')
+ax_wet.set_title('Wet', fontsize=12)
+ax_dry.set_title('Dry', fontsize=12)
 ax_dry.set_xlabel('time (d)')
-ax_dry.set_ylabel(r'$\langle \Delta \zeta\rangle (m)$')
+ax_wet.set_xlabel('time (d)')
 ax_wet.set_ylabel(r'$\langle \Delta \zeta\rangle (m)$')
+
+# Set labels for subplots
+for ax, label in zip(axes.flat, ["a)", "b)"]):
+    ax.text(0 + 0.02, 1 - 0.02, s=label,
+                transform=ax.transAxes,
+                verticalalignment='top',
+                fontsize=10,
+                bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
 for ax in axes:
     ax.grid(visible='True')
 
@@ -329,12 +342,139 @@ for i_param, param_to_plot in enumerate(params_to_plot):
             label=f'param {param_to_plot}',
             color=param_colors[i_param])
     
+# Plot net rainfall in a twin axis
+ax_dry_twin = ax_dry.twinx()
+ax_wet_twin = ax_wet.twinx()
+ax_wet_twin.get_yaxis().set_ticks([])
+# share the secondary axes
+ax_wet_twin.get_shared_y_axes().join(ax_wet_twin, ax_dry_twin)
+ax_wet_twin.bar(x=range(len(wet_sourcesink)),
+        height=wet_sourcesink,
+        label='wet year',
+        alpha=0.4,
+        color=modes[1]['color']
+        )
+ax_dry_twin.bar(x=range(len(dry_sourcesink)),
+        height=dry_sourcesink,
+        label='dry year',
+        alpha=0.4,
+        color=modes[0]['color']
+        )
+ax_dry_twin.set_ylim(200, -20)
+ax_dry_twin.set_ylabel(r'$ P - ET (mm/d)$')
+
+
+
 ax_wet.legend()
 
 fig.tight_layout()
 plt.savefig(output_folder.joinpath(f'every_param_diff_vs_time_wet_and_dry.png'),
             bbox_inches='tight')
 plt.show()
+# %%------------------------------
+# COMBINED Every param spatial_average vs time, wet and dry
+# --------------------------------
+fig, axes = plt.subplots(nrows=2, ncols=2,
+                         sharex="col", sharey="row",
+                         figsize=(5.31, 5.31), constrained_layout=True)
+ax_wet_wtd, ax_dry_wtd = axes[0]
+ax_wet_diff, ax_dry_diff = axes[1]
+ax_wet_wtd.set_title('Wet', fontsize=13)
+ax_dry_wtd.set_title('Dry', fontsize=13)
+ax_dry_diff.set_xlabel('time (d)')
+ax_wet_diff.set_xlabel('time (d)')
+ax_dry_diff.set_xticks([0, 100, 200, 300])
+ax_wet_diff.set_xticks([0, 100, 200, 300])
+ax_wet_wtd.set_ylabel(r'$\langle\zeta\rangle (m)$')
+ax_wet_diff.set_ylabel(r'$\langle \Delta \zeta\rangle (m)$')
+                       
+for ax in axes.flat:
+    ax.grid(visible='True', linewidth=0.5)
+
+# Set labels for subplots
+for ax, label in zip(axes.flat, ["a)", "b)", "c)", "d)"]):
+    ax.text(0 + 0.04, 1 - 0.04, s=label,
+                transform=ax.transAxes,
+                verticalalignment='top',
+                fontsize=10,
+                bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
+
+for i_mode, mode in enumerate(modes):
+    for i_param, param_to_plot in enumerate(params_to_plot):
+        if i_mode == 0 or i_mode == 2: # dry
+            # plot lines
+            ax_dry_wtd.plot(range(N_DAYS), spatial_average[i_param, i_mode],
+                    label=mode['name'],
+                    color=param_colors[i_param],
+                    linestyle=mode['linestyle'],
+                    linewidth=0.5) 
+            # fill diff with color 
+            ax_dry_wtd.fill_between(x=range(N_DAYS),
+                    y1=spatial_average[i_param, 2],
+                    y2=spatial_average[i_param, 0], lw=1,
+                    color=param_colors[i_param],
+                    alpha=0.1)
+
+        if i_mode == 1 or i_mode == 3: # wet
+            # plot lines
+            ax_wet_wtd.plot(range(N_DAYS), spatial_average[i_param, i_mode],
+                    label=mode['name'],
+                    color=param_colors[i_param],
+                    linestyle=mode['linestyle'], 
+                    linewidth=0.5) 
+            # fill diff with color 
+            ax_wet_wtd.fill_between(x=range(N_DAYS),
+                    y1=spatial_average[i_param, 3],
+                    y2=spatial_average[i_param, 1],
+                    color=param_colors[i_param],
+                    alpha=0.1)
+# Plot custom legend
+color_legend_elements = [Patch(facecolor=pc, edgecolor=None, label=f'param {i+1}', linewidth=0) for i,pc in enumerate(param_colors)] 
+linestyle_legend_elements = [Line2D([],[], color='black', lw=1, linestyle='solid', label='blocked'),
+                                Line2D([],[], color='black', lw=1, linestyle='dashed', label='not blocked')]
+legend_elements = color_legend_elements + linestyle_legend_elements
+ax_wet_wtd.legend(handles=legend_elements, fontsize=7)
+
+for i_param, param_to_plot in enumerate(params_to_plot):
+    # plot dry lines
+    ax_dry_diff.plot(range(N_DAYS), dry_diffs_spatial_avg[i_param, :],
+            label=f'param {param_to_plot}',
+            linewidth=0.5,
+            color=param_colors[i_param])
+    # plot wet lines
+    ax_wet_diff.plot(range(N_DAYS), wet_diffs_spatial_avg[i_param, :],
+            label=f'param {param_to_plot}',
+            linewidth=0.5,
+            color=param_colors[i_param])
+    
+# Plot net rainfall in a twin axis
+ax_dry_diff_twin = ax_dry_diff.twinx()
+ax_wet_diff_twin = ax_wet_diff.twinx()
+ax_wet_diff_twin.get_yaxis().set_ticks([])
+# share the secondary axes
+ax_wet_diff_twin.get_shared_y_axes().join(ax_wet_diff_twin, ax_dry_diff_twin)
+ax_wet_diff_twin.bar(x=range(len(wet_sourcesink)),
+        height=wet_sourcesink,
+        label='wet year',
+        alpha=0.4,
+        color=modes[1]['color']
+        )
+ax_dry_diff_twin.bar(x=range(len(dry_sourcesink)),
+        height=dry_sourcesink,
+        label='dry year',
+        alpha=0.4,
+        color=modes[0]['color']
+        )
+ax_dry_diff_twin.axhline(y=0, color='black', alpha=0.3, ls='dashed', lw=0.5)
+ax_wet_diff_twin.axhline(y=0, color='black', alpha=0.3, ls='dashed', lw=0.5)
+ax_dry_diff_twin.set_ylim(200, -10)
+ax_dry_diff_twin.set_yticks(ax_dry_diff_twin.get_yticks()[1:-2]) # Remove some ticks from rainfall
+ax_dry_diff_twin.set_ylabel(r'$ P - ET (mm/d)$')
+
+plt.savefig(output_folder.joinpath(f'COMBINED_every_param_diff_vs_time_wet_and_dry.png'),
+            bbox_inches='tight')
+plt.show()
+
 
 
 # %%------------------------------
@@ -598,21 +738,37 @@ def D(zeta, param):
 # Read params
 # param_fn = parent_folder.joinpath('2d_calibration_parameters.xlsx')
 # df_params = pd.read_excel(param_fn)
-p1 = [0.7, 0.9, 68.53, 18.97]
-p2 = [0.7, 0.9, 286.57, 4.54]
-p3 = [0.7, 0.9, 641.66, 2.03]
+# New params
+# p1 = [0.7, 0.9, 68.53, 18.97]
 # p2 = [0.7, 0.9, 286.57, 4.54]
 # p3 = [0.7, 0.9, 641.66, 2.03]
+# Old params
+p1 = [0.6, 0.5, 50, 2.5]
+p2 = [0.6, 0.5, 50, 7.5]
+p3 = [0.6, 0.5, 500, 2.5]
+p4 = [0.6, 0.5, 500, 7.5]
 
 zz = np.linspace(-1, 0.2, num=1000)
 
-fig, axes = plt.subplots(nrows=2, ncols=3, sharey=True, figsize=(16, 9))
+fig, axes = plt.subplots(nrows=2, ncols=3, sharey=True, figsize=(4.33*1.69/2*3, 4.33*1.69))
 
 gs = axes[1,0].get_gridspec()
 for ax in axes[1,:]: # remove axes in the bottom row
     ax.remove()
 ax_D = fig.add_subplot(gs[1, :]) # create axis in top row spanning all the columns
 
+# Set labels for subplots
+for ax, label in zip(axes.flat, ["a)", "b)", "c)"]):
+    ax.text(0 + 0.02, 1 - 0.02, s=label,
+                transform=ax.transAxes,
+                verticalalignment='top',
+                fontsize=10,
+                bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
+ax_D.text(0 + 0.02, 1 - 0.02, s='d)',
+            transform=ax_D.transAxes,
+            verticalalignment='top',
+            fontsize=10,
+            bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
 # storage
 axes[0,0].grid(visible=True)
 axes[0,0].set_xlabel(r'$S$')
@@ -627,13 +783,16 @@ axes[0,1].set_xscale('log')
 
 axes[0,1].plot(T(zz, p1), zz,
              color=cmap_parameterization(0), linestyle='solid',
-             label='param_1')
+             label='param 1')
 axes[0,1].plot(T(zz, p2), zz,
              color=cmap_parameterization(1), linestyle='solid',
-             label='param_2')
+             label='param 2')
 axes[0,1].plot(T(zz, p3), zz,
              color=cmap_parameterization(2), linestyle='solid',
-             label='param_3')
+             label='param 3')
+axes[0,1].plot(T(zz, p4), zz,
+             color=cmap_parameterization(3), linestyle='solid',
+             label='param 4')
 
 # axes[1].set_ylabel(r'$\zeta$')
 
@@ -647,6 +806,8 @@ axes[0,2].plot(K(zz, p2), zz,
              color=param_colors[1], linestyle='solid')
 axes[0,2].plot(K(zz, p3), zz,
              color=param_colors[2], linestyle='solid')
+axes[0,2].plot(K(zz, p4), zz,
+             color=param_colors[3], linestyle='solid')
 # axes[2].set_ylabel(r'$\zeta$')
 
 # Diffusivity
@@ -657,15 +818,18 @@ ax_D.set_ylabel(r'$\zeta (m)$')
 # ax_D.set_xscale('log')
 ax_D.plot(D(zz, p1), zz,
              color=param_colors[0], linestyle='solid',
-             label='param_1')
+             label='param 1')
 ax_D.plot(D(zz, p2), zz,
              color=param_colors[1], linestyle='solid',
-             label='param_2')
+             label='param 2')
 ax_D.plot(D(zz, p3), zz,
              color=param_colors[2], linestyle='solid',
-             label='param_3')
+             label='param 3')
+ax_D.plot(D(zz, p4), zz,
+             color=param_colors[3], linestyle='solid',
+             label='param 4')
 # legend
-ax_D.legend()
+ax_D.legend(loc='lower right')
 
 fig.tight_layout()
 plt.savefig(output_folder.joinpath(f'parameterization'), bbox_inches='tight')
@@ -713,10 +877,16 @@ wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
 # mm to m
 dry_sourcesink, wet_sourcesink = 1000*dry_sourcesink, 1000*wet_sourcesink
 
-fig, ax = plt.subplots(nrows=2, ncols=1,
+fig, axes = plt.subplots(nrows=2, ncols=1,
         sharex=True, constrained_layout=True)
-ax_wet = ax[0]
-ax_dry = ax[1]
+for ax, label in zip(axes.flat, ["a)", "b)"]):
+    ax.text(0 + 0.02, 1 - 0.02, s=label,
+                transform=ax.transAxes,
+                verticalalignment='top',
+                fontsize=10,
+                bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
+ax_wet = axes[0]
+ax_dry = axes[1]
 ax_dry.set_xlabel('time (d)')
 ax_dry.set_ylabel(r'$P - ET (mm) $')
 ax_wet.set_ylabel(r'$P - ET (mm) $')
@@ -726,7 +896,7 @@ ax_dry_twin = ax_dry.twinx()
 ax_dry_twin.set_ylabel('cumulative $P - ET$ (mm)')
 
 ax_left_limits = [min(wet_sourcesink) - 5, max(wet_sourcesink) + 5]
-ax_right_limits = [min(np.cumsum(dry_sourcesink)) - 10, np.sum(wet_sourcesink) + 10]
+ax_right_limits = [min(np.cumsum(dry_sourcesink)) - 100, np.sum(wet_sourcesink) + 100]
 ax_wet.set_ylim(ax_left_limits)
 ax_wet_twin.set_ylim(ax_right_limits)
 ax_dry.set_ylim(ax_left_limits)
@@ -751,8 +921,8 @@ ax_dry.bar(x=range(len(dry_sourcesink)),
         )
 ax_dry_twin.plot(range(len(dry_sourcesink)), np.cumsum(dry_sourcesink),
         color=modes[0]['color'])
-ax_dry.legend(loc='upper right')
-ax_wet.legend(loc='upper right')
+ax_dry.legend(loc='upper center')
+ax_wet.legend(loc='upper center')
 
 plt.savefig(output_folder.joinpath(f'P_minus_ET'), bbox_inches='tight')
 plt.show()
@@ -810,47 +980,93 @@ for i_param, _ in enumerate(params_to_plot):
 dry_diffs_temporal_avg = np.mean(dry_diffs, axis=(1))
 wet_diffs_temporal_avg = np.mean(wet_diffs, axis=(1))
 
-fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(9,12))
+fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(4.13, 4.13*2))
 axes_wet = axes[:,0]
 axes_dry = axes[:,1]
 axes_wet[0].set_title('Wet')
 axes_dry[0].set_title('Dry')
 for ax in axes_wet:
-    ax.set_ylabel(r'$\bar{ \Delta \zeta} (m)$')
+    ax.set_ylabel(r'$ \Delta \bar{\zeta} (m)$')
 for ax in axes[-1]:
-    ax.set_xlabel('distance to nearest block (m)')
+    ax.set_xlabel('distance to block (m)')
 for ax in axes.flat:
-    ax.grid(visible='True')
-    ax.set_xlim([0, 2000])
+    ax.grid(visible='True', linewidth=0.5)
+    ax.set_xlim([0, 1000])
+    ax.tick_params(width=0)
+    
+for ax in axes[:,0]:
+    ax.tick_params(axis='y', width=1)
+for ax in axes[-1,:]:
+    ax.tick_params(axis='x', width = 1)
+axes[-1,0].set_xticks(axes[-1,0].get_xticks()[:-1]) # Remove some ticks from bottom axes
+axes[-1,1].set_xticks(axes[-1,1].get_xticks()) # Remove some ticks from bottom axes
+
+for ax, label in zip(axes.flat, ["a)", "b)", "c)", "d)", "e)", "f)", "g)", "h)"]):
+    ax.text(1 - 0.15, 1 - 0.05, s=label,
+                transform=ax.transAxes,
+                verticalalignment='top',
+                fontsize=10,
+                bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
+    
 
 for i_param, param_to_plot in enumerate(params_to_plot):
     # plot dry points
-    axes_dry[i_param].plot(min_dist_array_to_blocks.ravel(), np.abs(dry_diffs_temporal_avg[i_param, :, :]).ravel(),
+    axes_dry[i_param].plot(min_dist_array_to_blocks.ravel(), dry_diffs_temporal_avg[i_param, :, :].ravel(),
             label=f'param {param_to_plot}',
             color=param_colors[i_param],
             alpha=0.1,
-            marker='.', linestyle='None')
+            marker='.', markersize=3,
+            linestyle='None')
     # plot dry mean line
     axes_dry[i_param].plot(bins, dry_mean_diff_binned[i_param],
             color='black')
     
     # plot wet points
-    axes_wet[i_param].plot(min_dist_array_to_blocks.ravel(), np.abs(wet_diffs_temporal_avg[i_param, :, :]).ravel(),
+    axes_wet[i_param].plot(min_dist_array_to_blocks.ravel(), wet_diffs_temporal_avg[i_param, :, :].ravel(),
             label=f'param {param_to_plot}',
             color=param_colors[i_param],
             alpha=0.1,
-            marker='.', linestyle='None')
+            marker='.', markersize=3,
+            linestyle='None')
     axes_wet[i_param].plot(bins, wet_mean_diff_binned[i_param],
             color='black')
 
-for ax in axes.flat:   
-    ax.legend()
+# for ax in axes.flat:   
+#     leg = ax.legend()
 
-fig.tight_layout()
+# fig.tight_layout()
+plt.subplots_adjust(wspace=0.0, hspace=0.0)
 plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect.png'),
             bbox_inches='tight')
 plt.show()
+#%% Plot some snapshots
+MIN_DIFF = -1.0
+MAX_DIFF = 1.0
+cmap_diff.set_bad(color='white') # mask color
+
+# snapshot one
+def plot_diff_raster(diff_raster):
+plt.figure()
+plt.axis('off')
+plt.title('Diff end dry period parameter ', fontsize=10)
+im = plt.imshow(all_avg_diffs, cmap=cmap_diff,
+           vmin=MIN_DIFF, vmax=MAX_DIFF)
+cb = plt.colorbar(im, shrink=0.7)
+cb.ax.tick_params(labelsize=10)
 
 
-# %%
+plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
+                bbox_inches='tight')
+
+
+plt.show()
+# %% Some results
+print("Dry weather conditions resulted in a larger average rewetting compared to the wet conditions by a factor of:")
+print(np.mean(dry_diffs_spatial_avg, axis=(0,1))/np.mean(wet_diffs_spatial_avg, axis=(0,1)))
+
+print("The set of hydraulic peat properties that led to the maximum and minimum rewetting in wet conditions differed by a factor of:")
+print(np.mean(wet_diffs_spatial_avg, axis=(1)).max()/np.mean(wet_diffs_spatial_avg, axis=(1)).min())
+
+print("The set of hydraulic peat properties that led to the maximum and minimum rewetting in dry conditions differed by a factor of:")
+print(np.mean(dry_diffs_spatial_avg, axis=(1)).max()/np.mean(dry_diffs_spatial_avg, axis=(1)).min())
 # %%
