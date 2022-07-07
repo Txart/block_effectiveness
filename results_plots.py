@@ -1044,19 +1044,30 @@ MIN_DIFF = -1.0
 MAX_DIFF = 1.0
 cmap_diff.set_bad(color='white') # mask color
 
-# snapshot one
-def plot_diff_raster(diff_raster):
-plt.figure()
-plt.axis('off')
-plt.title('Diff end dry period parameter ', fontsize=10)
-im = plt.imshow(all_avg_diffs, cmap=cmap_diff,
-           vmin=MIN_DIFF, vmax=MAX_DIFF)
-cb = plt.colorbar(im, shrink=0.7)
-cb.ax.tick_params(labelsize=10)
 
+# snapshots info
+params = [3, 3, 2, 2]; days = [360, 360, 360, 360] ; weathers = ['dry', 'wet', 'dry', 'wet']
 
-plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
-                bbox_inches='tight')
+for i in range(4):
+    if weathers[i] == 'dry':
+        diff_raster = dry_diffs_with_nan[params[i]-1, days[i]-1, :, :]
+        title = f'Diff day {day} dry period param {param}'
+        fname = f'diff_raster_dry_param{param}_day{day}.png'
+    elif weathers[i] == 'wet':
+        diff_raster = wet_diffs_with_nan[params[i]-1, days[i]-1, :, :]
+        title = f'Diff day {day} wet period param {param}'
+        fname = f'diff_raster_wet_param{param}_day{day}.png'
+
+    plt.figure()
+    plt.axis('off')
+    plt.title(title, fontsize=10)
+    im = plt.imshow(diff_raster, cmap=cmap_diff,
+            vmin=MIN_DIFF, vmax=MAX_DIFF)
+    cb = plt.colorbar(im, shrink=0.7)
+    cb.ax.tick_params(labelsize=10)
+
+    plt.savefig(output_folder.joinpath(fname),
+                    bbox_inches='tight')
 
 
 plt.show()
