@@ -68,7 +68,7 @@ if precip_data == 'weather_stations':
     # Fill few missing NaNs with data.
     net_daily_source = net_daily_source.fillna(net_daily_source.mean())
     # Choose 2021 data (dataset starts at 1Jan2020, and it was a leap year)
-    net_daily_source = net_daily_source[366:]
+    net_daily_source = net_daily_source[366:].reset_index(drop=True)
 
 elif precip_data == 'wet':
     net_daily_source = read_weather_data.get_daily_net_source(
@@ -435,6 +435,10 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
                 foldername = foldername + '_dry'
             elif precip_data == 'wet':
                 foldername = foldername + '_wet'
+            elif precip_data == 'weather_stations':
+                continue
+            else:
+                raise ValueError
 
             full_write_foldername = full_folder_path.joinpath(foldername)
             print(f' writing output raster to {full_write_foldername}')
@@ -477,7 +481,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [1,2,3]
+    param_numbers = [3]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 

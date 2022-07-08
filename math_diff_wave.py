@@ -225,7 +225,9 @@ def _solve_newton_raphson_numba(max_niter: int, dt: float, dx: float, g:float, n
                     J[out_neig, blockpos] += -block_flux_prime
                     
          # Downstream fixed cwl BC
-        if downstream_diri_BC: # Doing nothing means no-flux BC
+         # If False, do nothing, which equals Neumann no-flux BC
+         # If True, keep initial value of y at downstream nodes.
+        if downstream_diri_BC: 
             for downstream_node in downstream_nodes:
                 J[downstream_node] = np.zeros_like(y)
                 J[downstream_node, downstream_node] = 1.
@@ -290,7 +292,9 @@ def _solve_newton_raphson_inexact_newton_raphson(max_niter: int, max_niter_inexa
                         J[out_neig, blockpos] += -block_flux_prime
             
             # Downstream fixed cwl BC
-            if downstream_diri_BC: # Doing nothing means no-flux BC
+            # If False, do nothing, which equals Neumann no-flux BC
+            # If True, keep initial value of y at downstream nodes.
+            if downstream_diri_BC: 
                 for downstream_node in downstream_nodes:
                     J[downstream_node] = np.zeros_like(y)
                     J[downstream_node, downstream_node] = 1.
@@ -320,6 +324,8 @@ def _solve_newton_raphson_inexact_newton_raphson(max_niter: int, max_niter_inexa
                         F_u[out_neig] += -block_flux
                         
             # Downstream fixed cwl BC
+            # If False, do nothing, which equals Neumann no-flux BC
+            # If True, keep initial value of y at downstream nodes.
             for downstream_node in downstream_nodes:
                 F_u[downstream_node] = 0
 

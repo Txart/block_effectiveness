@@ -120,7 +120,11 @@ data = read_data(params_to_plot, modes, N_DAYS, raster_shape)
 # Change raster nans to zeros
 data_with_nan = data[:]
 data = np.nan_to_num(data, nan=0.0)
-
+#%% P minus ET
+dry_sourcesink = read_weather_data.get_daily_net_source(year_type='elnino')
+wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
+# mm to m
+dry_sourcesink, wet_sourcesink = 1000*dry_sourcesink, 1000*wet_sourcesink
 # %% Compute averages
 # Axes:
 # 0:param_number
@@ -244,8 +248,60 @@ all_avg_wet_diffs_with_nan = np.mean(wet_diffs_with_nan, axis=(0,1))
 
 all_avg_diffs = 0.5 * (all_avg_dry_diffs_with_nan + all_avg_wet_diffs_with_nan) 
 
+# %% Compute Spatial extent of block effects
+import geopandas as gpd
+import rasterio
+from scipy.spatial import distance_matrix
+# block positions
+fn_block_positions = Path(r"C:\Users\03125327\github\paper2\data\new_area\dams.gpkg")
+fn_dtm = Path(r"C:\Users\03125327\github\paper2\data\new_area\new_area_dtm.tif")
+
+block_gdf = gpd.read_file(fn_block_positions)
+block_gdf.to_crs(crs='EPSG:32748', inplace=True)
+block_x_coords = block_gdf.geometry.x.to_numpy()
+block_y_coords = block_gdf.geometry.y.to_numpy()
+
+with rasterio.open(fn_dtm) as src:
+    dtm_array = src.read(1)
+    pixel_size = src.transform[0]
+    top_left_corner_coords = src.transform * (0,0)
+    bottom_right_corner_coords = src.transform * (src.width, src.height)
+
+x_indices = np.arange(start=top_left_corner_coords[0],
+                      stop=bottom_right_corner_coords[0],
+                      step=pixel_size)
+y_indices = np.arange(start=bottom_right_corner_coords[1],
+                      stop=top_left_corner_coords[1],
+                      step=pixel_size)
+catchment_x, catchment_y = np.meshgrid(x_indices, y_indices)
+
+block_coordinates = np.array([block_x_coords, block_y_coords]).T  
+catchment_coordinates = np.array([catchment_x, catchment_y]).T
+newshape = (catchment_coordinates.shape[0]*catchment_coordinates.shape[1], 2)
+catchment_coordinates_flat = catchment_coordinates.reshape(newshape)
+dist_mat = distance_matrix(block_coordinates, catchment_coordinates_flat)
+min_dist = np.min(dist_mat, axis=0)
+min_dist_array_to_blocks = min_dist.reshape(catchment_coordinates.shape[0], catchment_coordinates.shape[1]).T[::-1]
+# min_dist_array_to_blocks contains the shortest distance to a block for each pixel. Try:
+# plt.imshow(min_dist_array); plt.colorbar()
+# %% Compute binned mean distance
+BIN_WIDTH_IN_METERS = 20
+bins = np.arange(start=0, stop=np.max(min_dist_array_to_blocks), step=BIN_WIDTH_IN_METERS)
+bin_indices = np.digitize(min_dist_array_to_blocks.ravel(), bins=bins)
+
+dry_diffs_temporal_avg = np.mean(dry_diffs, axis=(1))
+wet_diffs_temporal_avg = np.mean(wet_diffs, axis=(1))
+
+wet_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
+dry_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
+for i_param, _ in enumerate(params_to_plot):
+    for i_bin, _ in enumerate(bins):
+        wet_mean_diff_binned[i_param, i_bin] = np.mean(wet_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
+        dry_mean_diff_binned[i_param, i_bin] = np.mean(dry_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
+
+
 #%% --------------------------------
-# All averaged into one WTD raster
+# Plot All averaged into one WTD raster
 # -----------------------------------
 
 MIN_DIFF = -1.0
@@ -569,11 +625,13 @@ plt.show()
 # Avg params cumulative saved CO2 over time
 # -----------------------------------------
 fig, ax = plt.subplots()
+ax.grid(visible=True, linewidth=0.5)
 ax.set_title(f'All parameters, sequestered CO_2')
 p = sns.lineplot(
     data=df_daily_dry_CO2,
     x='day', y='cum_sequestered_CO2',
     label='dry',
+    linewidth=0.8,
     color=modes[2]['color'],
     ci='sd',
     ax=ax
@@ -582,13 +640,14 @@ p = sns.lineplot(
     data=df_daily_wet_CO2,
     x='day', y='cum_sequestered_CO2',
     label='wet',
+    linewidth=0.8,
     color=modes[3]['color'],
     ci='sd',
     ax=ax
 )
 p.set_xlabel('time (d)')
 p.set_ylabel('sequestered $CO_2 (Mg ha^{-1})$')
-plt.legend()
+plt.legend(loc='upper left')
 plt.savefig(output_folder.joinpath(f'daily_cumulative_CO2_all_params'),
             bbox_inches='tight')
 
@@ -597,23 +656,35 @@ plt.show()
 # ------------------------------------------
 # All params cumulativesaved CO2 over time
 # -----------------------------------------
-plt.figure()
-plt.title('Sequestered $CO_2$ per parameter')
-plt.ylabel('sequestered $CO_2 (Mg ha^{-1})$')
-plt.xlabel('time (d)')
+fig, ax = plt.subplots()
+ax.grid(visible=True, axis='y', linewidth=0.5)
+ax.set_frame_on(False)
+ax.set_title('Sequestered $CO_2$ per parameter')
+ax.set_ylabel('sequestered $CO_2 (Mg ha^{-1})$')
+ax.set_xlabel('time (d)')
 
 for ip, p in enumerate(params_to_plot):
     df = df_daily_dry_CO2[df_daily_dry_CO2['param'] == p]
-    plt.plot(df.day, df.cum_sequestered_CO2,
+    ax.plot(df.day, df.cum_sequestered_CO2,
             color=param_colors[ip],
             label=f'parameter {p}',
+            linewidth=0.8,
             linestyle='dashed')
     df = df_daily_wet_CO2[df_daily_dry_CO2['param'] == p]
-    plt.plot(df.day, df.cum_sequestered_CO2,
+    ax.plot(df.day, df.cum_sequestered_CO2,
             color=param_colors[ip],
             label=f'parameter {p}',
+            linewidth=0.8,
             linestyle='solid')
-plt.legend()
+
+# Plot custom legend
+color_legend_elements = [Line2D([], [], color=pc, lw=1, label=f'param {i+1}') for i,pc in enumerate(param_colors)] 
+linestyle_legend_elements = [Line2D([],[], color='black', lw=1, linestyle='solid', label='wet'),
+                                Line2D([],[], color='black', lw=1, linestyle='dashed', label='dry')]
+legend_elements = color_legend_elements + linestyle_legend_elements
+ax.legend(handles=legend_elements, fontsize=8)
+plt.savefig(output_folder.joinpath(f'all_params_daily_cumulative_CO2.png'),
+            bbox_inches='tight')
 plt.show()
 
 # ---------------------------------------
@@ -872,10 +943,6 @@ fig.colorbar(im, ax=axes.ravel().tolist())
 plt.savefig(output_folder.joinpath(f'reality_check_wtd_several_days.png'), bbox_inches='tight')
 plt.show()
 # %% Precipitation & ET
-dry_sourcesink = read_weather_data.get_daily_net_source(year_type='elnino')
-wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
-# mm to m
-dry_sourcesink, wet_sourcesink = 1000*dry_sourcesink, 1000*wet_sourcesink
 
 fig, axes = plt.subplots(nrows=2, ncols=1,
         sharex=True, constrained_layout=True)
@@ -927,59 +994,10 @@ ax_wet.legend(loc='upper center')
 plt.savefig(output_folder.joinpath(f'P_minus_ET'), bbox_inches='tight')
 plt.show()
 
-# %% Compute Spatial extent of block effects
-import geopandas as gpd
-import rasterio
-from scipy.spatial import distance_matrix
-# block positions
-fn_block_positions = Path(r"C:\Users\03125327\github\paper2\data\new_area\dams.gpkg")
-fn_dtm = Path(r"C:\Users\03125327\github\paper2\data\new_area\new_area_dtm.tif")
 
-block_gdf = gpd.read_file(fn_block_positions)
-block_gdf.to_crs(crs='EPSG:32748', inplace=True)
-block_x_coords = block_gdf.geometry.x.to_numpy()
-block_y_coords = block_gdf.geometry.y.to_numpy()
 
-with rasterio.open(fn_dtm) as src:
-    dtm_array = src.read(1)
-    pixel_size = src.transform[0]
-    top_left_corner_coords = src.transform * (0,0)
-    bottom_right_corner_coords = src.transform * (src.width, src.height)
-
-x_indices = np.arange(start=top_left_corner_coords[0],
-                      stop=bottom_right_corner_coords[0],
-                      step=pixel_size)
-y_indices = np.arange(start=bottom_right_corner_coords[1],
-                      stop=top_left_corner_coords[1],
-                      step=pixel_size)
-catchment_x, catchment_y = np.meshgrid(x_indices, y_indices)
-
-block_coordinates = np.array([block_x_coords, block_y_coords]).T  
-catchment_coordinates = np.array([catchment_x, catchment_y]).T
-newshape = (catchment_coordinates.shape[0]*catchment_coordinates.shape[1], 2)
-catchment_coordinates_flat = catchment_coordinates.reshape(newshape)
-dist_mat = distance_matrix(block_coordinates, catchment_coordinates_flat)
-min_dist = np.min(dist_mat, axis=0)
-min_dist_array_to_blocks = min_dist.reshape(catchment_coordinates.shape[0], catchment_coordinates.shape[1]).T[::-1]
-# min_dist_array_to_blocks contains the shortest distance to a block for each pixel. Try:
-# plt.imshow(min_dist_array); plt.colorbar()
-
-# %% Compute binned mean distance
-BIN_WIDTH_IN_METERS = 20
-bins = np.arange(start=0, stop=np.max(min_dist_array_to_blocks), step=BIN_WIDTH_IN_METERS)
-bin_indices = np.digitize(min_dist_array_to_blocks.ravel(), bins=bins)
-
-wet_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
-dry_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
-for i_param, _ in enumerate(params_to_plot):
-    for i_bin, _ in enumerate(bins):
-        wet_mean_diff_binned[i_param, i_bin] = np.mean(wet_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
-        dry_mean_diff_binned[i_param, i_bin] = np.mean(dry_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
 
 # %% Plot WTD diff vs distance to blocks for all params and weathers.
-dry_diffs_temporal_avg = np.mean(dry_diffs, axis=(1))
-wet_diffs_temporal_avg = np.mean(wet_diffs, axis=(1))
-
 fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(4.13, 4.13*2))
 axes_wet = axes[:,0]
 axes_dry = axes[:,1]
@@ -1001,12 +1019,12 @@ for ax in axes[-1,:]:
 axes[-1,0].set_xticks(axes[-1,0].get_xticks()[:-1]) # Remove some ticks from bottom axes
 axes[-1,1].set_xticks(axes[-1,1].get_xticks()) # Remove some ticks from bottom axes
 
-for ax, label in zip(axes.flat, ["a)", "b)", "c)", "d)", "e)", "f)", "g)", "h)"]):
-    ax.text(1 - 0.15, 1 - 0.05, s=label,
-                transform=ax.transAxes,
-                verticalalignment='top',
-                fontsize=10,
-                bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
+# for ax, label in zip(axes.flat, ["a)", "b)", "c)", "d)", "e)", "f)", "g)", "h)"]):
+#     ax.text(1 - 0.15, 1 - 0.05, s=label,
+#                 transform=ax.transAxes,
+#                 verticalalignment='top',
+#                 fontsize=10,
+#                 bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
     
 
 for i_param, param_to_plot in enumerate(params_to_plot):
@@ -1051,12 +1069,12 @@ params = [3, 3, 2, 2]; days = [360, 360, 360, 360] ; weathers = ['dry', 'wet', '
 for i in range(4):
     if weathers[i] == 'dry':
         diff_raster = dry_diffs_with_nan[params[i]-1, days[i]-1, :, :]
-        title = f'Diff day {day} dry period param {param}'
-        fname = f'diff_raster_dry_param{param}_day{day}.png'
+        title = f'Diff day {days[i]} dry period param {params[i]}'
+        fname = f'diff_raster_dry_param{params[i]}_day{days[i]}.png'
     elif weathers[i] == 'wet':
         diff_raster = wet_diffs_with_nan[params[i]-1, days[i]-1, :, :]
-        title = f'Diff day {day} wet period param {param}'
-        fname = f'diff_raster_wet_param{param}_day{day}.png'
+        title = f'Diff day {days[i]} wet period param {params[i]}'
+        fname = f'diff_raster_wet_param{params[i]}_day{days[i]}.png'
 
     plt.figure()
     plt.axis('off')
@@ -1080,4 +1098,13 @@ print(np.mean(wet_diffs_spatial_avg, axis=(1)).max()/np.mean(wet_diffs_spatial_a
 
 print("The set of hydraulic peat properties that led to the maximum and minimum rewetting in dry conditions differed by a factor of:")
 print(np.mean(dry_diffs_spatial_avg, axis=(1)).max()/np.mean(dry_diffs_spatial_avg, axis=(1)).min())
+
+print("Total annual sequestered CO2 Mg per ha for DRY parameters:")
+print(cum_sequestered_dry_CO2_daily[:,-1])
+print("Mean annual sequestered CO2 Mg per ha for DRY conditions:")
+print(cum_sequestered_dry_CO2_daily[:,-1].mean())
+print("Total annual sequestered CO2 Mg per ha for WET parameters:")
+print(cum_sequestered_wet_CO2_daily[:,-1])
+print("Mean annual sequestered CO2 Mg per ha for WET conditions:")
+print(cum_sequestered_wet_CO2_daily[:,-1].mean())
 # %%
