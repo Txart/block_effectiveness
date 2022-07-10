@@ -435,9 +435,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
                 foldername = foldername + '_dry'
             elif precip_data == 'wet':
                 foldername = foldername + '_wet'
-            # if weather_stations, then the folder is yes_blocks by default.
-            else:
-                raise ValueError
+            # if weather_stations, then the folder is yes_blocks by default
 
             full_write_foldername = full_folder_path.joinpath(foldername)
             print(f' writing output raster to {full_write_foldername}')
