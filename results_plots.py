@@ -78,6 +78,14 @@ modes = ([
     # 'marker':'.',
     # 'linestyle':'solid'}
 ])
+
+reality_check_mode = {'foldername': 'yes_blocks',
+        'name': 'weather stations, blocks',
+        'weather': 'weather stations',
+        'blocks': 'blocks',
+        'color': cmap(0),
+        'marker': 'o',
+        'linestyle': 'solid'}
 # %% Useful funcs
 
 
@@ -116,6 +124,9 @@ def read_data(n_params, modes, n_days, rasters_shape):
 # Array containing data mimicks folder structure
 # Structure: [param_number, block_and_precip_type, day_number, raster]
 data = read_data(params_to_plot, modes, N_DAYS, raster_shape)
+# reality check
+
+reality_check_data  = read_data(n_params=[3], modes = [reality_check_mode], n_days=365, rasters_shape=raster_shape)
 
 # Change raster nans to zeros
 data_with_nan = data[:]

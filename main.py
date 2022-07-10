@@ -435,8 +435,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
                 foldername = foldername + '_dry'
             elif precip_data == 'wet':
                 foldername = foldername + '_wet'
-            elif precip_data == 'weather_stations':
-                continue
+            # if weather_stations, then the folder is yes_blocks by default.
             else:
                 raise ValueError
 
