@@ -117,7 +117,7 @@ def compute_J_and_F(y: np.ndarray, y_old: np.ndarray,
                 h_diff = y[node] - y[neig]
                 h_sign = np.sign(h_diff)
                 sqrt_h_diff = np.sqrt(np.abs(h_diff))
-                alpha = dt/dx**2/B[node]
+                alpha = dt/dx**1.5/B[node]
 
                 K_mean_node_neigh = K_mean(node, neig, K_vec)
 
@@ -180,7 +180,7 @@ def compute_F(y: np.ndarray, y_old: np.ndarray,
                 h_diff = y[node] - y[neig]
                 h_sign = np.sign(h_diff)
                 sqrt_h_diff = np.sqrt(np.abs(h_diff))
-                alpha = dt/dx**2/B[node]
+                alpha = dt/dx**1.5/B[node]
 
                 K_mean_node_neigh = K_mean(node, neig, K_vec)
 

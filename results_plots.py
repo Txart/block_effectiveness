@@ -296,7 +296,7 @@ min_dist_array_to_blocks = min_dist.reshape(catchment_coordinates.shape[0], catc
 # min_dist_array_to_blocks contains the shortest distance to a block for each pixel. Try:
 # plt.imshow(min_dist_array); plt.colorbar()
 # %% Compute binned mean distance
-BIN_WIDTH_IN_METERS = 20
+BIN_WIDTH_IN_METERS = 100
 bins = np.arange(start=0, stop=np.max(min_dist_array_to_blocks), step=BIN_WIDTH_IN_METERS)
 bin_indices = np.digitize(min_dist_array_to_blocks.ravel(), bins=bins)
 
@@ -305,12 +305,21 @@ wet_diffs_temporal_avg = np.mean(wet_diffs, axis=(1))
 
 wet_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
 dry_mean_diff_binned = np.zeros(shape=(N_PARAMS, len(bins)))
+wet_diff_binned = [[[]for i in range(len(bins))] for i in range(N_PARAMS)] # 1st index: param, 2nd: bin, 3rd: binned distances 
+dry_diff_binned = [[[]for i in range(len(bins))] for i in range(N_PARAMS)] # 1st index: param, 2nd: bin, 3rd: binned distances 
 for i_param, _ in enumerate(params_to_plot):
     for i_bin, _ in enumerate(bins):
+        wet_diff_binned[i_param][i_bin] = wet_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1]
+        dry_diff_binned[i_param][i_bin] = dry_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1]
         wet_mean_diff_binned[i_param, i_bin] = np.mean(wet_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
         dry_mean_diff_binned[i_param, i_bin] = np.mean(dry_diffs_temporal_avg[i_param,:,:].ravel()[bin_indices==i_bin+1])
 
-
+# Print some results
+check_distances_meters = [0, 100, 200, 400, 600, 1000]
+positions_in_array = [int(c/BIN_WIDTH_IN_METERS) for c in check_distances_meters]
+for i, pos in enumerate(positions_in_array):
+    print(f'Dry avg WTD difference at {check_distances_meters[i]} meters: {np.mean(dry_mean_diff_binned, axis=0)[pos]*100} cm')
+    print(f'Wet avg WTD difference at {check_distances_meters[i]} meters: {np.mean(wet_mean_diff_binned, axis=0)[pos]*100} cm')
 #%% --------------------------------
 # Plot All averaged into one WTD raster
 # -----------------------------------
@@ -320,12 +329,15 @@ MAX_DIFF = 1.0
 cmap_diff.set_bad(color='white') # mask color
 plt.figure(figsize=(4,4), dpi=600)
 plt.axis('off')
-plt.title('Diffs avged over everything', fontsize=10)
+plt.title(r'$\Delta \bar{\zeta} (m)$ averaged over all scenarios', fontsize=10)
 im = plt.imshow(all_avg_diffs, cmap=cmap_diff,
            vmin=MIN_DIFF, vmax=MAX_DIFF)
 cb = plt.colorbar(im, shrink=0.7)
 cb.ax.tick_params(labelsize=10)
+
 plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
+                bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.pdf'),
                 bbox_inches='tight')
 plt.show()
 # %%------------------------------
@@ -428,7 +440,7 @@ ax_dry_twin.bar(x=range(len(dry_sourcesink)),
         color=modes[0]['color']
         )
 ax_dry_twin.set_ylim(200, -20)
-ax_dry_twin.set_ylabel(r'$ P - ET (mm/d)$')
+ax_dry_twin.set_ylabel(r'$ P - ET (mm d^{-1})$')
 
 
 
@@ -436,6 +448,8 @@ ax_wet.legend()
 
 fig.tight_layout()
 plt.savefig(output_folder.joinpath(f'every_param_diff_vs_time_wet_and_dry.png'),
+            bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'every_param_diff_vs_time_wet_and_dry.pdf'),
             bbox_inches='tight')
 plt.show()
 # %%------------------------------
@@ -536,9 +550,11 @@ ax_dry_diff_twin.axhline(y=0, color='black', alpha=0.3, ls='dashed', lw=0.5)
 ax_wet_diff_twin.axhline(y=0, color='black', alpha=0.3, ls='dashed', lw=0.5)
 ax_dry_diff_twin.set_ylim(200, -10)
 ax_dry_diff_twin.set_yticks(ax_dry_diff_twin.get_yticks()[1:-2]) # Remove some ticks from rainfall
-ax_dry_diff_twin.set_ylabel(r'$ P - ET (mm/d)$')
+ax_dry_diff_twin.set_ylabel(r'$ P - ET \,(mm\, d^{-1})$')
 
 plt.savefig(output_folder.joinpath(f'COMBINED_every_param_diff_vs_time_wet_and_dry.png'),
+            bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'COMBINED_every_param_diff_vs_time_wet_and_dry.pdf'),
             bbox_inches='tight')
 plt.show()
 
@@ -670,8 +686,8 @@ plt.show()
 fig, ax = plt.subplots()
 ax.grid(visible=True, axis='y', linewidth=0.5)
 ax.set_frame_on(False)
-ax.set_title('Sequestered $CO_2$ per parameter')
-ax.set_ylabel('sequestered $CO_2 (Mg ha^{-1})$')
+# ax.set_title('Sequestered $CO_2$ per parameter')
+ax.set_ylabel(r'cum. $\langle \Delta m_{CO_2} \rangle \, (Mg ha^{-1})$')
 ax.set_xlabel('time (d)')
 
 for ip, p in enumerate(params_to_plot):
@@ -832,7 +848,7 @@ p4 = [0.6, 0.5, 500, 7.5]
 
 zz = np.linspace(-1, 0.2, num=1000)
 
-fig, axes = plt.subplots(nrows=2, ncols=3, sharey=True, figsize=(4.33*1.69/2*3, 4.33*1.69))
+fig, axes = plt.subplots(nrows=2, ncols=3, sharey=True, figsize=(2.5*1.69/2*3, 2.5*1.69))
 
 gs = axes[1,0].get_gridspec()
 for ax in axes[1,:]: # remove axes in the bottom row
@@ -841,12 +857,12 @@ ax_D = fig.add_subplot(gs[1, :]) # create axis in top row spanning all the colum
 
 # Set labels for subplots
 for ax, label in zip(axes.flat, ["a)", "b)", "c)"]):
-    ax.text(0 + 0.02, 1 - 0.02, s=label,
+    ax.text(0 + 0.05, 1 - 0.05, s=label,
                 transform=ax.transAxes,
                 verticalalignment='top',
                 fontsize=10,
                 bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
-ax_D.text(0 + 0.02, 1 - 0.02, s='d)',
+ax_D.text(0 + 0.02, 1 - 0.05, s='d)',
             transform=ax_D.transAxes,
             verticalalignment='top',
             fontsize=10,
@@ -914,7 +930,8 @@ ax_D.plot(D(zz, p4), zz,
 ax_D.legend(loc='lower right')
 
 fig.tight_layout()
-plt.savefig(output_folder.joinpath(f'parameterization'), bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'parameterization.png'), bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'parameterization.pdf'), bbox_inches='tight')
 plt.show()
 
 # %% WTD rasters 
@@ -935,10 +952,22 @@ fig.tight_layout()
 plt.show()
 
 # %% WTD Reality check different times
-# TODO. In the future, this should take reality check WTDs
 days = [10, 100, 200, 300]
 parameter = 1
 mode = 0 #nodry, nowet, yesdry, yeswet
+
+# Modelled WTD rasters
+def read_reality_check_wtd_rasters(foldername, raster_shape):
+    rc_wtd_rasters = np.zeros(shape=(366, raster_shape[0], raster_shape[1]))
+    for day in range(0, N_DAYS):
+        fname = foldername.joinpath(
+            f'zeta_after_{int(day+1)}_DAYS.tif')
+        with rasterio.open(fname, 'r') as src:
+            rc_wtd_rasters[day] = src.read(1)
+    return rc_wtd_rasters
+ 
+fn_rc_wtd_modelled = parent_folder.joinpath("output/params_number_3/yes_blocks")
+rc_data = read_reality_check_wtd_rasters(fn_rc_wtd_modelled, raster_shape)
 
 cmap_wtd_raster.set_bad(color='white')
 
@@ -947,16 +976,149 @@ for ax, day in zip(axes.flat, days):
     ax.axis('off')
     ax.set_title(f'day {day}')
 
-    im = ax.imshow(data_with_nan[parameter, mode, day, :, :],
+    im = ax.imshow(rc_data[day, :, :],
             cmap=cmap_wtd_raster)
 
 fig.colorbar(im, ax=axes.ravel().tolist())
 plt.savefig(output_folder.joinpath(f'reality_check_wtd_several_days.png'), bbox_inches='tight')
 plt.show()
+# %% Reality check. Sensors
+
+import fc_get_data
+def read_sensor_locations(fd_sensor_info):
+    sensor_info = pd.read_excel(fd_sensor_info, engine='openpyxl')
+    return sensor_info[['Study_Site', 'Longitude', 'Latitude']]
+##########################
+# Plot measured vs modelled
+# Get sensor data
+data_parent_folder = Path(r'C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\0. Raw Data\Raw csv')
+df_wtd_other = pd.read_csv(Path.joinpath(data_parent_folder, 'WTL_Other_2021.csv'), sep=';')
+df_wtd_transects = pd.read_csv(Path.joinpath(data_parent_folder, 'WTL_PatPos_2021.csv'), sep=';')
+df_wtd_transects_canal = pd.read_csv(Path.joinpath(data_parent_folder, 'WaterLevel_Adjusted_2021.csv'), sep=';')
+
+# Sensor coords
+df_dipwell_loc = pd.read_csv(parent_folder.joinpath('data/new_area/dipwells_coords.csv'))
+dipwell_coords = {}
+for _, row in df_dipwell_loc.iterrows():
+    dipwell_coords[row['name']] = (row.x, row.y)
+    
+small_names = ['MC', 'SI', 'LE', 'RA']
+
+for tname in small_names:
+    dipwell_coords[tname + '.0'] = dipwell_coords[tname + '.1']
+
+dict_of_transects = {}
+for small_name in small_names:
+    df_wtd_transects[small_name + '.0'] = df_wtd_transects_canal[small_name]
+    all_col_names_with_name = [name for name in df_wtd_transects.columns if small_name in name]
+    dict_of_transects[small_name] = df_wtd_transects[all_col_names_with_name]
+    all_dfs = list(dict_of_transects.values()) + [df_wtd_other]
+    all_sensor_WTD = pd.concat(all_dfs, axis=1)
+    
+# remove Date column
+all_sensor_WTD.drop(labels='Date', axis='columns', inplace=True)
+
+# Units: cm -> m
+all_sensor_WTD = all_sensor_WTD/100
+
+# Drop WTD sensor columns from dataframe whose position is unknown 
+sensor_names_with_unknown_coords = [sname for sname in list(all_sensor_WTD.columns) if sname not in dipwell_coords]
+all_sensor_WTD.drop(sensor_names_with_unknown_coords, axis='columns', inplace=True)
+
+sensor_names = list(all_sensor_WTD.columns)
+sensor_coords = [dipwell_coords[sn] for sn in sensor_names]
+
+# Remove outliers from dipwell measurements
+from scipy.stats import zscore
+for colname, values in all_sensor_WTD.iteritems():
+    no_nan_indices = values.dropna().index
+    zscore_more_than_3std = (np.abs(zscore(values.dropna())) > 3)
+    # If value above 3 STD, set it to NaN
+    for i, index in enumerate(no_nan_indices):
+        if zscore_more_than_3std[i]:
+            all_sensor_WTD.loc[index,colname] = np.nan
+            
+
+def sample_raster_from_list_of_points(raster_filename:str, point_coords:np.ndarray) ->np.ndarray:
+    with rasterio.open(raster_filename) as src:
+        return np.array([value[0] for value in src.sample(point_coords)])
+
+# Get modelled values at sensor positions
+def create_modelled_result_dataframe(days_list, folder_path):
+    # Save zeta values at sensors in a dataframe of the same format as the measurements df
+    modelled_WTD_at_sensors = pd.DataFrame().reindex_like(all_sensor_WTD)
+    for day in days_list:
+        try:
+            zeta_fn = Path.joinpath(folder_path, f"zeta_after_{int(day)}_DAYS.tif")
+            zeta_values_at_sensor_locations = sample_raster_from_list_of_points(raster_filename=zeta_fn, point_coords=sensor_coords)
+            modelled_WTD_at_sensors.loc[day-1] = zeta_values_at_sensor_locations
+        except Exception as e:
+            print(e)
+            break
+            
+    return modelled_WTD_at_sensors
+
+modeled_yesblocks = create_modelled_result_dataframe(days_list=range(1, 366), folder_path=fn_rc_wtd_modelled)
+#%%
+# Plot
+fig, ax = plt.subplots(nrows=1, ncols=2, sharey=True, constrained_layout=True,
+                       gridspec_kw={'width_ratios': [3,1]})
+ax[0].set_ylabel('WTD (m)')
+ax[0].set_xlabel('Time (d)')
+
+for a, sublabel in zip(ax.flat, ["a)", "b)"]):
+    a.text(0 + 0.03, 1 - 0.02, s=sublabel,
+                transform=a.transAxes,
+                verticalalignment='top',
+                fontsize=10,
+                bbox=dict(facecolor='1.0', edgecolor='none', pad=1.0))
+
+
+# Plot WTD over time
+# Plot measured
+all_sensor_WTD.plot(legend=False, marker='.', linestyle='None',  ax=ax[0], alpha= 0.3, color='grey',
+                     markersize=.8)
+# Plot modelled
+modeled_yesblocks.plot(ax=ax[0], legend=False, linewidth=.5)
+
+
+# Plot custom legend
+custom_legend_elements = [Line2D([0],[0], marker='.', color='grey', linestyle='None', lw=2,  label='measured'),
+                                Line2D([0],[0], color='orange', lw=2, linestyle='solid', label='modelled')]
+ax[0].legend(handles=custom_legend_elements, loc='lower left', fontsize='x-small')
+
+# Boxplot
+measured_data = all_sensor_WTD.to_numpy().flatten()
+# measured_data = measured_data[~ np.isnan(measured_data)]
+
+modelled_data = modeled_yesblocks.to_numpy().flatten()
+
+# ax[1].violinplot(data=[measured_data, modelled_data])
+            #   labels=labels
+            #   )
+colors = ['grey', 'darkorange']
+sns.violinplot(data=[measured_data, modelled_data],
+               ax=ax[1],
+               linewidth=.7,
+               inner='quart',
+               palette=colors
+               )
+labels = ['measured', 'modelled']
+ax[1].set_xticklabels(labels, rotation=45)
+
+# Save
+plt.savefig(output_folder.joinpath('reality_check.png'), bbox_inches='tight')
+plt.savefig(output_folder.joinpath('reality_check.pdf'), bbox_inches='tight')
+
+# Plot mean over time
+plt.figure()
+plt.plot(all_sensor_WTD.mean(axis=1), label='measured mean WTD')
+plt.plot(modeled_yesblocks.mean(axis=1), label='modelled mean WTD')
+plt.legend()
 # %% Precipitation & ET
 
 fig, axes = plt.subplots(nrows=2, ncols=1,
-        sharex=True, constrained_layout=True)
+        sharex=True, constrained_layout=True, figsize=(4,4))
 for ax, label in zip(axes.flat, ["a)", "b)"]):
     ax.text(0 + 0.02, 1 - 0.02, s=label,
                 transform=ax.transAxes,
@@ -966,12 +1128,12 @@ for ax, label in zip(axes.flat, ["a)", "b)"]):
 ax_wet = axes[0]
 ax_dry = axes[1]
 ax_dry.set_xlabel('time (d)')
-ax_dry.set_ylabel(r'$P - ET (mm) $')
-ax_wet.set_ylabel(r'$P - ET (mm) $')
+ax_dry.set_ylabel(r'$P - ET \,(mm) $')
+ax_wet.set_ylabel(r'$P - ET \,(mm) $')
 ax_wet_twin = ax_wet.twinx()
-ax_wet_twin.set_ylabel('cumulative $P - ET$ (mm)')
+ax_wet_twin.set_ylabel('cum. $P - ET$ (mm)')
 ax_dry_twin = ax_dry.twinx()
-ax_dry_twin.set_ylabel('cumulative $P - ET$ (mm)')
+ax_dry_twin.set_ylabel('cum. $P - ET$ (mm)')
 
 ax_left_limits = [min(wet_sourcesink) - 5, max(wet_sourcesink) + 5]
 ax_right_limits = [min(np.cumsum(dry_sourcesink)) - 100, np.sum(wet_sourcesink) + 100]
@@ -1002,7 +1164,8 @@ ax_dry_twin.plot(range(len(dry_sourcesink)), np.cumsum(dry_sourcesink),
 ax_dry.legend(loc='upper center')
 ax_wet.legend(loc='upper center')
 
-plt.savefig(output_folder.joinpath(f'P_minus_ET'), bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'P_minus_ET.png'), bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'P_minus_ET.pdf'), bbox_inches='tight')
 plt.show()
 
 
@@ -1068,6 +1231,77 @@ plt.subplots_adjust(wspace=0.0, hspace=0.0)
 plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect.png'),
             bbox_inches='tight')
 plt.show()
+# %% BOXPLOT Plot WTD diff vs distance to blocks for all params and weathers.
+fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(4.13, 4.13*2))
+axes_wet = axes[:,0]
+axes_dry = axes[:,1]
+axes_wet[0].set_title('Wet')
+axes_dry[0].set_title('Dry')
+for ax in axes_wet:
+    ax.set_ylabel(r'$ \Delta \bar{\zeta} (m)$')
+for ax in axes[-1]:
+    ax.set_xlabel('distance to block (m)')
+for ax in axes.flat:
+    ax.grid(visible='True', linewidth=0.5)
+    # ax.set_xlim([0, 1000])
+    ax.tick_params(width=0)
+    
+for ax in axes[:,0]:
+    ax.tick_params(axis='y', width=1)
+for ax in axes[-1,:]:
+    ax.tick_params(axis='x', width = 1)
+# axes[-1,0].set_xticks(axes[-1,0].get_xticks()[:-1]) # Remove some ticks from bottom axes
+# axes[-1,1].set_xticks(axes[-1,1].get_xticks()) # Remove some ticks from bottom axes
+
+# for ax, label in zip(axes.flat, ["a)", "b)", "c)", "d)", "e)", "f)", "g)", "h)"]):
+#     ax.text(1 - 0.15, 1 - 0.05, s=label,
+#                 transform=ax.transAxes,
+#                 verticalalignment='top',
+#                 fontsize=10,
+#                 bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
+    
+MAX_METERS_FROM_CANAL_TO_PLOT = 1000
+n_bins_to_plot = int(MAX_METERS_FROM_CANAL_TO_PLOT/BIN_WIDTH_IN_METERS)
+for i_param, param_to_plot in enumerate(params_to_plot):
+    # Choose meters to plot
+    dry_diff_binned_to_plot = dry_diff_binned[i_param][:n_bins_to_plot]
+    wet_diff_binned_to_plot = wet_diff_binned[i_param][:n_bins_to_plot]
+    # plot dry points
+    bplot = axes_dry[i_param].boxplot(x=dry_diff_binned_to_plot,
+            positions=bins[:n_bins_to_plot],
+            showfliers=False,
+            notch=True,
+            widths=50,
+            manage_ticks=False,
+            patch_artist=True,
+    )
+    # fill boxplot with colors
+    for patch in bplot['boxes']:
+        patch.set_facecolor(param_colors[i_param])
+
+    # plot wet points
+    bplot = axes_wet[i_param].boxplot(x=wet_diff_binned_to_plot,
+            positions=bins[:n_bins_to_plot],
+            showfliers=False,
+            notch=True,
+            widths=50,
+            manage_ticks=False,
+            patch_artist=True,
+    )
+    # fill boxplot with colors
+    for patch in bplot['boxes']:
+        patch.set_facecolor(param_colors[i_param])
+
+
+# fig.tight_layout()
+plt.subplots_adjust(wspace=0.0, hspace=0.0)
+plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect_boxplot.png'),
+            bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect_boxplot.pdf'),
+            bbox_inches='tight')
+plt.show()
+
+
 #%% Plot some snapshots
 MIN_DIFF = -1.0
 MAX_DIFF = 1.0
@@ -1080,12 +1314,12 @@ params = [3, 3, 2, 2]; days = [360, 360, 360, 360] ; weathers = ['dry', 'wet', '
 for i in range(4):
     if weathers[i] == 'dry':
         diff_raster = dry_diffs_with_nan[params[i]-1, days[i]-1, :, :]
-        title = f'Diff day {days[i]} dry period param {params[i]}'
-        fname = f'diff_raster_dry_param{params[i]}_day{days[i]}.png'
+        title = r'$\Delta \bar{\zeta} \, (m)$, ' + f'day {days[i]} dry year, param {params[i]}'
+        fname = f'diff_raster_dry_param{params[i]}_day{days[i]}.pdf'
     elif weathers[i] == 'wet':
         diff_raster = wet_diffs_with_nan[params[i]-1, days[i]-1, :, :]
-        title = f'Diff day {days[i]} wet period param {params[i]}'
-        fname = f'diff_raster_wet_param{params[i]}_day{days[i]}.png'
+        title = r'$\Delta \bar{\zeta} \, (m)$, ' + f'day {days[i]} wet year, param {params[i]}'
+        fname = f'diff_raster_wet_param{params[i]}_day{days[i]}.pdf'
 
     plt.figure()
     plt.axis('off')
@@ -1101,21 +1335,31 @@ for i in range(4):
 
 plt.show()
 # %% Some results
+print("Averaging over everything, blocks raised WTD by:")
+print(0.5*(np.mean(dry_diffs) + np.mean(wet_diffs))*100, " cm")
+print("In dry periods, and averaging over everything else, blocks raised WTD by:")
+print(np.mean(dry_diffs)*100, " cm" )
+print("In wet periods, and averaging over everything else, blocks raised WTD by:")
+print(np.mean(wet_diffs)*100, " cm")
 print("Dry weather conditions resulted in a larger average rewetting compared to the wet conditions by a factor of:")
 print(np.mean(dry_diffs_spatial_avg, axis=(0,1))/np.mean(wet_diffs_spatial_avg, axis=(0,1)))
 
-print("The set of hydraulic peat properties that led to the maximum and minimum rewetting in wet conditions differed by a factor of:")
-print(np.mean(wet_diffs_spatial_avg, axis=(1)).max()/np.mean(wet_diffs_spatial_avg, axis=(1)).min())
+print("Averaging over weathers, param number 3 raised WTD by:")
+print(0.5*(np.mean(dry_diffs_spatial_avg, axis=1)[2] + np.mean(wet_diffs_spatial_avg, axis=1)[2])*100, "cm" )
+print("Averaging over weathers, param number 2 raised WTD by:")
+print(0.5*(np.mean(dry_diffs_spatial_avg, axis=1)[1] + np.mean(wet_diffs_spatial_avg, axis=1)[1])*100, "cm" )
+print("Averaging over weathers, the parameter with highest conductivity raised WTD by")
+print()
 
-print("The set of hydraulic peat properties that led to the maximum and minimum rewetting in dry conditions differed by a factor of:")
-print(np.mean(dry_diffs_spatial_avg, axis=(1)).max()/np.mean(dry_diffs_spatial_avg, axis=(1)).min())
-
-print("Total annual sequestered CO2 Mg per ha for DRY parameters:")
+print("Total annual sequestered CO2 Mg per ha averaged over everythin:")
+print(0.5*(cum_sequestered_dry_CO2_daily[:,-1].mean() + cum_sequestered_wet_CO2_daily[:,-1].mean()))
+print("Total annual sequestered CO2 Mg per ha for DRY conditions, for all parameters :")
 print(cum_sequestered_dry_CO2_daily[:,-1])
 print("Mean annual sequestered CO2 Mg per ha for DRY conditions:")
 print(cum_sequestered_dry_CO2_daily[:,-1].mean())
-print("Total annual sequestered CO2 Mg per ha for WET parameters:")
+print("Total annual sequestered CO2 Mg per ha for WET conditions, for all parameters :")
 print(cum_sequestered_wet_CO2_daily[:,-1])
 print("Mean annual sequestered CO2 Mg per ha for WET conditions:")
 print(cum_sequestered_wet_CO2_daily[:,-1].mean())
+
 # %%

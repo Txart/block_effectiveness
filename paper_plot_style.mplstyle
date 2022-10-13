@@ -7,4 +7,4 @@ legend.fontsize : 9
 figure.figsize : 4.13, 2.55 # Height and width in inches. Width should be adjusted to journal column width, height computed from golden ratio.
 figure.dpi : 600 # Pixels per inch. 300 and 600 are typical values.
 font.family : serif
-text.usetex : False # Rendering with text is VERY slow. Only do it at the end.
+text.usetex : True # Rendering with text is VERY slow. Only do it at the end.
