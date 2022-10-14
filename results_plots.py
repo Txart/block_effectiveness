@@ -687,8 +687,8 @@ fig, ax = plt.subplots()
 ax.grid(visible=True, axis='y', linewidth=0.5)
 ax.set_frame_on(False)
 # ax.set_title('Sequestered $CO_2$ per parameter')
-ax.set_ylabel(r'cum. $\langle \Delta m_{CO_2} \rangle \, (Mg ha^{-1})$')
-ax.set_xlabel('time (d)')
+ax.set_ylabel(r'cum. $\langle \Delta m_{CO_2} \rangle \, (Mg\, ha^{-1})$')
+ax.set_xlabel('Time (d)')
 
 for ip, p in enumerate(params_to_plot):
     df = df_daily_dry_CO2[df_daily_dry_CO2['param'] == p]
@@ -711,6 +711,8 @@ linestyle_legend_elements = [Line2D([],[], color='black', lw=1, linestyle='solid
 legend_elements = color_legend_elements + linestyle_legend_elements
 ax.legend(handles=legend_elements, fontsize=8)
 plt.savefig(output_folder.joinpath(f'all_params_daily_cumulative_CO2.png'),
+            bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'all_params_daily_cumulative_CO2.pdf'),
             bbox_inches='tight')
 plt.show()
 
