@@ -347,7 +347,7 @@ fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(9,12))
 ax_wet, ax_dry = axes
 ax_wet.set_title('Wet')
 ax_dry.set_title('Dry')
-ax_dry.set_xlabel('time (d)')
+ax_dry.set_xlabel('Time (d)')
 ax_dry.set_ylabel(r'$\langle\zeta\rangle (m)$')
 ax_wet.set_ylabel(r'$\langle\zeta\rangle (m)$')
 for ax in axes:
@@ -397,8 +397,8 @@ fig, axes = plt.subplots(nrows=1, ncols=2, sharex=True, sharey=True, figsize=(4*
 ax_wet, ax_dry = axes
 ax_wet.set_title('Wet', fontsize=12)
 ax_dry.set_title('Dry', fontsize=12)
-ax_dry.set_xlabel('time (d)')
-ax_wet.set_xlabel('time (d)')
+ax_dry.set_xlabel('Time (d)')
+ax_wet.set_xlabel('Time (d)')
 ax_wet.set_ylabel(r'$\langle \Delta \zeta\rangle (m)$')
 
 # Set labels for subplots
@@ -462,8 +462,8 @@ ax_wet_wtd, ax_dry_wtd = axes[0]
 ax_wet_diff, ax_dry_diff = axes[1]
 ax_wet_wtd.set_title('Wet', fontsize=13)
 ax_dry_wtd.set_title('Dry', fontsize=13)
-ax_dry_diff.set_xlabel('time (d)')
-ax_wet_diff.set_xlabel('time (d)')
+ax_dry_diff.set_xlabel('Time (d)')
+ax_wet_diff.set_xlabel('Time (d)')
 ax_dry_diff.set_xticks([0, 100, 200, 300])
 ax_wet_diff.set_xticks([0, 100, 200, 300])
 ax_wet_wtd.set_ylabel(r'$\langle\zeta\rangle (m)$')
@@ -566,7 +566,7 @@ plt.show()
 for i_param, param_to_plot in enumerate(params_to_plot):
     plt.figure()
     plt.title(f'parameter number {param_to_plot}')
-    plt.xlabel('time (d)')
+    plt.xlabel('Time (d)')
     plt.ylabel(r'$\langle\zeta\rangle (m)$')
     for i_mode, mode in enumerate(modes):
         plt.plot(range(N_DAYS), spatial_average[i_param, i_mode],
@@ -598,7 +598,7 @@ for i_param, param_to_plot in enumerate(params_to_plot):
 for i_param, param_to_plot in enumerate(params_to_plot):
     plt.figure()
     plt.title(f'parameter number {param_to_plot}')
-    plt.xlabel('time (d)')
+    plt.xlabel('Time (d)')
     plt.ylabel('cum CO2 emissions $(Mg ha^{-1})$')
     plt.plot(range(N_DAYS), cum_sequestered_dry_CO2_daily[i_param],
              label='el Niño',
@@ -640,7 +640,7 @@ p = sns.lineplot(
     color=modes[2]['color'],
     ax=ax_dry,
     ci='sd')
-p.set_xlabel('time (d)')
+p.set_xlabel('Time (d)')
 p.set_ylabel(r'$\langle\zeta\rangle (m)$')
 plot_repeated_labels_only_once_in_legend()
 plt.savefig(output_folder.joinpath(f'avg_zeta_vs_time_wet_and_dry_all_params'),
@@ -672,7 +672,7 @@ p = sns.lineplot(
     ci='sd',
     ax=ax
 )
-p.set_xlabel('time (d)')
+p.set_xlabel('Time (d)')
 p.set_ylabel('sequestered $CO_2 (Mg ha^{-1})$')
 plt.legend(loc='upper left')
 plt.savefig(output_folder.joinpath(f'daily_cumulative_CO2_all_params'),
@@ -1129,7 +1129,7 @@ for ax, label in zip(axes.flat, ["a)", "b)"]):
                 bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
 ax_wet = axes[0]
 ax_dry = axes[1]
-ax_dry.set_xlabel('time (d)')
+ax_dry.set_xlabel('Time (d)')
 ax_dry.set_ylabel(r'$P - ET \,(mm) $')
 ax_wet.set_ylabel(r'$P - ET \,(mm) $')
 ax_wet_twin = ax_wet.twinx()
