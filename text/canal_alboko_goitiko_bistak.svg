@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1280"
+   height="720"
+   viewBox="0 0 338.66667 190.5"
+   version="1.1"
+   id="svg3243"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="canal_alboko_goitiko_bistak.svg"
+   inkscape:export-filename="canal_alboko_goitiko_bistak.pdf"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3245"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="true"
+     units="px"
+     width="1280px"
+     inkscape:zoom="3.346875"
+     inkscape:cx="262.63305"
+     inkscape:cy="341.21382"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1-1"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid1439" />
+  </sodipodi:namedview>
+  <defs
+     id="defs3240">
+    <marker
+       style="overflow:visible"
+       id="marker9601"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="TriangleStart"
+       markerWidth="5.3244081"
+       markerHeight="6.155385"
+       viewBox="0 0 5.3244081 6.1553851"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path9599" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1503">
+      <stop
+         style="stop-color:#53b8ed;stop-opacity:1;"
+         offset="0"
+         id="stop1499" />
+      <stop
+         style="stop-color:#53b8ee;stop-opacity:0;"
+         offset="1"
+         id="stop1501" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient30597">
+      <stop
+         style="stop-color:#53b7ec;stop-opacity:1;"
+         offset="0"
+         id="stop30593" />
+      <stop
+         style="stop-color:#53b7ec;stop-opacity:0;"
+         offset="1"
+         id="stop30595" />
+    </linearGradient>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Mend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path905" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker2832"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path2830" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker2184"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path2182" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker2174"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path2172" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1958"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1956" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1948"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1946" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1462"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1460" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1442"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1440" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1300"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1298" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1280"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1278" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1270"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1268" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1178"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1176" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="marker1168"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path1166" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient30597"
+       id="linearGradient30599"
+       x1="110.97941"
+       y1="619.01888"
+       x2="299.10385"
+       y2="619.01888"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.26458333,0,0,0.26458333,0,5.8208336)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1503"
+       id="linearGradient1505"
+       x1="105.38393"
+       y1="176.66323"
+       x2="141.66271"
+       y2="176.66323"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       inkscape:label="Layer 1"
+       id="layer1-1"
+       transform="translate(20.334072,-74.814327)"
+       inkscape:export-filename="C:\Users\03125327\github\paper2\text\alboko_goitiko_bistak.png"
+       inkscape:export-xdpi="600"
+       inkscape:export-ydpi="600">
+      <rect
+         style="opacity:0.998;fill:url(#linearGradient1505);stroke-width:0.11;stroke-dasharray:none;fill-opacity:1"
+         id="rect1497"
+         width="36.278782"
+         height="13.304083"
+         x="105.38393"
+         y="170.01118" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 29.132379,166.44985 49.177593,20.04522"
+         id="path2703"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.245434px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 29.934186,190.2959 H 78.460511"
+         id="path2711"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.248415px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 98.725857,190.2959 H 148.43802"
+         id="path2713"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png" />
+      <path
+         style="fill:none;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 30.190712,152.69143 -1.058333,13.75842"
+         id="path2725"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 78.340605,172.73665 -0.03063,13.75842"
+         id="path2727"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="opacity:0.998;fill:url(#linearGradient30599);fill-opacity:1;stroke:none;stroke-width:0.184353;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 53.68554,176.31574 c -13.374079,-5.4496 -24.485388,-9.95382 -24.501339,-9.96281 -0.0612,-0.0345 -5.56e-4,-5.78349 0.09722,-5.7732 13.759382,1.44728 40.087909,5.11953 44.320819,6.45886 1.728909,0.54704 -0.106364,17.28353 -0.167114,17.34428 -0.03243,0.0324 -6.346135,-2.60556 -19.749582,-8.06713 z"
+         id="path2729"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="sssssss" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.30693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.157673"
+         x="117.25949"
+         y="178.9343"
+         id="text2733"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan2731"
+           x="117.25949"
+           y="178.9343"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.30693px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.157673">A</tspan></text>
+      <path
+         style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.106629;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-start:url(#marker9601);marker-end:url(#marker9601);stop-color:#000000;stop-opacity:1"
+         d="m 128.96542,170.39846 v 19.40266"
+         id="path2788"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.11064px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.152766"
+         x="134.17996"
+         y="173.3629"
+         id="text2733-5"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         transform="scale(0.96887648,1.0321233)"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan2731-6"
+           x="134.17996"
+           y="173.3629"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.11064px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.152766">h</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+         d="m 57.588685,171.33099 9.711599,2.72166"
+         id="path2828"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.30693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.157673"
+         x="51.321846"
+         y="172.03618"
+         id="text2733-19"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan2731-0"
+           x="51.321846"
+           y="172.03618"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.30693px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.157673">Q</tspan></text>
+      <path
+         style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.11;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#marker9601);marker-end:url(#marker9601);stop-color:#000000;stop-opacity:1"
+         d="m 38.008239,161.84489 v 27.97214"
+         id="path2956"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.30693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.157673"
+         x="39.380787"
+         y="177.44649"
+         id="text2733-5-8"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan2731-6-0"
+           x="39.380787"
+           y="177.44649"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.30693px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.157673">h</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.55816px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.163954"
+         x="49.450497"
+         y="197.30771"
+         id="text24567"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"><tspan
+           sodipodi:role="line"
+           id="tspan24565"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.55816px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.163954"
+           x="49.450497"
+           y="197.30771">(a)</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.55816px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.163954"
+         x="119.7728"
+         y="197.41951"
+         id="text28709"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"><tspan
+           sodipodi:role="line"
+           id="tspan28707"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.55816px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.163954"
+           x="119.7728"
+           y="197.41951">(b)</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.30693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.157673"
+         x="101.13164"
+         y="178.94801"
+         id="text1228-9"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan1226-4"
+           x="101.13164"
+           y="178.94801"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.30693px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.157673">p</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.30693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.157673"
+         x="145.39844"
+         y="178.93529"
+         id="text1359-5"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan1357-5"
+           x="145.39844"
+           y="178.93529"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.30693px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.157673">z</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 98.721016,164.69855 h 6.561464 v 18.73576 h 36.52288 V 164.7776 h 6.64052"
+         id="path1441" />
+      <path
+         style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.10693;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-start:url(#marker9601);marker-end:url(#marker9601);stop-color:#000000;stop-opacity:1"
+         d="m 100.06493,165.17968 v 24.66135"
+         id="path1443" />
+      <path
+         style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.105714;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-start:url(#marker9601);marker-end:url(#marker9601);stop-color:#000000;stop-opacity:1"
+         d="m 143.69201,165.29471 v 17.92968"
+         id="path8639" />
+      <path
+         style="fill:#cecece;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+         d="m 73.581892,184.58059 v -17.19421 c 0,0 0.197636,-0.75101 1.304391,-0.75101 1.106752,0 1.304388,0.75101 1.304388,0.75101 v 15.81076 c 0,0 0.248412,0.87045 1.507646,0.87045 1.259237,0 0.64721,2.41541 0.64721,2.41541"
+         id="path10820" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.247202;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:0.741607, 0.741607;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 29.128935,144.74551 75.151262,163.3845"
+         id="path11382"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.131604;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#marker9601);marker-end:url(#marker9601);stop-color:#000000;stop-opacity:1"
+         d="m 31.129068,146.26304 v 43.36461"
+         id="path11570"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.30693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.157673"
+         x="32.341942"
+         y="177.28787"
+         id="text11582"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan11580"
+           x="32.341942"
+           y="177.28787"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.30693px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.157673">p</tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.0929121;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         d="m 74.905313,163.51274 h 2.214239"
+         id="path12409" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.0943084;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         d="m 74.846754,166.59584 h 2.302811"
+         id="path12411" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.0926683;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker9601);marker-end:url(#marker9601)"
+         d="m 77.09979,163.94835 v 2.24421"
+         id="path12767" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:6.30693px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.157673"
+         x="78.373215"
+         y="166.33937"
+         id="text1359-5-9"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan1357-5-1"
+           x="78.373215"
+           y="166.33937"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.30693px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.157673">z</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:2.79195px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.0697987"
+         x="81.266609"
+         y="167.60783"
+         id="text1359-5-5"
+         inkscape:export-xdpi="200"
+         inkscape:export-ydpi="200"
+         inkscape:export-filename="C:\Users\03125327\Desktop\Article II\figs\kanal bistak.png"><tspan
+           sodipodi:role="line"
+           id="tspan1357-5-7"
+           x="81.266609"
+           y="167.60783"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.79195px;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.0697987">b</tspan></text>
+    </g>
+  </g>
+</svg>

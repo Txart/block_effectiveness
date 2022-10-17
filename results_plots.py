@@ -1301,6 +1301,8 @@ plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect_boxplot.png'),
             bbox_inches='tight')
 plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect_boxplot.pdf'),
             bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect_boxplot.svg'),
+            bbox_inches='tight')
 plt.show()
 
 
@@ -1317,11 +1319,11 @@ for i in range(4):
     if weathers[i] == 'dry':
         diff_raster = dry_diffs_with_nan[params[i]-1, days[i]-1, :, :]
         title = r'$\Delta \bar{\zeta} \, (m)$, ' + f'day {days[i]} dry year, param {params[i]}'
-        fname = f'diff_raster_dry_param{params[i]}_day{days[i]}.pdf'
+        fname = f'diff_raster_dry_param{params[i]}_day{days[i]}.svg'
     elif weathers[i] == 'wet':
         diff_raster = wet_diffs_with_nan[params[i]-1, days[i]-1, :, :]
         title = r'$\Delta \bar{\zeta} \, (m)$, ' + f'day {days[i]} wet year, param {params[i]}'
-        fname = f'diff_raster_wet_param{params[i]}_day{days[i]}.pdf'
+        fname = f'diff_raster_wet_param{params[i]}_day{days[i]}.svg'
 
     plt.figure()
     plt.axis('off')
