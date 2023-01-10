@@ -1,5 +1,5 @@
 # %%
-from classes.parameterizations import ExponentialBelowOneAboveStorageWithDepth, ExponentialBelowOneAboveStorage 
+from classes.parameterizations import ExponentialBelowOneAboveStorageExpoTrans, ExponentialBelowOneAboveStorageWithDepth
 from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_hydrology
 from classes.peatland import Peatland
 from classes.channel_hydrology import set_up_channel_hydrology, CWLHydroParameters
@@ -68,7 +68,7 @@ if precip_data == 'weather_stations':
     # Fill few missing NaNs with data.
     net_daily_source = net_daily_source.fillna(net_daily_source.mean())
     # Choose 2021 data (dataset starts at 1Jan2020, and it was a leap year)
-    net_daily_source = net_daily_source[366:]
+    net_daily_source = net_daily_source[366:].reset_index(drop=True)
 
 elif precip_data == 'wet':
     net_daily_source = read_weather_data.get_daily_net_source(
@@ -126,7 +126,8 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
 
 # If you change this, change also other occurrences below!!
 # parameterization = ExponentialBelowOneAboveStorageWithDepth(peat_hydro_params)
-parameterization = ExponentialBelowOneAboveStorage(peat_hydro_params)
+# parameterization = ExponentialBelowOneAboveStorage(peat_hydro_params)
+parameterization = ExponentialBelowOneAboveStorageExpoTrans(peat_hydro_params)
 
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
                                   use_scaled_pde=False, zeta_diri_bc=-0.2,
@@ -218,9 +219,10 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ExponentialBelowOneAboveStorage(
-        hydro.ph_params)
-
+    hydro.parameterization = ExponentialBelowOneAboveStorageExpoTrans(hydro.ph_params)
+    # hydro.parameterization = ExponentialBelowOneAboveStorage(
+    #         hydro.ph_params)
+    
     # Begin from complete saturation
     hydro.zeta = hydro.create_uniform_fipy_var(
         uniform_value=-0.1, var_name='zeta')
@@ -364,9 +366,10 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ExponentialBelowOneAboveStorage(
-        hydro.ph_params)
-
+    # hydro.parameterization = ExponentialBelowOneAboveStorage(
+    #     hydro.ph_params)
+    hydro.parameterization = ExponentialBelowOneAboveStorageExpoTrans(hydro.ph_params)
+     
     # Outputs will go here
     output_directory = Path.joinpath(parent_directory, 'output')
     out_rasters_folder_name = f"params_number_{param_number}"
@@ -432,6 +435,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
                 foldername = foldername + '_dry'
             elif precip_data == 'wet':
                 foldername = foldername + '_wet'
+            # if weather_stations, then the folder is yes_blocks by default
 
             full_write_foldername = full_folder_path.joinpath(foldername)
             print(f' writing output raster to {full_write_foldername}')
@@ -474,7 +478,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [1,2,3]
+    param_numbers = [3]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 
