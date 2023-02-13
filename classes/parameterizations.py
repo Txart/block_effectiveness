@@ -166,7 +166,27 @@ class ConstantStorage(AbstractParameterization):
 
         pass
 
+    def storage(self, h, dem):
+
+        mask_1, mask_2 = self._get_piecewise_masks_in_h(h, dem)
+
+        sto_1 = 1 # theoretical value
+        sto_2 = self.s1 
+
+        return sto_1*mask_1 + sto_2*mask_2
     
+
+    def storage_from_zeta(self, zeta):
+        
+        positives_mask = 1*(zeta>0)
+        negatives_mask = 1 - positives_mask
+
+        sto_pos = 1
+        sto_neg = self.s1
+
+        return sto_pos * positives_mask + sto_neg * negatives_mask
+
+
 class ExponentialStorage(AbstractParameterization):
     """
     This doesn't need any change from the main class!

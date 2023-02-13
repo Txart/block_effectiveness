@@ -48,7 +48,7 @@ precip_data = args.precip_data
 N_CPU = args.ncpu
 
 if platform.system() == 'Linux':  # Working on my own machine
-    parent_directory = Path(r'/users/urzainqu/paper2')
+    parent_directory = Path('~/Programming/github/paper2')
     data_parent_folder = parent_directory.joinpath('data/Raw csv')
     fn_pointers = parent_directory.joinpath(r'file_pointers_csc.xlsx')
 
@@ -81,6 +81,7 @@ elif precip_data == 'dry':
 else:
     raise ValueError(
         'Weather data origin not understood from command line. See -h for help.')
+
 # %% Prepare data
 filenames_df = pd.read_excel(
     fn_pointers, header=2, dtype=str, engine='openpyxl')
