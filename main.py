@@ -1,5 +1,5 @@
 # %%
-from classes.parameterizations import ExponentialBelowOneAboveStorageExpoTrans, ExponentialBelowOneAboveStorageWithDepth
+from classes.parameterizations import ConstantStorage
 from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_hydrology
 from classes.peatland import Peatland
 from classes.channel_hydrology import set_up_channel_hydrology, CWLHydroParameters
@@ -125,13 +125,10 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
                                      cn=channel_network)
 
 # If you change this, change also other occurrences below!!
-# parameterization = ExponentialBelowOneAboveStorageWithDepth(peat_hydro_params)
-# parameterization = ExponentialBelowOneAboveStorage(peat_hydro_params)
-parameterization = ExponentialBelowOneAboveStorageExpoTrans(peat_hydro_params)
+parameterization = ConstantStorage(peat_hydro_params)
 
-hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
-                                  use_scaled_pde=False, zeta_diri_bc=-0.2,
-                                  force_ponding_storage_equal_one=False,
+hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn,
+                                  zeta_diri_bc=-0.2,
                                   peatland=peatland, peat_hydro_params=peat_hydro_params,
                                   parameterization=parameterization,
                                   channel_network=channel_network, cwl_params=cwl_params)
@@ -141,23 +138,19 @@ hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn, model_coupling='darcy',
 
 def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     # Alternative to simulate_one_timestep that only uses 1 fipy solution per timestep
-    zeta_before = hydro.zeta
     # Simulate WTD
-    hydro.theta = hydro.create_theta_from_zeta(hydro.zeta)
+    hydro.wtd = hydro.create_h_from_zeta(hydro.zeta)
 
     # solution is saved into class attribute
-    hydro.theta = hydro.run(mode='theta', fipy_var=hydro.theta)
-    hydro.zeta = hydro.create_zeta_from_theta(hydro.theta)
+    hydro.wtd = hydro.run(h=hydro.wtd)
+    hydro.zeta = hydro.create_zeta_from_h(hydro.wtd)
 
     new_y_at_canals = hydro.convert_zeta_to_y_at_canals(hydro.zeta)
-    y_prediction_array = hydro.cn.from_nodedict_to_nparray(new_y_at_canals)
-    theta_prediction_array = hydro.parameterization.theta_from_zeta(
-        zeta=y_prediction_array - hydro.cn.dem, dem=hydro.cn.dem)
-    theta_previous_array = hydro.parameterization.theta_from_zeta(
-        zeta=hydro.cn.y - hydro.cn.dem, dem=hydro.cn.dem)
-    theta_diff = theta_prediction_array - theta_previous_array
+    h_prediction_array = hydro.cn.from_nodedict_to_nparray(new_y_at_canals)
+    h_previous_array = hydro.cn.y[:]
+    h_diff = h_prediction_array - h_previous_array
     q = cwl_hydro.predict_q_for_next_timestep(
-        theta_difference=theta_diff, seconds_per_timestep=hydro.cn_params.dt)
+        h_difference=h_diff, seconds_per_timestep=hydro.cn_params.dt)
 
     # Add q to each component graph
     q_nodedict = hydro.cn.from_nparray_to_nodedict(q)
@@ -219,9 +212,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ExponentialBelowOneAboveStorageExpoTrans(hydro.ph_params)
-    # hydro.parameterization = ExponentialBelowOneAboveStorage(
-    #         hydro.ph_params)
+    hydro.parameterization = ConstantStorage(hydro.ph_params)
     
     # Begin from complete saturation
     hydro.zeta = hydro.create_uniform_fipy_var(
@@ -271,7 +262,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
         try:
             solution_function = simulate_one_timestep_simple_two_step
 
-            for i in tqdm(range(internal_timesteps)):  # internal timestep
+            for _ in tqdm(range(internal_timesteps)):  # internal timestep
                 hydro, cwl_hydro = solution_function(hydro, cwl_hydro)
 
         except Exception as e:
@@ -368,7 +359,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
 
     # hydro.parameterization = ExponentialBelowOneAboveStorage(
     #     hydro.ph_params)
-    hydro.parameterization = ExponentialBelowOneAboveStorageExpoTrans(hydro.ph_params)
+    hydro.parameterization = ConstantStorage(hydro.ph_params)
      
     # Outputs will go here
     output_directory = Path.joinpath(parent_directory, 'output')

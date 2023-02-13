@@ -72,7 +72,6 @@ class AbstractPeatlandHydro:
 
     def h_from_zeta(self, zeta):
         return self.parameterization.h_from_zeta(zeta, self.dem) 
-        return zeta + self.dem
 
     def create_zeta_from_h(self, h):
         zeta_values = self.zeta_from_h(h).value
@@ -317,14 +316,13 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
         return None
 
-    # def convert_zeta_to_y_at_canals(self, zeta_fipy_var):
-    #     # Compute y = zeta + dem
-    #     zeta_dict = self._get_fipy_variable_values_at_graph_nodes(
-    #         fipy_var=zeta_fipy_var)
-    #     dem_dict = nx.get_node_attributes(self.cn.graph, 'DEM')
-    #     y_at_canals = {node: zeta_value +
-    #                    dem_dict[node] for node, zeta_value in zeta_dict.items()}
-    #     return y_at_canals
+    def convert_h_to_y_at_canals(self, h_fipy_var):
+        # h and y are the same 
+        h_dict = self._get_fipy_variable_values_at_graph_nodes(
+            fipy_var=h_fipy_var)
+        y_at_canals = {node: h_value for node, h_value in h_dict.items()}
+
+        return y_at_canals
 
     def produce_normalized_weather_station_weighting_average_matrix(self, weather_station_coords_array):
         # each row is a different mesh cell center,
