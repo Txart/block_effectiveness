@@ -30,8 +30,6 @@ class AbstractPeatlandHydro:
                  parameterization: AbstractParameterization,
                  channel_network: ChannelNetwork,
                  cwl_params: CWLHydroParameters,
-                 model_coupling='darcy',
-                 use_scaled_pde='False',
                  zeta_diri_bc=None,
                  force_ponding_storage_equal_one=False) -> None:
         """This class is abstract. Always create one of its subclasses.
@@ -43,12 +41,6 @@ class AbstractPeatlandHydro:
             peat_hydro_params (PeatlandHydroParameters): [description]
             channel_network (ChannelNetwork): [description]
             cwl_params (CWLHydroParameters): [description]
-            model_coupling (str, optional): Can either be 'darcy' or 'dirichlet'. If 'darcy' the canals
-                are not used as boundary conditions, instead, boussinesq eq, i.e., Darcy's Law, is applied on them as well.
-                If 'dirichlet' canals are used as Dirichlet fixed head boundary conditions in the 
-                groundwater simulation step. Defaults to 'darcy'.
-            use_scaled_pde (bool, optional): Run fipy hydrology with the scaled version of the pde. Might help in
-                some cases when numbers become too large. Default: False.
             zeta_diri_bc (None or float, optional): If None, no flux Neumann BCs are applied. If float, constant
                 dirichlet BC is applied everywhere. Default: None.
             force_ponding_storage_equal_one (bool, optional): If True, forces S=1 for water above the surface. Careful:
@@ -61,46 +53,35 @@ class AbstractPeatlandHydro:
         self.parameterization = parameterization
         self.cn = channel_network
         self.cn_params = cwl_params
-        self.model_coupling = model_coupling
-        self.use_scaled_pde = use_scaled_pde
         self.zeta_diri_bc = zeta_diri_bc
         self.force_ponding_storage_equal_one = force_ponding_storage_equal_one
 
-        self._check_model_coupling_choice()
-
         # Defined by subclasses
+        self.dem = None
         self.sourcesink = None
         self.depth = None
+        self.mesh = None
 
         # print stuff
         self.verbose = False
 
         pass
 
-    def zeta_from_theta(self, theta):
-        # interface for function in one of the Parameterization classes
-        return self.parameterization.zeta_from_theta(theta, self.dem)
+    def zeta_from_h(self, h):
+        return h - self.dem
 
-    def theta_from_zeta(self, zeta):
-        # interface for function in one of the Parameterization classes
-        return self.parameterization.theta_from_zeta(zeta, self.dem)
+    def h_from_zeta(self, zeta):
+        return zeta + self.dem
 
-    def create_zeta_from_theta(self, theta):
-        zeta_values = self.zeta_from_theta(theta).value
+    def create_zeta_from_h(self, h):
+        zeta_values = self.zeta_from_h(h).value
         return fp.CellVariable(
             name='zeta', mesh=self.mesh, value=zeta_values, hasOld=True)
 
-    def create_theta_from_zeta(self, zeta):
-        theta = self.theta_from_zeta(zeta)
+    def create_h_from_zeta(self, zeta):
+        theta = self.h_from_zeta(zeta)
         return fp.CellVariable(
             name='theta', mesh=self.mesh, value=theta.value, hasOld=True)
-
-    def _check_model_coupling_choice(self):
-        if self.model_coupling == 'dirichlet':
-            raise Warning(
-                'Feedback from wtd to next iteration cwl not yet implemented in dirichlet coupling mode.')
-        utilities.is_value_of_variable_possible(
-            self.model_coupling, possible_values=['dirichlet', 'darcy'])
 
     def _check_initial_wtd_variables(self):
         try:
@@ -111,185 +92,61 @@ class AbstractPeatlandHydro:
 
         return None
 
+
     def _has_converged(self, vector1, vector2) -> bool:
         return np.linalg.norm(vector2 - vector1) < np.linalg.norm(vector1)*self.ph_params.rel_tol + self.ph_params.abs_tol
 
-    def _diffusivity_cell_variable(self, theta):
-        diffusivity = self.dif(theta.value, self.depth.value)
-        return fp.CellVariable(mesh=self.mesh, value=diffusivity)
 
-    def _diffusivity_zero_between_canal_pixels(self, theta):
-        canal_faces_mask = fp.FaceVariable(
-            mesh=self.mesh, value=self.canal_mask.arithmeticFaceValue.value)
+    def _set_equation(self, h):
 
-        diff_cell = self._diffusivity_cell_variable(theta)
-        # Value of the diffusion faceVariable with arithmetic face value.
-        diff_face_value = fp.FaceVariable(
-            mesh=self.mesh, value=diff_cell.arithmeticFaceValue.value).value
-        # Constrain diffusion between adjacent canal pixels to be zero using the mask.
-        # Logic: Arithmetic mean in the face between two adjacent canal pixels
-        # whose diffusivity = 0, is equal to (0+0)/2 = 0, while all the rest of faces
-        # between pixels are different from 0.
-        #diff_face_value[self.canal_mask_face.value == 0] = 0.0
-        diff_face_value = diff_face_value * canal_faces_mask.value
+        # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
+        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
 
-        return fp.FaceVariable(mesh=self.mesh, value=diff_face_value)
+        storage = self.parameterization.storage(h, self.dem)
 
-    def _set_equation(self, theta):
-        if self.use_scaled_pde == False:
-            if self.model_coupling == 'darcy':
-                eq = self._set_equation_darcymode(theta)
-            elif self.model_coupling == 'dirichlet':
-                eq = self._set_equation_dirimode(theta)
-            else:
-                raise ValueError('coupling mode not understood. Aborting.')
+        transmissivity = self.parameterization.transmissivity(h, self.dem, self.depth)
+        # Apply mask
+        # diff_coeff.faceValue is a FaceVariable
+        trans_face = transmissivity.faceValue * mask
 
-        elif self.use_scaled_pde == True:
-            if self.model_coupling == 'darcy':
-                eq = self._set_equation_darcymode_scaled(theta)
-            elif self.model_coupling == 'dirichlet':
-                eq = self._set_equation_dirimode_scaled(theta)
-            else:
-                raise ValueError('coupling mode not understood. Aborting.')
-        else:
-            raise ValueError('use_scaled_pde must be True or False. Aborting.')
+        eq = (fp.TransientTerm(coeff=storage) ==
+              fp.DiffusionTerm(coeff=trans_face) + self.sourcesink
+              )
 
         return eq
 
-    def _run_theta(self, theta):
-        if self.zeta_diri_bc is not None:
-            # Diri BC in theta. Compute theta from zeta
-            theta_face_values = self.parameterization.theta_from_zeta(
-                self.zeta_diri_bc, self.dem.faceValue)
-            # constrain theta with those values
-            theta.constrain(theta_face_values, where=self.mesh.exteriorFaces)
 
-        eq = self._set_equation(theta)
-
-        residue = 1e10
-
-        for sweep_number in range(self.ph_params.max_sweeps):
-            old_residue = copy.deepcopy(residue)
-            residue = eq.sweep(var=theta, dt=self.ph_params.dt)
-
-            if self.verbose:
-                print(sweep_number, residue)
-
-            # In general, the fipy residual < 1e-6 is a good way of estimating convergence
-            # However, with internal diriBCs the residual doesn't become small.
-            # So the decision to break from this loop has to be bifurcated
-            if self.model_coupling == 'darcy':
-                if residue < self.ph_params.fipy_desired_residual:
-                    break
-
-            elif self.model_coupling == 'dirichlet':
-                residue_diff = residue - old_residue
-                if self.verbose:
-                    print('residue diff = ', residue_diff)
-                if abs(residue_diff) < 1e-7:
-                    break
-
-        if sweep_number == self.ph_params.max_sweeps - 1:
-            raise RuntimeError(
-                'WTD computation did not converge in specified amount of sweeps')
-        else:
-            theta.updateOld()
-
-            return theta
-
-    def _run_theta_scaled(self, theta):
-
-        diff_coeff = self.parameterization.diffusion(theta, self.dem, self.b)
-
-        # SCALES
-        theta_C = theta.value.max()
-        dif_C = diff_coeff.value.max()
-        source_C = theta_C * dif_C
-        t_C = 1/dif_C
-
-        # Apply scales
-        dt_scaled = self.ph_params.dt / t_C
-
-        # SCALE INI COND
-        theta_scaled = fp.CellVariable(
-            name='scaled theta', mesh=self.mesh, value=theta.value / theta_C, hasOld=True)
-
-        if self.zeta_diri_bc is not None:
-            # Boundary conditions scaled as well!
-            theta_face_values = self.parameterization.theta_from_zeta(
-                self.zeta_diri_bc, self.dem.faceValue)
-            # constrain theta with those values
-            theta_scaled.constrain(
-                theta_face_values/theta_C, where=self.mesh.exteriorFaces)
-
-        # The equation creation funciton needs original, non-scaled theta
-        eq = self._set_equation(theta)
-        residue = 1e10
-
-        for sweep_number in range(self.ph_params.max_sweeps):
-            old_residue = copy.deepcopy(residue)
-            residue = eq.sweep(var=theta_scaled, dt=dt_scaled)
-
-            if self.verbose:
-                print(sweep_number, residue)
-
-            # In general, the fipy residual < 1e-6 is a good way of estimating convergence
-            # However, with internal diriBCs the residual doesn't become small.
-            # So the decision to break from this loop has to be bifurcated
-            if self.model_coupling == 'darcy':
-                if residue < self.ph_params.fipy_desired_residual:
-                    break
-
-            elif self.model_coupling == 'dirichlet':
-                residue_diff = residue - old_residue
-                if self.verbose:
-                    print('residue diff = ', residue_diff)
-                if abs(residue_diff) < 1e-7:
-                    break
-
-        if sweep_number == self.ph_params.max_sweeps - 1:
-            raise RuntimeError(
-                'WTD computation did not converge in specified amount of sweeps')
-
-        else:
-            theta_scaled.updateOld()
-            # SCALE BACK
-            theta = fp.CellVariable(
-                name='theta', mesh=self.mesh, value=theta_scaled.value * theta_C, hasOld=True)
-
-            return theta
-
-    def run(self, fipy_var, mode='theta'):
+    def run(self, h):
         self._check_initial_wtd_variables()
 
-        if mode == 'theta':
-            if self.model_coupling == 'darcy':
-                if self.use_scaled_pde:
-                    return self._run_theta_scaled(theta=fipy_var)
-                else:
-                    return self._run_theta(theta=fipy_var)
-            if self.model_coupling == 'dirichlet':
-                if self.use_scaled_pde:
-                    return self._run_theta_scaled(theta=fipy_var)
-                else:
-                    return self._run_theta(theta=fipy_var)
-                # return self._run_theta_halt_with_var_relative_difference(fipy_var)
-        elif mode == 'standard':
-            raise NotImplementedError('standard hydro not implemenmted yet.')
+        if self.zeta_diri_bc is not None:
+            # Diri BC in h. Compute h from zeta
+            h_face_values = self.parameterization.h_from_zeta(
+                self.zeta_diri_bc, self.dem.faceValue)
+            # constrain theta with those values
+            h.constrain(h_face_values, where=self.mesh.exteriorFaces)
+
+        eq = self._set_equation(h)
+
+        residue = 1e10
+
+        for sweep_number in range(self.ph_params.max_sweeps):
+            old_residue = copy.deepcopy(residue)
+            residue = eq.sweep(var=h, dt=self.ph_params.dt)
+
+            if self.verbose:
+                print(sweep_number, residue)
+
+            if residue < self.ph_params.fipy_desired_residual:
+                break
+
+        if sweep_number == self.ph_params.max_sweeps - 1:
+            raise RuntimeError(
+                'WTD computation did not converge in specified amount of sweeps')
         else:
-            raise ValueError('mode has to be either "theta" or "standard"')
+            h.updateOld()
 
-    def _set_equation_darcymode(self, theta):
-        raise NotImplementedError
-
-    def _set_equation_dirimode(self, theta):
-        raise NotImplementedError
-
-    def create_uniform_fipy_var(self):
-        raise NotImplementedError
-
-    def set_sourcesink_variable(self, p_minus_et: float):
-        raise NotImplementedError
+            return h
 
 
 class GmshMeshHydro(AbstractPeatlandHydro):
@@ -299,15 +156,10 @@ class GmshMeshHydro(AbstractPeatlandHydro):
                  parameterization: AbstractParameterization,
                  channel_network: ChannelNetwork,
                  cwl_params: CWLHydroParameters,
-                 model_coupling='darcy',
-                 use_scaled_pde=False,
-                 zeta_diri_bc=None,
-                 force_ponding_storage_equal_one=False) -> None:
+                 zeta_diri_bc=None) -> None:
         super().__init__(peatland, peat_hydro_params, parameterization,
                          channel_network, cwl_params,
-                         model_coupling=model_coupling, use_scaled_pde=use_scaled_pde,
-                         zeta_diri_bc=zeta_diri_bc,
-                         force_ponding_storage_equal_one=force_ponding_storage_equal_one)
+                         zeta_diri_bc=zeta_diri_bc)
 
         self.mesh = fp.Gmsh2D(mesh_fn)
 
@@ -322,7 +174,6 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         mean_cell_centroid_distance = self.mesh.scaledCellToCellDistances.mean()
         self.avg_canal_area = mean_cell_centroid_distance * self.cn.B # assuming rectangular shape
         self.avg_cell_area = np.sqrt(3)/4 * mean_cell_centroid_distance**2 # approximating equilateral triangles
-        
         
         # Canal mask
         canal_mask_value = np.zeros(shape=mesh_centroids_coords.shape[0], dtype=int)
@@ -346,7 +197,7 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         depth_value = utilities.sample_raster_from_coords(
             raster_filename=self.pl.fn_depth, coords=mesh_centroids_coords)
         depth_value[depth_value < 4] = 4  # cutoff depth
-        self.b = fp.CellVariable(
+        self.depth = fp.CellVariable(
             name='depth', mesh=self.mesh, value=depth_value, hasOld=False)
 
         # Several weather stations
@@ -417,90 +268,6 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
         return None
 
-    def _set_equation_darcymode(self, theta):
-        # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
-        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
-
-        diff_coeff = self.parameterization.diffusion(theta, self.dem, self.b)
-
-        # Apply mask
-        # diff_coeff.faceValue is a FaceVariable
-        diff_coeff_face = diff_coeff.faceValue * mask
-
-        largeValue = 1e60
-        eq = (fp.TransientTerm() ==
-              fp.DiffusionTerm(coeff=diff_coeff_face) + self.sourcesink
-              # - fp.ImplicitSourceTerm(self.catch_mask_not * largeValue) +
-              #self.catch_mask_not * largeValue * 0.
-              )
-        return eq
-
-    def _set_equation_darcymode_scaled(self, theta):
-       # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
-        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
-
-        # New diffusion coefficient, rearranging terms to minimize risk of going beyond machine precision
-        diff_coeff = self.parameterization.diffusion(theta, self.dem, self.b)
-
-        # SCALES
-        theta_C = theta.value.max()
-        dif_C = diff_coeff.value.max()
-        source_C = theta_C * dif_C
-        t_C = 1/dif_C
-        # x_C = 1 is imposed by gmsh mesh
-
-        # apply scales
-        source_scaled = self.sourcesink / source_C
-        diff_coeff_scaled = diff_coeff / dif_C
-
-        # Apply mask
-        # diff_coeff.faceValue is a FaceVariable
-        diff_coeff_face_scaled = diff_coeff_scaled.faceValue * mask
-
-        largeValue = 1e60
-        eq = (fp.TransientTerm() ==
-              fp.DiffusionTerm(coeff=diff_coeff_face_scaled) + source_scaled
-              )
-
-        return eq
-
-    def _set_equation_dirimode(self, theta):
-        # raise NotImplementedError()
-
-        # compute diffusivity. Cell Variable
-        diff_coeff = self.parameterization.diffusion(theta, self.dem, self.b)
-
-        largeValue = 1e60
-        eq = (fp.TransientTerm() ==
-              # fp.DiffusionTerm(coeff=1.)
-              fp.DiffusionTerm(coeff=diff_coeff) + self.sourcesink
-              - fp.ImplicitSourceTerm(self.canal_mask * largeValue) +
-              self.canal_mask * largeValue * theta.value
-              )
-        return eq
-
-    def _set_equation_dirimode_scaled(self, theta):
-        # compute diffusivity. Cell Variable
-        diff_coeff = self.parameterization.diffusion(theta, self.dem, self.b)
-
-        # SCALES
-        theta_C = theta.value.max()
-        dif_C = diff_coeff.value.max()
-        source_C = theta_C * dif_C
-        t_C = 1/dif_C
-        # x_C = 1 is imposed by gmsh mesh
-
-        # apply scales
-        source_scaled = self.sourcesink / source_C
-        diff_coeff_scaled = diff_coeff / dif_C
-        theta_scaled = theta / theta_C
-
-        largeValue = 1e120
-        eq = (fp.TransientTerm() ==
-              fp.DiffusionTerm(coeff=diff_coeff_scaled) + source_scaled
-              - fp.ImplicitSourceTerm(self.canal_mask * largeValue) +
-              self.canal_mask * largeValue * theta_scaled.value
-              )
         return eq
 
     def create_fipy_variable_from_graph_attribute(self, graph_attr_name):
@@ -549,14 +316,14 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
         return None
 
-    def convert_zeta_to_y_at_canals(self, zeta_fipy_var):
-        # Compute y = zeta + dem
-        zeta_dict = self._get_fipy_variable_values_at_graph_nodes(
-            fipy_var=zeta_fipy_var)
-        dem_dict = nx.get_node_attributes(self.cn.graph, 'DEM')
-        y_at_canals = {node: zeta_value +
-                       dem_dict[node] for node, zeta_value in zeta_dict.items()}
-        return y_at_canals
+    # def convert_zeta_to_y_at_canals(self, zeta_fipy_var):
+    #     # Compute y = zeta + dem
+    #     zeta_dict = self._get_fipy_variable_values_at_graph_nodes(
+    #         fipy_var=zeta_fipy_var)
+    #     dem_dict = nx.get_node_attributes(self.cn.graph, 'DEM')
+    #     y_at_canals = {node: zeta_value +
+    #                    dem_dict[node] for node, zeta_value in zeta_dict.items()}
+    #     return y_at_canals
 
     def produce_normalized_weather_station_weighting_average_matrix(self, weather_station_coords_array):
         # each row is a different mesh cell center,
@@ -605,16 +372,6 @@ class GmshMeshHydro(AbstractPeatlandHydro):
 
         return pan_ET_func(zeta)
 
-    def set_theta_diriBC_from_zeta_value(self, zeta_diri_BC, theta_fipy):
-        dem_face_values = self.dem.faceValue
-        # Compute theta from zeta
-        theta_face_values = self.ph_params.s1/self.ph_params.s2 * \
-            (numerix.exp(self.ph_params.s2*zeta_diri_BC) -
-             numerix.exp(-self.ph_params.s2*dem_face_values))
-        # constrain theta with those values
-        theta_fipy.constrain(theta_face_values, self.mesh.exteriorFaces)
-
-        return theta_fipy
 
     def _create_geodataframe_from_fipy_variable(self, fipy_var):
         x_cell_centers, y_cell_centers = self.mesh.cellCenters.value
@@ -665,155 +422,8 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         return None
 
 
-class RectangularMeshHydro(AbstractPeatlandHydro):
-
-    def __init__(self, peatland: Peatland,
-                 peat_hydro_params: PeatlandHydroParameters,
-                 parameterization: AbstractParameterization,
-                 channel_network: ChannelNetwork,
-                 cwl_params: CWLHydroParameters,
-                 model_coupling='darcy') -> None:
-        super().__init__(peatland, peat_hydro_params, parameterization,
-                         channel_network, cwl_params, model_coupling=model_coupling)
-        self.mesh = fp.Grid2D(dx=self.ph_params.dx, dy=self.ph_params.dx,
-                              nx=self.ph_params.nx, ny=self.ph_params.ny)
-
-        dem_value = self.pl.dem.flatten()
-        # Avoid problems with hydro variables out of bounds
-        dem_value[dem_value < 0] = 5.0
-        self.dem = fp.CellVariable(
-            name='dem', mesh=self.mesh, value=dem_value, hasOld=False)
-
-        depth_value = self.pl.peat_depth.flatten()
-        # Avoid problems with hydro variables out of bounds
-        depth_value[depth_value < 1] = 5.0
-        self.depth = fp.CellVariable(
-            name='peat_depth', mesh=self.mesh, value=depth_value, hasOld=False)
-
-        self.canal_mask = fp.CellVariable(
-            mesh=self.mesh, value=self.pl.canal_mask.astype(dtype=int).flatten())
-        self.catchment_mask = fp.CellVariable(
-            mesh=self.mesh, value=np.array(self.pl.catchment_mask, dtype=int).flatten())
-        self.catch_mask_not = fp.CellVariable(
-            mesh=self.mesh, value=np.array(~self.pl.catchment_mask, dtype=int).flatten())
-        self.catch_mask_not_face = fp.FaceVariable(
-            mesh=self.mesh, value=self.catch_mask_not.arithmeticFaceValue.value)
-
-        if self.ph_params.use_several_weather_stations:
-            raise NotImplementedError("""several weather stations not implemented in rectangular meshes.
-                                      This was actually implemented in the 1st project with Forest Carbon.
-                                      Look there for answers on how to implement it.
-                                      Otherwise, use constant P-ET.""")
-
-        pass
-
-    def set_sourcesink_variable(self, p_minus_et: float):
-        sourcearray = p_minus_et * self.catchment_mask.value
-        self.sourcesink = fp.CellVariable(
-            name='P - ET', mesh=self.mesh, value=sourcearray)
-        return None
-
-    def set_internal_canal_values_in_zeta(self):
-        # Read y from channel network computation and put it into zeta
-        y_in_canals = self.pl.rasterize_graph_attribute_to_dem_shape(
-            graph=self.cn.graph, graph_attr='zeta')
-        zeta_value = self._reshape_fipy_var_to_array(fipy_var=self.zeta)
-        zeta_value[self.pl.canal_mask] = y_in_canals[self.pl.canal_mask]
-        self.zeta.value = zeta_value.flatten()
-
-        return None
-
-    def create_uniform_fipy_var(self, uniform_value, var_name):
-        value = uniform_value * self.catchment_mask.value
-        return fp.CellVariable(name=var_name, mesh=self.mesh, value=zeta_value)
-
-    def _set_equation_darcymode(self, theta):
-        # diffussivity mask has 2 parts:
-        # Part 1) diff=0 outside catchment. Since harmonicFaceValue, it is also zero in the boundary faces.
-        # Part 2) diff=0 in faces between canal cells. 1 otherwise
-        mask_part1 = self.catchment_mask.harmonicFaceValue.value
-        mask_part2 = 1*(self.canal_mask.arithmeticFaceValue.value > 1e-7)
-        mask = mask_part1 * mask_part2
-
-        # compute diffusivity. Cell Variable
-        diff_coeff = (self.ph_params.t1*numerix.exp(-self.ph_params.t2*self.depth)/numerix.sqrt(2*self.ph_params.s2) *
-                      (numerix.exp(self.ph_params.t2*numerix.sqrt(2*theta/self.ph_params.s2)) - 1) / numerix.sqrt(theta))
-
-        # Apply mask
-        # diff_coeff.faceValue is a FaceVariable
-        diff_coeff_face = diff_coeff.faceValue * mask
-
-        largeValue = 1e60
-        eq = (fp.TransientTerm() ==
-              fp.DiffusionTerm(coeff=diff_coeff_face) + self.sourcesink
-              #   - fp.ImplicitSourceTerm(self.catch_mask_not * largeValue) +
-              #   self.catch_mask_not * largeValue * 0.
-              )
-        return eq
-
-    def _set_equation_dirimode(self, theta):
-        # compute diffusivity. Cell Variable
-        diff_coeff = self.parameterization.diffusion(theta, self.dem, self.b)
-
-        largeValue = 1e60
-        eq = (fp.TransientTerm() ==
-              # fp.DiffusionTerm(coeff=1.)
-              fp.DiffusionTerm(coeff=diff_coeff) + self.sourcesink
-              - fp.ImplicitSourceTerm(self.canal_mask * largeValue) +
-              self.canal_mask * largeValue * theta.value
-              - fp.ImplicitSourceTerm(self.catch_mask_not * largeValue) + \
-              self.catch_mask_not * largeValue * 0.
-
-              # + fp.DiffusionTerm(coeff=largeValue * catch_mask_not_face)
-              # - fp.ImplicitSourceTerm((catch_mask_not_face*largeValue*neumann_bc*mesh.faceNormals).divergence)
-              )
-        return eq
-
-    def _reshape_fipy_var_to_array(self, fipy_var) -> np.ndarray:
-        return fipy_var.value.reshape(
-            self.ph_params.nx, self.ph_params.ny)
-
-    def burn_fipy_variable_value_in_graph_attribute(self, fipy_var, graph_attr_name):
-        fipy_var_value = self._reshape_fipy_var_to_array(fipy_var=fipy_var)
-        self.pl.set_raster_value_to_graph_attribute(
-            raster_value=fipy_var_value, graph=self.cn.graph, graph_attr=graph_attr_name)
-        return None
-
-    def convert_zeta_to_y_at_canals(self):
-        # Compute y = zeta + dem
-        zeta_dict = nx.get_node_attributes(self.cn.graph, 'zeta')
-        dem_dict = nx.get_node_attributes(self.cn.graph, 'DEM')
-        y_at_canals = {node: zeta_value +
-                       dem_dict[node] for node, zeta_value in zeta_dict.items()}
-        return y_at_canals
-
-    def save_fipy_var_in_raster_file(self, fipy_var, out_raster_fn, interpolate=False):
-        if interpolate == True:
-            raise Warning(
-                'Nothing to interpolate in a 2D rectabgular mesh. \nContinuing without interpolation')
-        template_raster_fn = self.pl.fn_dem
-        array_to_rasterize = fipy_var.value.reshape(
-            self.ph_params.nx, self.ph_params.ny)
-        utilities.write_raster_from_array(array_to_rasterize=array_to_rasterize,
-                                          out_filename=out_raster_fn,
-                                          template_raster_filename=template_raster_fn)
-
-        return None
-
-    def imshow(self, variable):
-        plt.figure(figsize=(18, 16), dpi=200)
-        plt.imshow(variable.value.reshape(
-            self.ph_params.nx, self.ph_params.ny))
-        plt.colorbar()
-
-        return None
-
-
 def set_up_peatland_hydrology(mesh_fn,
-                              model_coupling,
-                              use_scaled_pde,
                               zeta_diri_bc,
-                              force_ponding_storage_equal_one,
                               peatland: Peatland,
                               peat_hydro_params: PeatlandHydroParameters,
                               channel_network: ChannelNetwork,
@@ -828,27 +438,10 @@ def set_up_peatland_hydrology(mesh_fn,
     Return:
         [class]: The right subclass of AbstractPeatlandHydro class to implement
     """
-    if mesh_fn == 'fipy':
-        if use_scaled_pde:
-            raise NotImplementedError(
-                'Scaled PDE version is only supported with gmsh mesh')
-        return RectangularMeshHydro(peatland=peatland,
-                                    peat_hydro_params=peat_hydro_params,
-                                    parameterization=parameterization,
-                                    channel_network=channel_network,
-                                    cwl_params=cwl_params,
-                                    model_coupling=model_coupling,
-                                    use_scaled_pde=use_scaled_pde,
-                                    zeta_diri_bc=zeta_diri_bc,
-                                    force_ponding_storage_equal_one=force_ponding_storage_equal_one)
-    else:
-        return GmshMeshHydro(mesh_fn=mesh_fn,
-                             peatland=peatland,
-                             peat_hydro_params=peat_hydro_params,
-                             parameterization=parameterization,
-                             channel_network=channel_network,
-                             cwl_params=cwl_params,
-                             model_coupling=model_coupling,
-                             use_scaled_pde=use_scaled_pde,
-                             zeta_diri_bc=zeta_diri_bc,
-                             force_ponding_storage_equal_one=force_ponding_storage_equal_one)
+    return GmshMeshHydro(mesh_fn=mesh_fn,
+                         peatland=peatland,
+                         peat_hydro_params=peat_hydro_params,
+                         parameterization=parameterization,
+                         channel_network=channel_network,
+                         cwl_params=cwl_params,
+                         zeta_diri_bc=zeta_diri_bc)
