@@ -68,9 +68,10 @@ class AbstractPeatlandHydro:
         pass
 
     def zeta_from_h(self, h):
-        return h - self.dem
+        return self.parameterization.zeta_from_h(h, self.dem) 
 
     def h_from_zeta(self, zeta):
+        return self.parameterization.h_from_zeta(zeta, self.dem) 
         return zeta + self.dem
 
     def create_zeta_from_h(self, h):
