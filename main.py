@@ -328,14 +328,12 @@ def run_daily_computations(hydro, cwl_hydro, net_daily_source, internal_timestep
     # Add pan ET  
     hydro.sourcesink = hydro.sourcesink - \
             hydro.compute_pan_ET_from_ponding_water(hydro.zeta)
-    zeta_t0 = hydro.zeta.value
 
     solution_function = simulate_one_timestep_simple_two_step
 
     for hour in tqdm(range(internal_timesteps)):
         hydro, cwl_hydro = solution_function(hydro, cwl_hydro)
 
-    zeta_t1 = hydro.zeta.value
 
     return hydro, cwl_hydro
 
@@ -447,6 +445,7 @@ hydro.cn_params.dt = 3600  # dt in seconds
 params_fn = Path.joinpath(parent_directory, '2d_calibration_parameters.xlsx')
 PARAMS = pd.read_excel(params_fn, engine='openpyxl')
 N_PARAMS = N_CPU
+
 # %% Run multiprocessing csc
 if platform.system() == 'Linux':
     if N_PARAMS > 1:
@@ -459,7 +458,7 @@ if platform.system() == 'Linux':
 
     elif N_PARAMS == 1:
         hydro.verbose = True
-        param_numbers = range(0, N_PARAMS)
+        param_numbers = [3]
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                       parent_directory) for param_number in param_numbers]
         for args in arguments:

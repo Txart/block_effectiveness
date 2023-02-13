@@ -81,7 +81,7 @@ class AbstractPeatlandHydro:
     def create_h_from_zeta(self, zeta):
         theta = self.h_from_zeta(zeta)
         return fp.CellVariable(
-            name='theta', mesh=self.mesh, value=theta.value, hasOld=True)
+            name='h (wtd)', mesh=self.mesh, value=theta.value, hasOld=True)
 
     def _check_initial_wtd_variables(self):
         try:
