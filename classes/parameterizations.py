@@ -79,7 +79,8 @@ class AbstractParameterization:
         trans_1 = t1*( 1 + t2*(h - dem) - numerix.exp(-t2*depth))
         trans_2 = t1*( numerix.exp(t2*(h - dem)) - numerix.exp(-t2 * depth))
         
-        return trans_1*mask_1 + trans_2*mask_2
+        # return trans_1*mask_1 + trans_2*mask_2
+        return trans_2
 
     
     """

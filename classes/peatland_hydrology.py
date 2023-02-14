@@ -79,9 +79,9 @@ class AbstractPeatlandHydro:
             name='zeta', mesh=self.mesh, value=zeta_values, hasOld=True)
 
     def create_h_from_zeta(self, zeta):
-        theta = self.h_from_zeta(zeta)
+        h = self.h_from_zeta(zeta)
         return fp.CellVariable(
-            name='h (wtd)', mesh=self.mesh, value=theta.value, hasOld=True)
+            name='h (wtd)', mesh=self.mesh, value=h.value, hasOld=True)
 
     def _check_initial_wtd_variables(self):
         try:
@@ -102,7 +102,8 @@ class AbstractPeatlandHydro:
         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
         mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
 
-        storage = self.parameterization.storage(h, self.dem)
+        # storage = self.parameterization.storage(h, self.dem)
+        storage = 0.6
 
         transmissivity = self.parameterization.transmissivity(h, self.dem, self.depth)
         # Apply mask
@@ -123,7 +124,7 @@ class AbstractPeatlandHydro:
             # Diri BC in h. Compute h from zeta
             h_face_values = self.parameterization.h_from_zeta(
                 self.zeta_diri_bc, self.dem.faceValue)
-            # constrain theta with those values
+            # constrain h with those values
             h.constrain(h_face_values, where=self.mesh.exteriorFaces)
 
         eq = self._set_equation(h)
@@ -293,6 +294,15 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         canal_fipy.setValue = canal_values_in_mesh
 
         return canal_fipy
+
+    def convert_h_to_y_at_canals(self, h_fipy_var):
+        # Compute y = zeta + dem
+        zeta_dict = self._get_fipy_variable_values_at_graph_nodes(
+            fipy_var=zeta_fipy_var)
+        dem_dict = nx.get_node_attributes(self.cn.graph, 'DEM')
+        y_at_canals = {node: zeta_value +
+                       dem_dict[node] for node, zeta_value in zeta_dict.items()}
+        return y_at_canals
 
     def _get_fipy_variable_values_at_graph_nodes(self, fipy_var):
         # This formulation is a bit more cumbersome, but much more efficient

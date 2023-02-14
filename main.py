@@ -50,7 +50,7 @@ N_CPU = args.ncpu
 if platform.system() == 'Linux':  # Working on my own machine
     parent_directory = Path('~/Programming/github/paper2')
     data_parent_folder = parent_directory.joinpath('data/Raw csv')
-    fn_pointers = parent_directory.joinpath(r'file_pointers_csc.xlsx')
+    fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
 
 elif platform.system() == 'Windows':
     parent_directory = Path(r"C:\Users\03125327\github\paper2")
@@ -103,7 +103,7 @@ peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 peat_hydro_params = PeatlandHydroParameters(
     dt=1/24,  # dt in days
     dx=50,  # dx in meters, only used if structured mesh
-    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-5,
+    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-2,
     s1=0.0, s2=0.0, t1=0, t2=0,
     use_several_weather_stations=True)
 
@@ -146,7 +146,7 @@ def simulate_one_timestep_simple_two_step(hydro, cwl_hydro):
     hydro.wtd = hydro.run(h=hydro.wtd)
     hydro.zeta = hydro.create_zeta_from_h(hydro.wtd)
 
-    new_y_at_canals = hydro.convert_zeta_to_y_at_canals(hydro.zeta)
+    new_y_at_canals = hydro.convert_h_to_y_at_canals(hydro.wtd)
     h_prediction_array = hydro.cn.from_nodedict_to_nparray(new_y_at_canals)
     h_previous_array = hydro.cn.y[:]
     h_diff = h_prediction_array - h_previous_array
