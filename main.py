@@ -1,5 +1,5 @@
 # %%
-from classes.parameterizations import ConstantStorage
+from classes.parameterizations import ConstantStorage, ExponentialStorage
 from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_hydrology
 from classes.peatland import Peatland
 from classes.channel_hydrology import set_up_channel_hydrology, CWLHydroParameters
@@ -126,7 +126,7 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
                                      cn=channel_network)
 
 # If you change this, change also other occurrences below!!
-parameterization = ConstantStorage(peat_hydro_params)
+parameterization = ExponentialStorage(peat_hydro_params)
 
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn,
                                   zeta_diri_bc=-0.2,
@@ -213,7 +213,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ConstantStorage(hydro.ph_params)
+    hydro.parameterization = ExponentialStorage(hydro.ph_params)
     
     # Begin from complete saturation
     hydro.zeta = hydro.create_uniform_fipy_var(
@@ -358,7 +358,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
 
     # hydro.parameterization = ExponentialBelowOneAboveStorage(
     #     hydro.ph_params)
-    hydro.parameterization = ConstantStorage(hydro.ph_params)
+    hydro.parameterization = ExponentialStorage(hydro.ph_params)
      
     # Outputs will go here
     output_directory = Path.joinpath(parent_directory, 'output')

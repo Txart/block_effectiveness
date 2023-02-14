@@ -102,8 +102,10 @@ class AbstractPeatlandHydro:
         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
         mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
 
-        # storage = self.parameterization.storage(h, self.dem)
-        storage = 0.6
+        sto = self.parameterization.storage(h, self.dem)
+        # at each timestep, the storage is a constant (not dependent on h)
+        # I use the .value method to eliminate the dependence on h.
+        storage = fp.CellVariable(mesh=self.mesh, value=sto.value)
 
         transmissivity = self.parameterization.transmissivity(h, self.dem, self.depth)
         # Apply mask
@@ -294,15 +296,6 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         canal_fipy.setValue = canal_values_in_mesh
 
         return canal_fipy
-
-    def convert_h_to_y_at_canals(self, h_fipy_var):
-        # Compute y = zeta + dem
-        zeta_dict = self._get_fipy_variable_values_at_graph_nodes(
-            fipy_var=zeta_fipy_var)
-        dem_dict = nx.get_node_attributes(self.cn.graph, 'DEM')
-        y_at_canals = {node: zeta_value +
-                       dem_dict[node] for node, zeta_value in zeta_dict.items()}
-        return y_at_canals
 
     def _get_fipy_variable_values_at_graph_nodes(self, fipy_var):
         # This formulation is a bit more cumbersome, but much more efficient

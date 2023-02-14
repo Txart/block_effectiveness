@@ -59,12 +59,8 @@ class AbstractParameterization:
         s1 = self.s1
         s2 = self.s2
 
-        mask_1, mask_2 = self._get_piecewise_masks_in_h(h, dem)
+        return self.s1 * numerix.exp(self.s2*(h - dem))
 
-        sto_1 = 1 # theoretical value
-        sto_2 = self.s1 * numerix.exp(self.s2*(h - dem))
-
-        return sto_1*mask_1 + sto_2*mask_2
 
     def transmissivity(self, h, dem, depth):
         t1 = self.t1
@@ -91,14 +87,8 @@ class AbstractParameterization:
     def storage_from_zeta(self, zeta):
         import numpy as np # importing inside function not to contaminate fipy's numerix.
         
-        positives_mask = 1*(zeta>0)
-        negatives_mask = 1 - positives_mask
-        zeta_pos, zeta_neg = self._mask_array_piecewise(zeta, positives_mask, negatives_mask)
+        return self.s1*np.exp(self.s2*zeta)
 
-        sto_pos = 1
-        sto_neg = self.s1*np.exp(self.s2*zeta_neg)
-
-        return sto_pos * positives_mask + sto_neg * negatives_mask
 
 
     def transmissivity_from_zeta(self, zeta, depth):
@@ -166,26 +156,6 @@ class ConstantStorage(AbstractParameterization):
         self.s2 = 0
 
         pass
-
-    def storage(self, h, dem):
-
-        mask_1, mask_2 = self._get_piecewise_masks_in_h(h, dem)
-
-        sto_1 = 1 # theoretical value
-        sto_2 = self.s1 
-
-        return sto_1*mask_1 + sto_2*mask_2
-    
-
-    def storage_from_zeta(self, zeta):
-        
-        positives_mask = 1*(zeta>0)
-        negatives_mask = 1 - positives_mask
-
-        sto_pos = 1
-        sto_neg = self.s1
-
-        return sto_pos * positives_mask + sto_neg * negatives_mask
 
 
 class ExponentialStorage(AbstractParameterization):
