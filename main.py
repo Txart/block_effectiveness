@@ -1,6 +1,7 @@
 # %%
 from classes.parameterizations import ConstantStorage, ExponentialStorage
-from classes.peatland_hydrology import PeatlandHydroParameters, set_up_peatland_hydrology
+from classes.peatland_hydrology import set_up_peatland_hydrology
+from classes.peat_hydro_params import PeatlandHydroParameters
 from classes.peatland import Peatland
 from classes.channel_hydrology import set_up_channel_hydrology, CWLHydroParameters
 from classes.channel_network import ChannelNetwork
@@ -105,6 +106,8 @@ peat_hydro_params = PeatlandHydroParameters(
     dx=50,  # dx in meters, only used if structured mesh
     nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-2,
     s1=0.0, s2=0.0, t1=0, t2=0,
+    fixed_storage_fipy=False,
+    implicit_source_term_fipy=False,
     use_several_weather_stations=True)
 
 # Set up cwl computation

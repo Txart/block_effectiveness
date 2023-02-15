@@ -97,7 +97,12 @@ class AbstractPeatlandHydro:
         return np.linalg.norm(vector2 - vector1) < np.linalg.norm(vector1)*self.ph_params.rel_tol + self.ph_params.abs_tol
 
 
-    def _set_equation(self, h):
+    def _set_equation_fixed_storage(self, h):
+        """
+        By fixed storage we mean that at each fipy solution step,
+        S(h) is calculated and left at that fixed value.
+        I.e., S does not have an h dependency during the solution step.
+        """
 
         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
         mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
@@ -119,6 +124,87 @@ class AbstractPeatlandHydro:
         return eq
 
 
+    # def _set_equation_full_boussinesq(self, h):
+    #     """
+    #     Absorb the storage S in the Boussinesq equation into the
+    #     spatial derivative part.
+    #     """
+    #     s2 = self.parameterization.s2
+
+    #     # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
+    #     mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
+
+    #     storage = self.parameterization.storage(h, self.dem)
+
+    #     transmissivity = self.parameterization.transmissivity(h, self.dem, self.depth)
+    #     # Apply mask
+    #     # diff_coeff.faceValue is a FaceVariable
+    #     diff_face = (transmissivity/storage).faceValue * mask
+
+    #     # Extra diffusive source term coming from absorbing S in the spatial derivative
+    #     extra_diffu_coef = s2*transmissivity/storage*(self.dem - h)
+    #     extra_diffu_coef = extra_diffu_coef.faceValue * mask
+    #     extra_diffu_1 = fp.DiffusionTerm(coeff=extra_diffu_coef)
+
+    #     extra_diffu_2 = -(self.dem - h) * s2 * (diff_face * h.faceGrad).divergence
+    #     extra_diffusive_term = extra_diffu_1 + extra_diffu_2
+
+
+    #     # 2 options: write the source explicitly OR
+    #     # linearize the source to help fipy convergence
+    #     if self.ph_params.implicit_source_term_fipy:
+    #         source_old = self.sourcesink / storage
+    #         S0 = source_old*( 1 - s2 * h)
+    #         S1 = source_old * s2
+    #         source_term = S0 + fp.ImplicitSourceTerm(coeff=S1)
+    #     else:
+    #         source_term = self.sourcesink / storage
+
+    #     eq = (fp.TransientTerm() ==
+    #           # fp.DiffusionTerm(coeff=diff_face) +
+              
+    #           source_term +
+    #           extra_diffusive_term
+    #           )
+
+    #     return eq
+
+
+    def _set_equation_full_boussinesq(self, h):
+        """
+        Absorb the storage S in the Boussinesq equation into the
+        spatial derivative part.
+        """
+        s2 = self.parameterization.s2
+
+        # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
+        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
+
+        storage = self.parameterization.storage(h, self.dem)
+
+        transmissivity = self.parameterization.transmissivity(h, self.dem, self.depth)
+        # Apply mask
+        # diff_coeff.faceValue is a FaceVariable
+        trans_face = transmissivity.faceValue * mask
+
+
+        # 2 options: write the source explicitly OR
+        # linearize the source to help fipy convergence
+        if self.ph_params.implicit_source_term_fipy:
+            source_old = self.sourcesink / storage
+            S0 = source_old*( 1 - s2 * h)
+            S1 = source_old * s2
+            source_term = S0 + fp.ImplicitSourceTerm(coeff=S1)
+        else:
+            source_term = self.sourcesink / storage
+
+        eq = (fp.TransientTerm() ==
+              (trans_face * h.faceGrad).divergence / storage +
+              source_term
+              )
+
+        return eq
+
     def run(self, h):
         self._check_initial_wtd_variables()
 
@@ -129,7 +215,10 @@ class AbstractPeatlandHydro:
             # constrain h with those values
             h.constrain(h_face_values, where=self.mesh.exteriorFaces)
 
-        eq = self._set_equation(h)
+        if self.ph_params.fixed_storage_fipy:
+            eq = self._set_equation_fixed_storage(h)
+        else:
+            eq = self._set_equation_full_boussinesq(h)
 
         residue = 1e10
 
