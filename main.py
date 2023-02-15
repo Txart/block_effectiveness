@@ -49,7 +49,7 @@ precip_data = args.precip_data
 N_CPU = args.ncpu
 
 if platform.system() == 'Linux':  # Working on my own machine
-    parent_directory = Path('~/Programming/github/paper2')
+    parent_directory = Path('/home/txart/Programming/github/paper2')
     data_parent_folder = parent_directory.joinpath('data/Raw csv')
     fn_pointers = parent_directory.joinpath(r'file_pointers.xlsx')
 
