@@ -75,8 +75,7 @@ class AbstractParameterization:
         trans_1 = t1*( 1 + t2*(h - dem) - numerix.exp(-t2*depth))
         trans_2 = t1*( numerix.exp(t2*(h - dem)) - numerix.exp(-t2 * depth))
         
-        # return trans_1*mask_1 + trans_2*mask_2
-        return trans_2
+        return trans_1*mask_1 + trans_2*mask_2
 
     
     """
@@ -111,7 +110,7 @@ class AbstractParameterization:
         PLOTCOLS = 3
         PLOTROWS = 1
         FIGSIZE = (10, 5)
-        DPI = 500
+        DPI = 300
         # Create fig layout
         fig, axes = plt.subplots(PLOTROWS, PLOTCOLS, dpi=DPI, figsize=FIGSIZE, sharey=True,
                                 gridspec_kw={'width_ratios': [1, 1, 1]})

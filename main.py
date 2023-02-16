@@ -22,10 +22,13 @@ from pathlib import Path
 import numpy as np
 import read_weather_data
 
-import os
 # necessary to set the same solver also in csc
+import os
 os.environ["FIPY_SOLVERS"] = "scipy"
-
+# from fipy.solvers.scipy import DefaultSolver
+# fp.DefaultSolver = DefaultSolver
+print(f"Fipy running with solver: {fp.DefaultSolver}")
+print(f"Fipy running with solver: {fp.solvers.solver}")
 
 # %% Parse cmd line arguments
 
@@ -104,7 +107,7 @@ peatland = Peatland(cn=channel_network, fn_pointers=fn_pointers)
 peat_hydro_params = PeatlandHydroParameters(
     dt=1/24,  # dt in days
     dx=50,  # dx in meters, only used if structured mesh
-    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-2,
+    nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-5,
     s1=0.0, s2=0.0, t1=0, t2=0,
     fixed_storage_fipy=False,
     implicit_source_term_fipy=False,
@@ -129,7 +132,7 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
                                      cn=channel_network)
 
 # If you change this, change also other occurrences below!!
-parameterization = ExponentialStorage(peat_hydro_params)
+parameterization = ConstantStorage(peat_hydro_params)
 
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn,
                                   zeta_diri_bc=-0.2,
@@ -216,7 +219,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ExponentialStorage(hydro.ph_params)
+    hydro.parameterization = ConstantStorage(hydro.ph_params)
     
     # Begin from complete saturation
     hydro.zeta = hydro.create_uniform_fipy_var(
@@ -243,7 +246,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     N_DAYS = 0
     day = 0
     # If True, start day0 with a small timestep to smooth things
-    needs_smaller_timestep = True
+    needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24  # Hourly
     SMALLER_TIMESTEP = 100
     while day < N_DAYS:
@@ -361,7 +364,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
 
     # hydro.parameterization = ExponentialBelowOneAboveStorage(
     #     hydro.ph_params)
-    hydro.parameterization = ExponentialStorage(hydro.ph_params)
+    hydro.parameterization = ConstantStorage(hydro.ph_params)
      
     # Outputs will go here
     output_directory = Path.joinpath(parent_directory, 'output')
@@ -381,7 +384,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     day = 0
     needs_smaller_timestep = False
     NORMAL_TIMESTEP = 24  # Hourly
-    SMALLER_TIMESTEP = 1000
+    SMALLER_TIMESTEP = 100
 
     while day < N_DAYS:
         print(f'\n computing day {day}')
@@ -397,6 +400,9 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
         try:
             hydro_test, cwl_hydro_test = run_daily_computations(
                 hydro_test, cwl_hydro_test, net_daily_source, internal_timesteps, day)
+
+            print('Day computation finished')
+            hydro.imshow(hydro.zeta)
 
         except Exception as e:
             if internal_timesteps == NORMAL_TIMESTEP:

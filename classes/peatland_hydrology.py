@@ -105,9 +105,10 @@ class AbstractPeatlandHydro:
         """
 
         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
-        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
+        mask = 1*(self.canal_mask.arithmeticFaceValue > 0.9)
 
-        sto = self.parameterization.storage(h, self.dem)
+        # the ._value attribute of a variable is the current value, updated even during sweeps.
+        sto = self.parameterization.storage(h._value, self.dem)
         # at each timestep, the storage is a constant (not dependent on h)
         # I use the .value method to eliminate the dependence on h.
         storage = fp.CellVariable(mesh=self.mesh, value=sto.value)
@@ -118,56 +119,57 @@ class AbstractPeatlandHydro:
         trans_face = transmissivity.faceValue * mask
 
         eq = (fp.TransientTerm(coeff=storage) ==
-              fp.DiffusionTerm(coeff=trans_face) + self.sourcesink
+              fp.DiffusionTerm(coeff=trans_face)
+              + self.sourcesink
               )
 
         return eq
 
 
-    # def _set_equation_full_boussinesq(self, h):
-    #     """
-    #     Absorb the storage S in the Boussinesq equation into the
-    #     spatial derivative part.
-    #     """
-    #     s2 = self.parameterization.s2
+#     def _set_equation_full_boussinesq(self, h):
+#         """
+#         Absorb the storage S in the Boussinesq equation into the
+#         spatial derivative part.
+#         """
+#         s2 = self.parameterization.s2
 
-    #     # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
-    #     mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
+#         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
+#         mask = 1*(self.canal_mask.arithmeticFaceValue > 0.9)
 
-    #     storage = self.parameterization.storage(h, self.dem)
+#         storage = self.parameterization.storage(h, self.dem)
 
-    #     transmissivity = self.parameterization.transmissivity(h, self.dem, self.depth)
-    #     # Apply mask
-    #     # diff_coeff.faceValue is a FaceVariable
-    #     diff_face = (transmissivity/storage).faceValue * mask
+#         transmissivity = self.parameterization.transmissivity(h, self.dem, self.depth)
+#         # Apply mask
+#         # diff_coeff.faceValue is a FaceVariable
+#         diff_face = (transmissivity/storage).faceValue * mask
 
-    #     # Extra diffusive source term coming from absorbing S in the spatial derivative
-    #     extra_diffu_coef = s2*transmissivity/storage*(self.dem - h)
-    #     extra_diffu_coef = extra_diffu_coef.faceValue * mask
-    #     extra_diffu_1 = fp.DiffusionTerm(coeff=extra_diffu_coef)
+#         # Extra diffusive source term coming from absorbing S in the spatial derivative
+#         extra_diffu_coef = s2*transmissivity/storage*(self.dem - h)
+#         extra_diffu_coef = extra_diffu_coef.faceValue * mask
+#         extra_diffu_1 = fp.DiffusionTerm(coeff=extra_diffu_coef)
 
-    #     extra_diffu_2 = -(self.dem - h) * s2 * (diff_face * h.faceGrad).divergence
-    #     extra_diffusive_term = extra_diffu_1 + extra_diffu_2
+#         extra_diffu_2 = -(self.dem - h) * s2 * (diff_face * h.faceGrad).divergence
+#         extra_diffusive_term = extra_diffu_1 + extra_diffu_2
 
 
-    #     # 2 options: write the source explicitly OR
-    #     # linearize the source to help fipy convergence
-    #     if self.ph_params.implicit_source_term_fipy:
-    #         source_old = self.sourcesink / storage
-    #         S0 = source_old*( 1 - s2 * h)
-    #         S1 = source_old * s2
-    #         source_term = S0 + fp.ImplicitSourceTerm(coeff=S1)
-    #     else:
-    #         source_term = self.sourcesink / storage
+#         # 2 options: write the source explicitly OR
+#         # linearize the source to help fipy convergence
+#         if self.ph_params.implicit_source_term_fipy:
+#             source_old = self.sourcesink / storage
+#             S0 = source_old*( 1 - s2 * h)
+#             S1 = source_old * s2
+#             source_term = S0 + fp.ImplicitSourceTerm(coeff=S1)
+#         else:
+#             source_term = self.sourcesink / storage
 
-    #     eq = (fp.TransientTerm() ==
-    #           # fp.DiffusionTerm(coeff=diff_face) +
+#         eq = (fp.TransientTerm() ==
+#               # fp.DiffusionTerm(coeff=diff_face) +
               
-    #           source_term +
-    #           extra_diffusive_term
-    #           )
+#               source_term +
+#               extra_diffusive_term
+#               )
 
-    #     return eq
+#         return eq
 
 
     def _set_equation_full_boussinesq(self, h):
@@ -178,7 +180,7 @@ class AbstractPeatlandHydro:
         s2 = self.parameterization.s2
 
         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
-        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
+        mask = 1*(self.canal_mask.arithmeticFaceValue > 0.9)
 
         storage = self.parameterization.storage(h, self.dem)
 
@@ -205,6 +207,16 @@ class AbstractPeatlandHydro:
 
         return eq
 
+    def _set_equation(self, h):
+
+        if self.ph_params.fixed_storage_fipy:
+            eq = self._set_equation_fixed_storage(h)
+        else:
+            eq = self._set_equation_full_boussinesq(h)
+
+        return eq
+
+
     def run(self, h):
         self._check_initial_wtd_variables()
 
@@ -215,14 +227,10 @@ class AbstractPeatlandHydro:
             # constrain h with those values
             h.constrain(h_face_values, where=self.mesh.exteriorFaces)
 
-        if self.ph_params.fixed_storage_fipy:
-            eq = self._set_equation_fixed_storage(h)
-        else:
-            eq = self._set_equation_full_boussinesq(h)
-
         residue = 1e10
 
         for sweep_number in range(self.ph_params.max_sweeps):
+            eq = self._set_equation(h)
             old_residue = copy.deepcopy(residue)
             residue = eq.sweep(var=h, dt=self.ph_params.dt)
 
