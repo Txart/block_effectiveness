@@ -400,9 +400,6 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
             hydro_test, cwl_hydro_test = run_daily_computations(
                 hydro_test, cwl_hydro_test, net_daily_source, internal_timesteps, day)
 
-            print('Day computation finished')
-            hydro.imshow(hydro.zeta)
-
         except Exception as e:
             if internal_timesteps == NORMAL_TIMESTEP:
                 print(f'Exception in computation of param number {param_number} at day {day}: ', e,
@@ -466,7 +463,7 @@ if platform.system() == 'Linux':
 
     elif N_PARAMS == 1:
         hydro.verbose = True
-        param_numbers = [3]
+        param_numbers = [1]
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                       parent_directory) for param_number in param_numbers]
         for args in arguments:
@@ -477,7 +474,7 @@ if platform.system() == 'Linux':
 if platform.system() == 'Windows':
     hydro.verbose = True
     N_PARAMS = 1
-    param_numbers = [3]
+    param_numbers = [1]
     arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                   parent_directory) for param_number in param_numbers]
 
