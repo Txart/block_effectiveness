@@ -127,7 +127,7 @@ data = read_data(params_to_plot, modes, N_DAYS, raster_shape)
 # reality check
 REALITY_CHECK = False
 if REALITY_CHECK:
-reality_check_data  = read_data(n_params=[3], modes = [reality_check_mode], n_days=365, rasters_shape=raster_shape)
+    reality_check_data  = read_data(n_params=[3], modes = [reality_check_mode], n_days=365, rasters_shape=raster_shape)
 
 # Change raster nans to zeros
 data_with_nan = data[:]
@@ -265,8 +265,8 @@ import geopandas as gpd
 import rasterio
 from scipy.spatial import distance_matrix
 # block positions
-fn_block_positions = Path(r"C:\Users\03125327\github\paper2\data\new_area\dams.gpkg")
-fn_dtm = Path(r"C:\Users\03125327\github\paper2\data\new_area\new_area_dtm.tif")
+fn_block_positions = Path(r"/home/txart/Programming/github/paper2/data/new_area/dams.gpkg")
+fn_dtm = Path(r"/home/txart/Programming/github/paper2/data/new_area/new_area_dtm.tif")
 
 block_gdf = gpd.read_file(fn_block_positions)
 block_gdf.to_crs(crs='EPSG:32748', inplace=True)

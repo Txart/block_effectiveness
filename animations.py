@@ -5,7 +5,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 import matplotlib.cm as cm
-import seaborn as sns
 import rasterio
 import copy
 from tqdm import tqdm
@@ -91,7 +90,7 @@ def triage_weather_files(weather_type):
 #%% Directories
 parent_directory = Path(".")
 data_parent_folder = parent_directory.joinpath('data') 
-output_folder = parent_directory.joinpath('output/plots')
+output_folder = parent_directory.joinpath('output/plots/animations')
 WTD_rasters_main_directory = parent_directory.joinpath(f'output/params_number_{param_to_plot}') 
     
 #%% Get P - ET
