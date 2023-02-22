@@ -1,4 +1,4 @@
-# %%
+#%%
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,23 +9,22 @@ import matplotlib
 import rasterio
 from pathlib import Path
 from collections import OrderedDict
-import seaborn as sns
 import copy
 
 import read_weather_data
 
-# %% Define style
+#%% Define style
 # plt.style.use('seaborn-paper')
 # plt.rc('font', family='serif')
 # sns.set_context('paper', font_scale=1.5)
 
 plt.style.use('paper_plot_style.mplstyle')
 
-# %% Params
+#%% Params
 
 N_DAYS = 365
 
-params_to_plot = [11, 12, 13, 14]
+params_to_plot = [3]
 N_PARAMS = len(params_to_plot)
 
 parent_folder = Path('.')
@@ -86,7 +85,7 @@ reality_check_mode = {'foldername': 'yes_blocks',
         'color': cmap(0),
         'marker': 'o',
         'linestyle': 'solid'}
-# %% Useful funcs
+#%% Useful funcs
 
 
 def plot_repeated_labels_only_once_in_legend():
@@ -96,7 +95,7 @@ def plot_repeated_labels_only_once_in_legend():
     return None
 
 
-# %% Read data
+#%% Read data
 # Get raster dimensions from first raster file
 template_rfn = data_folder.joinpath(
     f'params_number_{params_to_plot[0]}/{modes[0]["foldername"]}/zeta_after_1_DAYS.tif')
@@ -124,8 +123,10 @@ def read_data(n_params, modes, n_days, rasters_shape):
 # Array containing data mimicks folder structure
 # Structure: [param_number, block_and_precip_type, day_number, raster]
 data = read_data(params_to_plot, modes, N_DAYS, raster_shape)
-# reality check
 
+# reality check
+REALITY_CHECK = False
+if REALITY_CHECK:
 reality_check_data  = read_data(n_params=[3], modes = [reality_check_mode], n_days=365, rasters_shape=raster_shape)
 
 # Change raster nans to zeros
@@ -136,7 +137,7 @@ dry_sourcesink = read_weather_data.get_daily_net_source(year_type='elnino')
 wet_sourcesink = read_weather_data.get_daily_net_source(year_type='normal')
 # mm to m
 dry_sourcesink, wet_sourcesink = 1000*dry_sourcesink, 1000*wet_sourcesink
-# %% Compute averages
+#%% Compute averages
 # Axes:
 # 0:param_number
 # 1:block_and_precip_type
@@ -244,7 +245,7 @@ for i_param, param_name in enumerate(params_to_plot):
     new_df['param'] = param_name
     df_daily_wet_CO2 = pd.concat([df_daily_wet_CO2, new_df], ignore_index=True)
 
-# %% Compute differences
+#%% Compute differences
 dry_diffs = data[:,2,:,:,:] - data[:,0,:,:,:] 
 wet_diffs = data[:,3,:,:,:] - data[:,1,:,:,:] 
 dry_diffs_with_nan = data_with_nan[:,2,:,:,:] - data_with_nan[:,0,:,:,:] 
@@ -259,7 +260,7 @@ all_avg_wet_diffs_with_nan = np.mean(wet_diffs_with_nan, axis=(0,1))
 
 all_avg_diffs = 0.5 * (all_avg_dry_diffs_with_nan + all_avg_wet_diffs_with_nan) 
 
-# %% Compute Spatial extent of block effects
+#%% Compute Spatial extent of block effects
 import geopandas as gpd
 import rasterio
 from scipy.spatial import distance_matrix
@@ -295,7 +296,7 @@ min_dist = np.min(dist_mat, axis=0)
 min_dist_array_to_blocks = min_dist.reshape(catchment_coordinates.shape[0], catchment_coordinates.shape[1]).T[::-1]
 # min_dist_array_to_blocks contains the shortest distance to a block for each pixel. Try:
 # plt.imshow(min_dist_array); plt.colorbar()
-# %% Compute binned mean distance
+#%% Compute binned mean distance
 BIN_WIDTH_IN_METERS = 100
 bins = np.arange(start=0, stop=np.max(min_dist_array_to_blocks), step=BIN_WIDTH_IN_METERS)
 bin_indices = np.digitize(min_dist_array_to_blocks.ravel(), bins=bins)
@@ -340,7 +341,7 @@ plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
 plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.pdf'),
                 bbox_inches='tight')
 plt.show()
-# %%------------------------------
+#%%------------------------------
 # Every param spatial_average vs time, wet and dry
 # --------------------------------
 fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(9,12))
@@ -452,7 +453,7 @@ plt.savefig(output_folder.joinpath(f'every_param_diff_vs_time_wet_and_dry.png'),
 plt.savefig(output_folder.joinpath(f'every_param_diff_vs_time_wet_and_dry.pdf'),
             bbox_inches='tight')
 plt.show()
-# %%------------------------------
+#%%------------------------------
 # COMBINED Every param spatial_average vs time, wet and dry
 # --------------------------------
 fig, axes = plt.subplots(nrows=2, ncols=2,
@@ -560,7 +561,7 @@ plt.show()
 
 
 
-# %%------------------------------
+#%%------------------------------
 # One param spatial_average vs time
 # --------------------------------
 for i_param, param_to_plot in enumerate(params_to_plot):
@@ -717,7 +718,7 @@ plt.savefig(output_folder.joinpath(f'all_params_daily_cumulative_CO2.pdf'),
 plt.show()
 
 # ---------------------------------------
-# %% Modes spatiotemporal avg per param
+#%% Modes spatiotemporal avg per param
 # ---------------------------------------
 plt.figure()
 for i_param, param_name in enumerate(params_to_plot):
@@ -774,7 +775,7 @@ sns.stripplot(
 plot_repeated_labels_only_once_in_legend()
 plt.show()
 
-# %% All params figure
+#%% All params figure
 
 
 def _get_piecewise_masks_in_zeta(zeta):
@@ -936,7 +937,7 @@ plt.savefig(output_folder.joinpath(f'parameterization.png'), bbox_inches='tight'
 plt.savefig(output_folder.joinpath(f'parameterization.pdf'), bbox_inches='tight')
 plt.show()
 
-# %% WTD rasters 
+#%% WTD rasters 
 day = 10
 parameter = 1
 mode = 0 #nodry, nowet, yesdry, yeswet
@@ -953,7 +954,7 @@ plt.colorbar()
 fig.tight_layout()
 plt.show()
 
-# %% WTD Reality check different times
+#%% WTD Reality check different times
 days = [10, 100, 200, 300]
 parameter = 1
 mode = 0 #nodry, nowet, yesdry, yeswet
@@ -984,7 +985,7 @@ for ax, day in zip(axes.flat, days):
 fig.colorbar(im, ax=axes.ravel().tolist())
 plt.savefig(output_folder.joinpath(f'reality_check_wtd_several_days.png'), bbox_inches='tight')
 plt.show()
-# %% Reality check. Sensors
+#%% Reality check. Sensors
 
 import fc_get_data
 def read_sensor_locations(fd_sensor_info):
@@ -1117,7 +1118,7 @@ plt.figure()
 plt.plot(all_sensor_WTD.mean(axis=1), label='measured mean WTD')
 plt.plot(modeled_yesblocks.mean(axis=1), label='modelled mean WTD')
 plt.legend()
-# %% Precipitation & ET
+#%% Precipitation & ET
 
 fig, axes = plt.subplots(nrows=2, ncols=1,
         sharex=True, constrained_layout=True, figsize=(4,4))
@@ -1173,7 +1174,7 @@ plt.show()
 
 
 
-# %% Plot WTD diff vs distance to blocks for all params and weathers.
+#%% Plot WTD diff vs distance to blocks for all params and weathers.
 fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(4.13, 4.13*2))
 axes_wet = axes[:,0]
 axes_dry = axes[:,1]
@@ -1233,7 +1234,7 @@ plt.subplots_adjust(wspace=0.0, hspace=0.0)
 plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect.png'),
             bbox_inches='tight')
 plt.show()
-# %% BOXPLOT Plot WTD diff vs distance to blocks for all params and weathers.
+#%% BOXPLOT Plot WTD diff vs distance to blocks for all params and weathers.
 fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(4.13, 4.13*2))
 axes_wet = axes[:,0]
 axes_dry = axes[:,1]
@@ -1338,7 +1339,7 @@ for i in range(4):
 
 
 plt.show()
-# %% Some results
+#%% Some results
 print("Averaging over everything, blocks raised WTD by:")
 print(0.5*(np.mean(dry_diffs) + np.mean(wet_diffs))*100, " cm")
 print("In dry periods, and averaging over everything else, blocks raised WTD by:")
@@ -1366,4 +1367,4 @@ print(cum_sequestered_wet_CO2_daily[:,-1])
 print("Mean annual sequestered CO2 Mg per ha for WET conditions:")
 print(cum_sequestered_wet_CO2_daily[:,-1].mean())
 
-# %%
+#%%
