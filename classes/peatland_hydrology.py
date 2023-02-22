@@ -106,7 +106,7 @@ class AbstractPeatlandHydro:
         """
 
         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
-        mask = 1*(self.canal_mask.arithmeticFaceValue > 0.9)
+        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
 
         # the ._value attribute of a variable is the current value, updated even during sweeps.
         sto = self.parameterization.storage(h, self.dem)
@@ -132,7 +132,7 @@ class AbstractPeatlandHydro:
         Fully explicit scheme in fipy
         """
         # diffussivity mask: diff=0 in faces between canal cells. 1 otherwise.
-        mask = 1*(self.canal_mask.arithmeticFaceValue > 0.9)
+        mask = 1*(self.canal_mask.arithmeticFaceValue < 0.9)
 
         storage = self.parameterization.storage(h, self.dem)
 
@@ -455,6 +455,7 @@ class GmshMeshHydro(AbstractPeatlandHydro):
         return None
 
     def imshow(self, fipy_variable):
+        # from fipy.viewers.matplotlibViewer.matplotlibViewer import MatplotlibViewer as Viewer
         plt.figure(figsize=(9, 8), dpi=200)
         viewer = fp.Viewer(vars=fipy_variable,
                            datamin=fipy_variable.value.min(),

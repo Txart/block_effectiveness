@@ -109,7 +109,7 @@ peat_hydro_params = PeatlandHydroParameters(
     dx=50,  # dx in meters, only used if structured mesh
     nx=dem.shape[0], ny=dem.shape[1], max_sweeps=1000, fipy_desired_residual=1e-5,
     s1=0.0, s2=0.0, t1=0, t2=0,
-    fixed_storage_fipy=False,
+    fixed_storage_fipy=True,
     use_several_weather_stations=True)
 
 # Set up cwl computation
@@ -131,7 +131,7 @@ cwl_hydro = set_up_channel_hydrology(model_type='diff-wave-implicit-inexact',
                                      cn=channel_network)
 
 # If you change this, change also other occurrences below!!
-parameterization = ExponentialStorage(peat_hydro_params)
+parameterization = ConstantStorage(peat_hydro_params)
 
 hydro = set_up_peatland_hydrology(mesh_fn=mesh_fn,
                                   zeta_diri_bc=-0.2,
@@ -218,7 +218,7 @@ def find_best_initial_condition(param_number, PARAMS, hydro, cwl_hydro, parent_d
     cwl_hydro.cwl_params.n1 = float(PARAMS[PARAMS.number == param_number].n1)
     cwl_hydro.cwl_params.n2 = float(PARAMS[PARAMS.number == param_number].n2)
 
-    hydro.parameterization = ExponentialStorage(hydro.ph_params)
+    hydro.parameterization = ConstantStorage(hydro.ph_params)
     
     # Begin from complete saturation
     hydro.zeta = hydro.create_uniform_fipy_var(
@@ -363,7 +363,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
 
     # hydro.parameterization = ExponentialBelowOneAboveStorage(
     #     hydro.ph_params)
-    hydro.parameterization = ExponentialStorage(hydro.ph_params)
+    hydro.parameterization = ConstantStorage(hydro.ph_params)
      
     # Outputs will go here
     output_directory = Path.joinpath(parent_directory, 'output')
@@ -399,6 +399,7 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
         try:
             hydro_test, cwl_hydro_test = run_daily_computations(
                 hydro_test, cwl_hydro_test, net_daily_source, internal_timesteps, day)
+
 
         except Exception as e:
             if internal_timesteps == NORMAL_TIMESTEP:
@@ -463,7 +464,7 @@ if platform.system() == 'Linux':
 
     elif N_PARAMS == 1:
         hydro.verbose = True
-        param_numbers = [1]
+        param_numbers = [3]
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                       parent_directory) for param_number in param_numbers]
         for args in arguments:
