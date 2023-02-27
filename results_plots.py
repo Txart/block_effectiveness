@@ -641,7 +641,7 @@ p = sns.lineplot(
     style='blocks', style_order=(['blocks', 'no blocks']),
     color=modes[2]['color'],
     ax=ax_dry,
-    ci='sd')
+    errorbar='sd')
 p.set_xlabel('Time (d)')
 p.set_ylabel(r'$\langle\zeta\rangle (m)$')
 plot_repeated_labels_only_once_in_legend()
@@ -662,7 +662,7 @@ p = sns.lineplot(
     label='dry',
     linewidth=0.8,
     color=modes[2]['color'],
-    ci='sd',
+    errorbar='sd',
     ax=ax
 )
 p = sns.lineplot(
@@ -671,7 +671,7 @@ p = sns.lineplot(
     label='wet',
     linewidth=0.8,
     color=modes[3]['color'],
-    ci='sd',
+    errorbar='sd',
     ax=ax
 )
 p.set_xlabel('Time (d)')
@@ -750,7 +750,7 @@ df_spatialaverage = df_spatialaverage[df_spatialaverage.weather !=
 
 #     # dodge=1.0 - 1.0/2, # see https://seaborn.pydata.org/examples/jitter_stripplot.html
 #     dodge=True,
-#     ci=None
+#     errorbar=None
 # )
 # Plot violinplot
 # sns.boxplot(
