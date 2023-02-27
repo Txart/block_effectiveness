@@ -10,6 +10,7 @@ import rasterio
 from pathlib import Path
 from collections import OrderedDict
 import copy
+import seaborn as sns
 
 import read_weather_data
 
@@ -24,7 +25,7 @@ plt.style.use('paper_plot_style.mplstyle')
 
 N_DAYS = 365
 
-params_to_plot = [3]
+params_to_plot = [1, 3]
 N_PARAMS = len(params_to_plot)
 
 parent_folder = Path('.')
@@ -624,7 +625,7 @@ p = sns.lineplot(
     data=df_daily_spatialaverage[df_daily_spatialaverage['weather'] == 'wet'],
     x='day', y='avg_zeta',
     style='blocks', style_order=(['blocks', 'no blocks']),
-    ci='sd',
+    errorbar='sd',
     ax=ax_wet,
     color=modes[1]['color'],
 )

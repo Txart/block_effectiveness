@@ -233,4 +233,4 @@ class ChannelNetwork:
 
         gdf_to_export.to_file(filepath, driver='GeoJSON')
 
-        return None
+       return None
