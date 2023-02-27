@@ -131,7 +131,7 @@ class AbstractChannelHydrology:
         # Returns volumetric lateral inflow per unit length that goes into canal in time dt (m^2/s)
         # h difference
         # gives change in cell water volume per unit area between t and t + dt (m/timestep)
-        # B (m) comes from geometric reasoning of the shape of a rectangular canal shapes.
+        # B (m) comes from geometric reasoning of the shape of a rectangular canal.
         # seconds_per_timestep changes units from timesteps to seconds.
         return self.cn.B * h_difference / seconds_per_timestep
         
