@@ -464,7 +464,7 @@ if platform.system() == 'Linux':
 
     elif N_PARAMS == 1:
         hydro.verbose = True
-        param_numbers = [1]
+        param_numbers = [2]
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                       parent_directory) for param_number in param_numbers]
         for args in arguments:
