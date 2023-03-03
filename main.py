@@ -20,7 +20,9 @@ import copy
 import networkx as nx
 from pathlib import Path
 import numpy as np
+
 import read_weather_data
+import utilities
 
 # necessary to set the same solver also in csc
 import os
@@ -370,14 +372,30 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     out_rasters_folder_name = f"params_number_{param_number}"
     full_folder_path = Path.joinpath(output_directory, out_rasters_folder_name)
 
-    # Read from pickle
-    initial_zeta_pickle_fn = Path(
-        filenames_df[filenames_df.Content == 'initial_zeta_pickle'].Path.values[0])
-    best_initial_zeta_value = pickle.load(
-        open(initial_zeta_pickle_fn, 'rb'))
+    # Read from or tiff
+    READ_FROM = 'tiff'
+
+    if READ_FROM == 'pickle':
+        initial_zeta_pickle_fn = Path(
+            filenames_df[filenames_df.Content == 'initial_zeta_pickle'].Path.values[0])
+        initial_zeta = pickle.load(open(initial_zeta_pickle_fn, 'rb'))
+
+    elif READ_FROM == 'tiff':
+        initial_zeta_fn = full_folder_path.joinpath('zeta_after_230_DAYS.tif')
+        mesh_centroids_coords = np.column_stack(hydro.mesh.cellCenters.value)
+        initial_zeta = utilities.sample_raster_from_coords(
+                raster_filename=initial_zeta_fn,
+                coords=mesh_centroids_coords)
+        initial_zeta = np.nan_to_num(initial_zeta, -0.2) # if mesh larger than raster, fill with value
+        # If reading from a .tiff, we will also probably want the CWL to be read from there.
+        y_at_canals = hydro.convert_h_to_y_at_canals(hydro.wtd)
+        hydro.cn.y = hydro.cn.from_nodedict_to_nparray(y_at_canals) # globally
+        for component_cn in cwl_hydro.component_channel_networks: # each component
+            component_cn.y = component_cn.from_nodedict_to_nparray(
+                y_at_canals)
 
     hydro.zeta = fp.CellVariable(
-        name='zeta', mesh=hydro.mesh, value=best_initial_zeta_value, hasOld=True)
+        name='zeta', mesh=hydro.mesh, value=initial_zeta, hasOld=True)
 
     N_DAYS = 365
     day = 0
