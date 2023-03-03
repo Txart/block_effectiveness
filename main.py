@@ -371,9 +371,21 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
     output_directory = Path.joinpath(parent_directory, 'output')
     out_rasters_folder_name = f"params_number_{param_number}"
     full_folder_path = Path.joinpath(output_directory, out_rasters_folder_name)
+    if channel_network.work_without_blocks:
+        foldername = 'no_blocks'
+    elif not channel_network.work_without_blocks:
+        foldername = 'yes_blocks'
+
+    if precip_data == 'dry':
+        foldername = foldername + '_dry'
+    elif precip_data == 'wet':
+        foldername = foldername + '_wet'
+    # if weather_stations, then the folder is yes_blocks by default
+
+    full_write_foldername = full_folder_path.joinpath(foldername)
 
     # Read from or tiff
-    READ_FROM = 'tiff'
+    READ_FROM = 'pickle'
 
     if READ_FROM == 'pickle':
         initial_zeta_pickle_fn = Path(
@@ -381,21 +393,26 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
         initial_zeta = pickle.load(open(initial_zeta_pickle_fn, 'rb'))
 
     elif READ_FROM == 'tiff':
-        initial_zeta_fn = full_folder_path.joinpath('zeta_after_230_DAYS.tif')
+        initial_zeta_fn = full_write_foldername.joinpath('zeta_after_230_DAYS.tif')
         mesh_centroids_coords = np.column_stack(hydro.mesh.cellCenters.value)
         initial_zeta = utilities.sample_raster_from_coords(
                 raster_filename=initial_zeta_fn,
                 coords=mesh_centroids_coords)
         initial_zeta = np.nan_to_num(initial_zeta, -0.2) # if mesh larger than raster, fill with value
+        print(initial_zeta_fn)
+
+
+    hydro.zeta = fp.CellVariable(
+        name='zeta', mesh=hydro.mesh, value=initial_zeta, hasOld=True)
+
+    if READ_FROM == 'tiff':
         # If reading from a .tiff, we will also probably want the CWL to be read from there.
+        hydro.wtd = hydro.create_h_from_zeta(hydro.zeta)
         y_at_canals = hydro.convert_h_to_y_at_canals(hydro.wtd)
         hydro.cn.y = hydro.cn.from_nodedict_to_nparray(y_at_canals) # globally
         for component_cn in cwl_hydro.component_channel_networks: # each component
             component_cn.y = component_cn.from_nodedict_to_nparray(
                 y_at_canals)
-
-    hydro.zeta = fp.CellVariable(
-        name='zeta', mesh=hydro.mesh, value=initial_zeta, hasOld=True)
 
     N_DAYS = 365
     day = 0
@@ -440,18 +457,6 @@ def produce_family_of_rasters(param_number, PARAMS, hydro, cwl_hydro, net_daily_
             needs_smaller_timestep = False
 
             # write zeta to file
-            if channel_network.work_without_blocks:
-                foldername = 'no_blocks'
-            elif not channel_network.work_without_blocks:
-                foldername = 'yes_blocks'
-
-            if precip_data == 'dry':
-                foldername = foldername + '_dry'
-            elif precip_data == 'wet':
-                foldername = foldername + '_wet'
-            # if weather_stations, then the folder is yes_blocks by default
-
-            full_write_foldername = full_folder_path.joinpath(foldername)
             print(f' writing output raster to {full_write_foldername}')
 
             write_output_zeta_raster(
