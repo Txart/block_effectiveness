@@ -1,4 +1,4 @@
-# %%
+#%%
 from classes.parameterizations import ConstantStorage, ExponentialStorage
 from classes.peatland_hydrology import set_up_peatland_hydrology
 from classes.peat_hydro_params import PeatlandHydroParameters
@@ -88,7 +88,7 @@ else:
     raise ValueError(
         'Weather data origin not understood from command line. See -h for help.')
 
-# %% Prepare data
+#%% Prepare data
 filenames_df = pd.read_excel(
     fn_pointers, header=2, dtype=str, engine='openpyxl')
 fn_dem = Path(filenames_df[filenames_df.Content == 'DEM'].Path.values[0])
