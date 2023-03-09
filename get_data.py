@@ -21,12 +21,12 @@ def get_P_minus_ET_dataframe(data_parent_folder):
 
     patrol_post_names = ['Buring', 'Lestari', 'MainCamp', 'Ramin', 'Serindit', 'Sialang']
         
-    df_rain = pd.read_csv(Path.joinpath(data_parent_folder, 'Rain2020-2021.csv'), sep=';')
-    df_relhum = pd.read_csv(Path.joinpath(data_parent_folder, 'RelHum2020-2021.csv'), sep=';')
-    df_maxtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp_Max2020-2021.csv'), sep=',')
-    df_mintemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp_Min2020-2021.csv'), sep=',')
-    df_avgtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp2020-2021.csv'), sep=';')
-    df_windspeed = pd.read_csv(Path.joinpath(data_parent_folder, 'WindSpeed2020-2021.csv'), sep=',')
+    df_rain = pd.read_csv(Path.joinpath(data_parent_folder, 'Rain2021.csv'), sep=';')
+    df_relhum = pd.read_csv(Path.joinpath(data_parent_folder, 'RelHum2021.csv'), sep=';')
+    df_maxtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp_Max2021.csv'), sep=';')
+    df_mintemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp_Min2021.csv'), sep=';')
+    df_avgtemp = pd.read_csv(Path.joinpath(data_parent_folder, 'Temp2021.csv'), sep=';')
+    df_windspeed = pd.read_csv(Path.joinpath(data_parent_folder, 'WindSpeed2021.csv'), sep=';')
     
     # rename "Main Camp" to "MainCamp"
     for df in [df_rain, df_relhum, df_maxtemp, df_mintemp, df_avgtemp, df_windspeed]:
