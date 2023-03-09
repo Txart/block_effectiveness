@@ -1063,7 +1063,7 @@ def create_modelled_result_dataframe(days_list, folder_path):
     return modelled_WTD_at_sensors
 
 modeled_yesblocks = create_modelled_result_dataframe(days_list=range(1, 366), folder_path=fn_rc_wtd_modelled)
-#%%
+#%% Plot measurement vs modelled
 # Plot
 fig, ax = plt.subplots(nrows=1, ncols=2, sharey=True, constrained_layout=True,
                        gridspec_kw={'width_ratios': [3,1]})
