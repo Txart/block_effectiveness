@@ -995,7 +995,7 @@ def read_sensor_locations(fd_sensor_info):
 ##########################
 # Plot measured vs modelled
 # Get sensor data
-data_parent_folder = Path(r'C:\Users\03125327\Dropbox\PhD\Computation\ForestCarbon\2021 SMPP WTD customer work\0. Raw Data\Raw csv')
+data_parent_folder = Path('~/Dropbox/PhD/Computation/ForestCarbon/2021 SMPP WTD customer work/0. Raw Data/Raw csv')
 df_wtd_other = pd.read_csv(Path.joinpath(data_parent_folder, 'WTL_Other_2021.csv'), sep=';')
 df_wtd_transects = pd.read_csv(Path.joinpath(data_parent_folder, 'WTL_PatPos_2021.csv'), sep=';')
 df_wtd_transects_canal = pd.read_csv(Path.joinpath(data_parent_folder, 'WaterLevel_Adjusted_2021.csv'), sep=';')
@@ -1035,11 +1035,12 @@ sensor_coords = [dipwell_coords[sn] for sn in sensor_names]
 # Remove outliers from dipwell measurements
 from scipy.stats import zscore
 for colname, values in all_sensor_WTD.iteritems():
+    print(colname)
     no_nan_indices = values.dropna().index
     zscore_more_than_3std = (np.abs(zscore(values.dropna())) > 3)
     # If value above 3 STD, set it to NaN
     for i, index in enumerate(no_nan_indices):
-        if zscore_more_than_3std[i]:
+        if zscore_more_than_3std[index]:
             all_sensor_WTD.loc[index,colname] = np.nan
             
 

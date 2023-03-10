@@ -74,7 +74,7 @@ if precip_data == 'weather_stations':
     # Fill few missing NaNs with data.
     net_daily_source = net_daily_source.fillna(net_daily_source.mean())
     # Choose 2021 data (dataset starts at 1Jan2020, and it was a leap year)
-    net_daily_source = net_daily_source[366:].reset_index(drop=True)
+    # net_daily_source = net_daily_source[366:].reset_index(drop=True)
 
 elif precip_data == 'wet':
     net_daily_source = read_weather_data.get_daily_net_source(
@@ -487,7 +487,7 @@ if platform.system() == 'Linux':
 
     elif N_PARAMS == 1:
         hydro.verbose = True
-        param_numbers = [2]
+        param_numbers = [3]
         arguments = [(param_number, PARAMS, hydro, cwl_hydro, net_daily_source,
                       parent_directory) for param_number in param_numbers]
         for args in arguments:
