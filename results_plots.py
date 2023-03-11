@@ -1035,12 +1035,11 @@ sensor_coords = [dipwell_coords[sn] for sn in sensor_names]
 # Remove outliers from dipwell measurements
 from scipy.stats import zscore
 for colname, values in all_sensor_WTD.iteritems():
-    print(colname)
     no_nan_indices = values.dropna().index
-    zscore_more_than_3std = (np.abs(zscore(values.dropna())) > 3)
-    # If value above 3 STD, set it to NaN
+    zscore_more_than_2std = (np.abs(zscore(values.dropna())) > 2)
+    # If value above 2 STD, set it to NaN
     for i, index in enumerate(no_nan_indices):
-        if zscore_more_than_3std[index]:
+        if zscore_more_than_2std[index]:
             all_sensor_WTD.loc[index,colname] = np.nan
             
 
@@ -1066,31 +1065,54 @@ def create_modelled_result_dataframe(days_list, folder_path):
 modeled_yesblocks = create_modelled_result_dataframe(days_list=range(1, 366), folder_path=fn_rc_wtd_modelled)
 #%% Plot measurement vs modelled
 # Plot
-fig, ax = plt.subplots(nrows=1, ncols=2, sharey=True, constrained_layout=True,
+fig, ax = plt.subplots(nrows=2, ncols=2, sharey=True, constrained_layout=True,
                        gridspec_kw={'width_ratios': [3,1]})
-ax[0].set_ylabel('WTD (m)')
-ax[0].set_xlabel('Time (d)')
 
-for a, sublabel in zip(ax.flat, ["a)", "b)"]):
-    a.text(0 + 0.03, 1 - 0.02, s=sublabel,
+# Delete one of the plots
+ax[0,1].axis('off')
+
+for leftaxis in ax[:,0]:
+    leftaxis.set_ylabel('WTD (m)')
+ax[1,0].set_xlabel('Time (d)')
+
+ax_n = 0
+for a, sublabel in zip(ax.flat, ["a)", "_", "c)", "d)"]):
+    if ax_n == 1:
+        ax_n += 1
+        continue # Do not use second pane
+
+    a.text(0 + 0.03, 1 - 0.03, s=sublabel,
                 transform=a.transAxes,
                 verticalalignment='top',
                 fontsize=10,
                 bbox=dict(facecolor='1.0', edgecolor='none', pad=1.0))
+    ax_n += 1
 
+# Remove axes
+for topaxis in ax[0,:]:
+    topaxis.tick_params(
+            axis='x',          # changes apply to the x-axis
+            which='both',      # both major and minor ticks are affected
+            bottom=False,      # ticks along the bottom edge are off
+            top=False,         # ticks along the top edge are off
+            labelbottom=False)
 
 # Plot WTD over time
 # Plot measured
-all_sensor_WTD.plot(legend=False, marker='.', linestyle='None',  ax=ax[0], alpha= 0.3, color='grey',
-                     markersize=.8)
+for leftaxis in ax[:,0]:
+    all_sensor_WTD.plot(legend=False, marker='.', linestyle='None',  ax=leftaxis, alpha= 0.3, color='grey', markersize=.8, mec='grey')
 # Plot modelled
-modeled_yesblocks.plot(ax=ax[0], legend=False, linewidth=.5)
-
+# The reversed is there to show better lines.
+# There are too many modelled lines (close to 160) packed between 0 and -0.5
+# as a result, only the last ones plotted are visible.
+# reversing the order in whic the df was plotted improved visuals.
+for sensor_name in reversed(modeled_yesblocks.columns):
+    ax[1,0].plot(modeled_yesblocks[sensor_name], linewidth=.5)
 
 # Plot custom legend
 custom_legend_elements = [Line2D([0],[0], marker='.', color='grey', linestyle='None', lw=2,  label='measured'),
                                 Line2D([0],[0], color='orange', lw=2, linestyle='solid', label='modelled')]
-ax[0].legend(handles=custom_legend_elements, loc='lower left', fontsize='x-small')
+ax[0,1].legend(handles=custom_legend_elements, loc='lower left', fontsize='x-small')
 
 # Boxplot
 measured_data = all_sensor_WTD.to_numpy().flatten()
@@ -1103,13 +1125,13 @@ modelled_data = modeled_yesblocks.to_numpy().flatten()
             #   )
 colors = ['grey', 'darkorange']
 sns.violinplot(data=[measured_data, modelled_data],
-               ax=ax[1],
+               ax=ax[1,1],
                linewidth=.7,
                inner='quart',
                palette=colors
                )
 labels = ['measured', 'modelled']
-ax[1].set_xticklabels(labels, rotation=45)
+ax[1,1].set_xticklabels(labels, rotation=45)
 
 # Save
 plt.savefig(output_folder.joinpath('reality_check.png'), bbox_inches='tight')
