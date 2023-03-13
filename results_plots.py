@@ -322,8 +322,8 @@ positions_in_array = [int(c/BIN_WIDTH_IN_METERS) for c in check_distances_meters
 for i, pos in enumerate(positions_in_array):
     print(f'Dry avg WTD difference at {check_distances_meters[i]} meters: {np.mean(dry_mean_diff_binned, axis=0)[pos]*100} cm')
     print(f'Wet avg WTD difference at {check_distances_meters[i]} meters: {np.mean(wet_mean_diff_binned, axis=0)[pos]*100} cm')
-#%% --------------------------------
-# Plot All averaged into one WTD raster
+# --------------------------------
+#%% Plot All averaged into one WTD raster
 # -----------------------------------
 
 MIN_DIFF = -1.0
@@ -337,11 +337,22 @@ im = plt.imshow(all_avg_diffs, cmap=cmap_diff,
 cb = plt.colorbar(im, shrink=0.7)
 cb.ax.tick_params(labelsize=10)
 
+
 plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
                 bbox_inches='tight')
 plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.pdf'),
                 bbox_inches='tight')
 plt.show()
+
+#%% Export raster of averages in order to add block positions in qgis
+import utilities 
+
+fn_dem = Path('data/new_area/new_area_dtm.tif')
+
+utilities.write_raster_from_array(array_to_rasterize=all_avg_diffs,
+                                  out_filename='output/plots/all_averaged-raster.tif',
+                                  template_raster_filename=fn_dem)
+
 #%%------------------------------
 # Every param spatial_average vs time, wet and dry
 # --------------------------------
