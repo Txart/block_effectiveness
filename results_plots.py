@@ -40,7 +40,7 @@ cmap_parameterization = plt.get_cmap('Set1')
 cmap_wtd_raster = copy.copy(plt.get_cmap('Blues_r')) # reversed blues  
 cmap_diff = copy.copy(cm.RdBu)
 
-param_colors = [cmap_parameterization(i) for i in range(len(params_to_plot))]
+param_colors = [cmap_parameterization(i+2) for i in range(len(params_to_plot))]
 
 # Foldernames
 modes = ([
@@ -341,6 +341,8 @@ cb.ax.tick_params(labelsize=10)
 plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.png'),
                 bbox_inches='tight')
 plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.pdf'),
+                bbox_inches='tight')
+plt.savefig(output_folder.joinpath(f'diff_averaged_over_everything.svg'),
                 bbox_inches='tight')
 plt.show()
 
@@ -789,64 +791,49 @@ plt.show()
 
 #%% All params figure
 
-
 def _get_piecewise_masks_in_zeta(zeta):
     positives_mask = 1*(zeta >= 0)
     negatives_mask = 1 - positives_mask
-    return positives_mask, negatives_mask
 
+    return positives_mask, negatives_mask
 
 def _mask_array_piecewise(arr, mask_1, mask_2):
     return arr*mask_1, arr*mask_2
 
 
 def S(zeta, param):
-    # in terms of zeta = h - dem
-    s1, s2, t1, t2 = param
-    positives_mask, negatives_mask = _get_piecewise_masks_in_zeta(zeta)
-    zeta_pos, zeta_neg = _mask_array_piecewise(
-        zeta, positives_mask, negatives_mask)
-    sto_pos = 1
-    sto_neg = s1*np.exp(s2*zeta)
-    return sto_pos * positives_mask + sto_neg * negatives_mask
+    s1, s2, _, _ = param
+    
+    return s1*np.exp(s2*zeta)
 
 
-def T(zeta, param):
-    # in terms of zeta = h - dem
-    s1, s2, t1, t2 = param
-    positives_mask = 1*(zeta > 0)
+def T(zeta, depth, param):
+    _,_, t1, t2 = param
+    
+    positives_mask = 1*(zeta>0)
     negatives_mask = 1 - positives_mask
-    zeta_pos, zeta_neg = _mask_array_piecewise(
-        zeta, positives_mask, negatives_mask)
+    zeta_pos, zeta_neg = _mask_array_piecewise(zeta, positives_mask, negatives_mask)
 
-    t3 = t1/s1
-    t4 = (t2-s2)/s1
+    trans_pos = t1*(1 + t2*zeta_pos - np.exp(-t2*depth))
+    trans_neg = t1*(np.exp(t2*zeta_neg) - np.exp(-t2*depth))
 
-    tra_pos = t3*np.exp(t4*zeta)
-    tra_neg = t1*np.exp(t2*zeta)
+    return trans_pos * positives_mask + trans_neg * negatives_mask
 
-    return tra_pos*positives_mask + tra_neg*negatives_mask
-
-
-def K(zeta, param):
-    # in terms of zeta = h - dem
-    s1, s2, t1, t2 = param
-
-    positives_mask = 1*(zeta > 0)
+def K(zeta, depth, param):
+    _,_, t1, t2 = param
+    
+    positives_mask = 1*(zeta>0)
     negatives_mask = 1 - positives_mask
-    zeta_pos, zeta_neg = _mask_array_piecewise(
-        zeta, positives_mask, negatives_mask)
+    _, zeta_neg = _mask_array_piecewise(zeta, positives_mask, negatives_mask)
 
-    t3 = t1/s1
-    t4 = (t2-s2)/s1
-
-    k_pos = t3*t4*np.exp(t4*zeta_pos)
+    k_pos = t1*t2
     k_neg = t1*t2*np.exp(t2*zeta_neg)
 
     return k_pos*positives_mask + k_neg*negatives_mask
 
-def D(zeta, param):
-    return T(zeta, param)/S(zeta, param)
+
+def D(zeta, depth, param):
+    return T(zeta, depth, param)/S(zeta, param)
 
 # Read params
 # param_fn = parent_folder.joinpath('2d_calibration_parameters.xlsx')
@@ -857,9 +844,9 @@ def D(zeta, param):
 # p3 = [0.7, 0.9, 641.66, 2.03]
 # Old params
 p1 = [0.6, 0.5, 50, 2.5]
-p2 = [0.6, 0.5, 50, 7.5]
-p3 = [0.6, 0.5, 500, 2.5]
-p4 = [0.6, 0.5, 500, 7.5]
+p2 = [0.6, 0.5, 500, 2.5]
+
+DEPTH = 6.0 # m
 
 zz = np.linspace(-1, 0.2, num=1000)
 
@@ -894,18 +881,18 @@ axes[0,1].grid(visible=True)
 axes[0,1].set_xlabel(r'$T(m^2 d^{-1})$')
 axes[0,1].set_xscale('log')
 
-axes[0,1].plot(T(zz, p1), zz,
-             color=cmap_parameterization(0), linestyle='solid',
+axes[0,1].plot(T(zz, DEPTH, p1), zz,
+             color=param_colors[0], linestyle='solid',
              label='param 1')
-axes[0,1].plot(T(zz, p2), zz,
-             color=cmap_parameterization(1), linestyle='solid',
+axes[0,1].plot(T(zz, DEPTH, p2), zz,
+             color=param_colors[1], linestyle='solid',
              label='param 2')
-axes[0,1].plot(T(zz, p3), zz,
-             color=cmap_parameterization(2), linestyle='solid',
-             label='param 3')
-axes[0,1].plot(T(zz, p4), zz,
-             color=cmap_parameterization(3), linestyle='solid',
-             label='param 4')
+# axes[0,1].plot(T(zz, p3), zz,
+#              color=cmap_parameterization(2), linestyle='solid',
+#              label='param 3')
+# axes[0,1].plot(T(zz, p4), zz,
+#              color=cmap_parameterization(3), linestyle='solid',
+#              label='param 4')
 
 # axes[1].set_ylabel(r'$\zeta$')
 
@@ -913,14 +900,14 @@ axes[0,1].plot(T(zz, p4), zz,
 axes[0,2].grid(visible=True)
 axes[0,2].set_xlabel(r'$K(md^{-1})$')
 axes[0,2].set_xscale('log')
-axes[0,2].plot(K(zz, p1), zz,
+axes[0,2].plot(K(zz, DEPTH, p1), zz,
              color=param_colors[0], linestyle='solid')
-axes[0,2].plot(K(zz, p2), zz,
+axes[0,2].plot(K(zz, DEPTH, p2), zz,
              color=param_colors[1], linestyle='solid')
-axes[0,2].plot(K(zz, p3), zz,
-             color=param_colors[2], linestyle='solid')
-axes[0,2].plot(K(zz, p4), zz,
-             color=param_colors[3], linestyle='solid')
+# axes[0,2].plot(K(zz, p3), zz,
+#              color=param_colors[2], linestyle='solid')
+# axes[0,2].plot(K(zz, p4), zz,
+#              color=param_colors[3], linestyle='solid')
 # axes[2].set_ylabel(r'$\zeta$')
 
 # Diffusivity
@@ -929,18 +916,18 @@ ax_D.grid(visible=True)
 ax_D.set_xlabel(r'$D(m^{2}d^{-1})$')
 ax_D.set_ylabel(r'$\zeta (m)$')
 # ax_D.set_xscale('log')
-ax_D.plot(D(zz, p1), zz,
+ax_D.plot(D(zz, DEPTH, p1), zz,
              color=param_colors[0], linestyle='solid',
              label='param 1')
-ax_D.plot(D(zz, p2), zz,
+ax_D.plot(D(zz, DEPTH, p2), zz,
              color=param_colors[1], linestyle='solid',
              label='param 2')
-ax_D.plot(D(zz, p3), zz,
-             color=param_colors[2], linestyle='solid',
-             label='param 3')
-ax_D.plot(D(zz, p4), zz,
-             color=param_colors[3], linestyle='solid',
-             label='param 4')
+# ax_D.plot(D(zz, p3), zz,
+#              color=param_colors[2], linestyle='solid',
+#              label='param 3')
+# ax_D.plot(D(zz, p4), zz,
+#              color=param_colors[3], linestyle='solid',
+#              label='param 4')
 # legend
 ax_D.legend(loc='lower right')
 
@@ -1270,7 +1257,7 @@ plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect.png'),
             bbox_inches='tight')
 plt.show()
 #%% BOXPLOT Plot WTD diff vs distance to blocks for all params and weathers.
-fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(4.13, 4.13*2))
+fig, axes = plt.subplots(nrows=N_PARAMS, ncols=2, sharex=True, sharey=True, figsize=(4.13, 4.13*1.1))
 axes_wet = axes[:,0]
 axes_dry = axes[:,1]
 axes_wet[0].set_title('Wet')
@@ -1332,7 +1319,7 @@ for i_param, param_to_plot in enumerate(params_to_plot):
 
 
 # fig.tight_layout()
-plt.subplots_adjust(wspace=0.0, hspace=0.0)
+plt.subplots_adjust(wspace=0.05, hspace=0.05)
 plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect_boxplot.png'),
             bbox_inches='tight')
 plt.savefig(output_folder.joinpath(f'spatial_extent_block_effect_boxplot.pdf'),
@@ -1349,7 +1336,7 @@ cmap_diff.set_bad(color='white') # mask color
 
 
 # snapshots info
-params = [3, 3, 2, 2]; days = [360, 360, 360, 360] ; weathers = ['dry', 'wet', 'dry', 'wet']
+params = [2, 2, 1, 1]; days = [360, 360, 360, 360] ; weathers = ['dry', 'wet', 'dry', 'wet']
 
 for i in range(4):
     if weathers[i] == 'dry':
@@ -1384,10 +1371,10 @@ print(np.mean(wet_diffs)*100, " cm")
 print("Dry weather conditions resulted in a larger average rewetting compared to the wet conditions by a factor of:")
 print(np.mean(dry_diffs_spatial_avg, axis=(0,1))/np.mean(wet_diffs_spatial_avg, axis=(0,1)))
 
-print("Averaging over weathers, param number 3 raised WTD by:")
-print(0.5*(np.mean(dry_diffs_spatial_avg, axis=1)[2] + np.mean(wet_diffs_spatial_avg, axis=1)[2])*100, "cm" )
 print("Averaging over weathers, param number 2 raised WTD by:")
 print(0.5*(np.mean(dry_diffs_spatial_avg, axis=1)[1] + np.mean(wet_diffs_spatial_avg, axis=1)[1])*100, "cm" )
+print("Averaging over weathers, param number 1 raised WTD by:")
+print(0.5*(np.mean(dry_diffs_spatial_avg, axis=1)[0] + np.mean(wet_diffs_spatial_avg, axis=1)[0])*100, "cm" )
 print("Averaging over weathers, the parameter with highest conductivity raised WTD by")
 print()
 
