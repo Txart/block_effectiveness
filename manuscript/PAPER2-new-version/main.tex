@@ -137,7 +137,7 @@ The study was performed across two contrasting weather scenarios representing dr
 Our simulations revealed that while canal blocks had a net positive impact on WTD rise, they lowered WTD in some areas, and the extent of their effect over one year was limited to a distance of about 600 \unit{m} around the canals.
 We also show that canal blocks are most effective in peatlands with high hydraulic conductivity.
 Averaging over all modelled scenarios,  blocks raised the annual mean WTD by only 1.5 \unit{cm}.
-This value was similar in the dry year (1.44 \unit{cm}) and in the wet year (1.57 \unit{cm}), and there was a 2.13 fold difference between the scenarios with the maximum and minimum hydraulic conductivity (2.05 \unit{cm} versus 0.96 \unit{cm}).
+This value was similar in the dry year (1.44 \unit{cm}) and in the wet year (1.57 \unit{cm}), and there was a 2.13 fold difference between the scenarios with the large and the small hydraulic conductivity (2.05 \unit{cm} versus 0.96 \unit{cm}).
 Using a linear relationship between WTD and CO\textsubscript{2} emissions, we estimated that, averaging over peat hydraulic properties, canal blocks prevented the emission of 1.07 \unit{Mg ha^{-1}} CO\textsubscript{2} in the dry year and 1.17 \unit{Mg ha^{-1}} CO\textsubscript{2} in the wet year.
 We believe that the  modelling tools developed in this work could be adopted by local stakeholders aiming at a more effective and evidence-based approach to canal block based peatland restoration.
 \end{abstract}
@@ -521,16 +521,16 @@ Following the notation introduced in Eq.\eqref{eq:def_delta_zeta}, we will denot
 \section{Results}
 
 \subsection{Reality check}
-The comparison between the modelled and the measured WTD shows similarity in the range and  the dynamics of WTD, as shown in Figure \ref{fig:modelled_vs_measured} (a).
+The comparison between the modelled and the measured WTD shows similarity in the range and  the dynamics of WTD, as shown in Figure \ref{fig:modelled_vs_measured} (b).
 The deepest WTD in both measured and modelled scenarios was about $-1.5$ \unit{m}.
 During most of the year WTD was between $-0.4$ \unit{m} and 0.1 \unit{m} in the majority of the measuring locations.
 There were two groups of outliers in the sensor data.
-The sensors with an annual WTD average below -0.7 \unit{m} all corresponded to the easternmost patrol post transect.
-Three other sensors recorded an annual WTD average above 0.5 \unit{m}, but we could not find any pattern to those extreme measurements.
+The sensors with an annual WTD average below $-0.7$ \unit{m}  corresponded to the easternmost patrol post transect.
+There were three sensors that recorded an annual WTD average above 0.5 \unit{m}, but we could not find any pattern to those extreme measurements.
 % The daily fluctuations produced by variations in precipitation and evapotranspiration were comparable in their magnitude.
-The magnitude of the WTD rise after heavy rainfalls and the WTD drop in the recession periods were similar in magnitude in the modelled and measured datasets.
+The magnitudes of the WTD rise after heavy rainfalls and the WTD drop in the recession periods were similar in the modelled and measured datasets.
 The water rise and recession slopes were similar as well.
-As a result, the distribution of annually averaged modelled WTD was very similar to the measured one, as can be seen in Figure \ref{fig:modelled_vs_measured} (b).
+As a result, the distribution of annually averaged modelled WTD was very similar to the measured one, as can be seen in Figure \ref{fig:modelled_vs_measured} (c).
 
 The model captured the relevant water flow dynamics during the reality check, and thus it is considered to be plausible under the other weather scenarios presented in the study.
 
@@ -551,7 +551,7 @@ The model captured the relevant water flow dynamics during the reality check, an
 Blocks led to a net rise of the WTD in all modelled scenarios.
 This is shown qualitatively in Figure \ref{fig:diff_averaged_over_everything}, which aggregates  $\Delta \bar{\zeta}$ from all modelled scenarios into a single raster.
 The existence of more areas with a positive $\Delta \bar{\zeta}$ (colored in blue in Figure \ref{fig:diff_averaged_over_everything}) means that, overall, blocks produced a net WTD rise across all the modelled scenarios.
-Averaging over all modelling scenarios, the net average WTD rise was $1.51$ \unit{cm}. 
+Averaging over all  scenarios, the net average WTD rise was $1.51$ \unit{cm}. 
 Despite the overall WTD rise, in some areas blocks had the effect of lowering WTD compared to the non-blocked scenario (colored in red in Figure \ref{fig:diff_averaged_over_everything}).
 It is also remarkable that the WTD in most of the peatland area far enough from canals was practically unaffected by the presence or absence of blocks.
 
@@ -567,16 +567,17 @@ The spatially averaged block-induced WTD rise, $\langle \Delta \zeta \rangle$, d
 However, $\langle \zeta \rangle$ was always higher with the blocks than without the blocks (positive $\langle \Delta \zeta \rangle$) for all modelled scenarios.
 In other words, the overall rewetting impact of the blocks was positive at all times during the simulated period, regardless of weather conditions or peat hydraulic properties. 
 
-Block impact on WTD was greater in dry periods, when external water input to the system was scarce.
-Differences between blocked and non-blocked WTD increased with prolonged dry conditions and decreased with rainfall events.
-The extreme drought starting around day $150$ in the dry weather scenario provides a good example of this effect.
-As the dry period progressed, the gap between blocked and non-blocked WTD kept expanding for all peat hydraulic properties (Figure \ref{fig:combined_wtd_and_diff_weathers_and_params} (b) and (d)).
-Conversely, rainfall events reduced the difference between the WTD in the blocked and non-blocked scenarios (Figure \ref{fig:combined_wtd_and_diff_weathers_and_params} (b) and (c)).
-As a result, the cumulative block-induced WTD rise averaged over peat hydraulic properties was $2.78$ times larger in dry conditions than in wet conditions (1.39 \unit{cm} versus 0.5 \unit{cm}).
+Figure \ref{fig:combined_wtd_and_diff_weathers_and_params} (b) and (c) show that rainfall events reduced the difference between the WTD in the blocked and non-blocked scenarios.
+It may also be seen that in the dry periods in-between any two large rainfall events the effect of the blocks was greater.
+However, dry conditions did not always benefit the blocks' rewetting ability.
+The extreme drought starting around day $150$ in the dry weather scenario shows how canal blocks became less relevant after a certain threshold of external water input scarcity.
+For the first 50 days after the start of the dry period, the gap between blocked and non-blocked WTD increased in the high transmissivity scenario, and stayed relatively constant  in the low transmissivity one (Figure \ref{fig:combined_wtd_and_diff_weathers_and_params} (b) and (d)).
+However, at around day 200, the gap began to close, and by the end of the dry period blocks were at their minimum effectivity.
+As a result, the cumulative block-induced WTD rise averaged over peat hydraulic properties was similar in the wet and dry scenarios---1.44 \unit{cm} in the dry year and 1.57 \unit{cm} in the wet year.
 
 Peat hydraulic properties also played an important role in the degree to which blocks were able to raise WTD.
 Specifically, a larger hydraulic conductivity (or transmissivity) led to greater differences between the blocked and unblocked scenarios, in both weather conditions (Figure \ref{fig:combined_wtd_and_diff_weathers_and_params} (c) and (d)).
-Averaged over the two weather conditions, the $\langle \Delta \bar{\zeta}\rangle$ obtained with parameter set 3, was 2.76 times greater than the one obtained with parameter set 2 (1.5 \unit{cm} versus 0.54 \unit{cm}).
+Averaged over the two weather conditions, the $\langle \Delta \bar{\zeta}\rangle$ obtained with the high-transmissivity peat (parameter set 2), was 2.13 times greater than the low-transmissivity one (obtained with parameter set 1)---2.05 \unit{cm} versus 0.96 \unit{cm}.
 
 \begin{figure*}[t]
 \centering
@@ -593,7 +594,7 @@ Averaged over the two weather conditions, the $\langle \Delta \bar{\zeta}\rangle
 %\end{figure}   
 
 There was remarkable variation in the spatial extent of  block influence among the different modelling scenarios.
-As an example, we show two snapshots of $\Delta \zeta$ for the same peat hydraulic properties, parameter set 3, in wet and dry years in Figure \ref{fig:spatial_extent_of_block_effect} (b) and (c).
+As an example, we show two snapshots of $\Delta \zeta$ for the high transmissivity simulation, parameter set 2, in wet and dry years in Figure \ref{fig:spatial_extent_of_block_effect} (b) and (c).
 These figures qualitatively show that the WTD difference due to the blocks at the end of the wet year was small and concentrated around canals.
 In contrast, the differences at the end of the dry year were both more pronounced and extended further spatially.
 Note that both the positive and the negative block impacts were larger at the end of the dry year, i.e., $\Delta \zeta$ was larger in absoulte value.
@@ -601,7 +602,7 @@ The dependence of $\Delta \bar{\zeta}$ on the distance to the nearest block, sho
 The effect of blocks on WTD for all modelled scenarios was relevant until about $600$ \unit{m} from the nearest dam, and it markedly decreased from there.
 The mean annual impact of the blocks on WTD more than one kilometre away was negligible (not shown in Figure \ref{fig:spatial_extent_of_block_effect} (a) for clarity).
 This was true across all weather conditions and peat hydraulic properties, albeit with small variations between modelled scenarios.
-Drier conditions and higher hydraulic conductivities had the effect of increasing the spatial extent of the influence of blocks.
+Drier conditions and higher hydraulic conductivities had the effect of increasing the spatial extent of the blocks' influence.
 
 \begin{figure}[t]
 \includegraphics[width=12 cm]{figs/rasters_and_distance_to_blocks.pdf}
@@ -612,9 +613,9 @@ Drier conditions and higher hydraulic conductivities had the effect of increasin
 
 \subsection{Potential to decrease CO\textsubscript{2} emissions}
 The net block-induced WTD rise in all modelled scenarios led to an overall decrease of CO\textsubscript{2} emissions, Figure \ref{fig:cum_CO2}.
-In the worst performing rewetting scenario, with wet conditions and a peatland with the lowest studied hydraulic conductivity (parameter set 2), the non-blocked setup emitted an annual total of $0.28$ \unit{Mg ha^{-1}} more than the blocked one.
-In contrast, in the best-performing scenario (dry conditions, parameter set 3) the block-induced WTD rise was translated into $1.65$ \unit{Mg ha^{-1} y^{-1}} CO\textsubscript{2} emission reduction.
-Averaging over all peat hydraulic properties, the emission of $0.37$ \unit{Mg ha^{-1}} and $1.03$ \unit{Mg ha^{-1}} CO\textsubscript{2} was prevented in the whole year for dry and wet years, respectively.
+In the worst performing rewetting scenario, with dry conditions and a peatland with the lowest studied hydraulic conductivity (parameter set 1), the non-blocked setup emitted an annual total of $0.62$ \unit{Mg ha^{-1}} more than the blocked one.
+In contrast, the high-transmissivity scenario (parameter set 2) the block-induced WTD rise was translated into a $1.52$ \unit{Mg ha^{-1} y^{-1}} CO\textsubscript{2} emission reduction for both the dry and wet years.
+Averaging over all peat hydraulic properties, the emission of $1.07$ \unit{Mg ha^{-1}} and $1.17$ \unit{Mg ha^{-1}} CO\textsubscript{2} was prevented in the whole year for dry and wet years, respectively.
 
 
 \begin{figure}[t]
@@ -663,8 +664,7 @@ However, in line  with previous studies \citep{putraEffectsDitchDams2021, putraM
 Second, despite raising the WTD on average, blocks did not do so everywhere in the study area.
 In some areas downstream from the dams, the WTD was systematically lower in the blocked scenario than in its non-blocked counterpart.
 To our knowledge, such an effect has not been reported in the literature.
-Our interpretation of this result is straightforward.
-The function of dams is to block water, and thus they may reduce water supply to areas with a specific combination of local canal network topology and peat topography.
+Our interpretation of this result is straightforward: the function of dams is to block water, and thus they may reduce water supply to areas with a specific combination of local canal network topology and peat topography.
 
 Third, we found that the impact of dams on WTD was  confined to areas close to the blocks.
 The WTD difference between the blocked and non-blocked scenarios was, on average, 3 \unit{cm} at 400 \unit{m} from the canals, and it was 1 \unit{mm} at a 1 \unit{km} distance (see Figure \ref{fig:spatial_extent_of_block_effect}).
@@ -679,16 +679,24 @@ Peat hydraulic properties govern the dynamics of groundwater flow and, in partic
 It follows that higher conductivities result in greater responses of WTD to modifications in the CWL.
 This implies that peatlands with higher hydraulic conductivities have greater potential for greenhouse gas emission mitigation using canal blocking restoration.
 
-Fifth, the impact of dams was greater in the dry year than in the wet year.
-Heavier rainfall events led to smaller differences between the blocked and non-blocked scenarios.
-Our interpretation is that in the absence of external water input, such as in prolonged dry periods, the ability of the dams to keep water in the system for a longer time becomes relevant.
-In contrast, with enough water supply from precipitation, WTD rises regardless of whether dams exist or not.
-This behaviour differed from the findings of Putra et al. in their small scale empirical and modelling studies \citep{putraEffectsDitchDams2021, putraModellingPerformanceBunds2022}.
+Fifth, the effect of the weather on the block rewetting ability was non-trivial, with an overall slightly greater impact in the wet year than in the dry year.
+On the one hand, heavy rainfall events led to smaller differences between the blocked and non-blocked scenarios.
+Moreover, the drier days in-between large rainfall events saw a greater impact of the blocks.
+Our interpretation is that with enough water supply from precipitation, WTD rises regardless of whether dams exist or not, making dams less useful.
+On the other hand, in extremely prolongued dry periods such as the second half of the dry year, the overall rewetting potential of the dams decreased.
+This behaviour agreed with the findings of Putra et al. in their small scale empirical and modelling studies \citep{putraEffectsDitchDams2021, putraModellingPerformanceBunds2022}.
 Putra et al. reported a decrease in the effectiveness of blocks during dry periods because canals became completely dry and, therefore, blocks were not able to retain any water.
-In our simulations the majority of the canal network never became completely dry, and thus we did not observe this effect.
 However, our simple model of discharge through blocks, Eq.\eqref{eq:Qblock}, completely restricts water flow through blocks even when the water is below the canal bottom, i.e., when the canal is dry.
-Thus, even if the canals in our simulation had dried out, our model would not have been able to reproduce the phenomenon observed by Putra et al.
-The conclusion that can be drawn from the combination of the two studies is the following.
+Even if the canals had dried out, our model would not have been able to reproduce the effect described by Putra et al.
+Thus, another mechanism must explain the observed behavior, and we suspect it is precisely the mentioned block impermeability.
+Two consecutive watertight dams in the same canal reach create a segment that is completelly disconnected from other parts of the network.
+The only water source of that canal segment is either precipitation or incoming water from the peatland.
+Some canal segments, embedded in peatland areas with a certain topography, may receive very little water during long, dry periods.
+In our simulations, the negative $\Delta \zeta$ arising from those areas decreased faster than did the positive $\Delta \zeta$ increase in the rest of the areas.
+Hence the overall decrease in the block rewetting ability after a prolongued dry period.
+In reality blocks are permeable, although less conductive than an open channel.
+So this observation is an exaggeration of a subtler effect that takes place in nature.
+The conclusion that can be drawn from the combination of the two studies (Putra's and ours) is the following.
 The WTD difference between the blocked and non-blocked scenarios is greater in the absence of rainfall.
 Blocks are likely to delay the point in which canals become dry, yet, once that point is reached, blocks cease to have any impact on WTD.
 
