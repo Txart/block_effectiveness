@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.9)  15 MAR 2023 17:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.9)  15 MAR 2023 20:35
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -3026,12 +3026,12 @@ Package pdftex.def Info: figs/all_params_daily_cumulative_CO2.pdf  used on input
 pdfTeX warning (ext4): destination with the same identifier (name{appendix.A}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.873 \appendixfigures
+l.878 \appendixfigures
                         %% needs to be added in front of appendix figures
 pdfTeX warning (ext4): destination with the same identifier (name{appendix.A}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.875 \appendixtables
+l.880 \appendixtables
                         %% needs to be added in front of appendix tables [24] (./main.bbl [25]
 Underfull \hbox (badness 3954) in paragraph at lines 35--38
 []\T1/ptm/m/n/9 Bear, J. and Cheng, A. H.-D.: Mod-el-ing Ground-wa-ter Flow and Con-tam-i-nant Trans-port, Springer Nether-lands, Dor-drecht,
@@ -3043,34 +3043,34 @@ Underfull \hbox (badness 3536) in paragraph at lines 69--72
  []
 
 [26] [27] [28] [29]
-Underfull \hbox (badness 1242) in paragraph at lines 468--472
+Underfull \hbox (badness 1242) in paragraph at lines 481--485
 \T1/ptm/m/n/9 in Ama-zo-nian Peat-lands un-der a Chang-ing Cli-mate, Pro-ceed-ings of the Na-tional Academy of Sci-ences, 115, 12407--12412,
  []
 
 
-Underfull \hbox (badness 3271) in paragraph at lines 496--500
+Underfull \hbox (badness 3271) in paragraph at lines 509--513
 []\T1/ptm/m/n/9 Wösten, H., Hooi-jer, A., Siderius, C., Rais, D. S., Idris, A., and Rieley, J.: Trop-i-cal Peat-land Wa-ter Man-age-ment Mod-
  []
 
 
-Underfull \hbox (badness 4096) in paragraph at lines 496--500
+Underfull \hbox (badness 4096) in paragraph at lines 509--513
 \T1/ptm/m/n/9 elling of the Air Hi-tam Laut Catch-ment in In-done-sia, In-ter-na-tional Jour-nal of River Basin Man-age-ment, 4, 233--244,
  []
 
 ) [30] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 19408 strings out of 476093
- 294638 string characters out of 5791592
+ 19416 strings out of 476093
+ 294776 string characters out of 5791592
  1866793 words of memory out of 5000000
- 39316 multiletter control sequences out of 15000+600000
+ 39322 multiletter control sequences out of 15000+600000
  561062 words of font info for 103 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 87i,12n,91p,1599b,746s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 87i,12n,91p,1599b,744s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (30 pages, 4798262 bytes).
+Output written on main.pdf (30 pages, 4799296 bytes).
 PDF statistics:
- 2454 PDF objects out of 2487 (max. 8388607)
- 1652 compressed objects within 17 object streams
- 166 named destinations out of 1000 (max. 500000)
+ 2461 PDF objects out of 2487 (max. 8388607)
+ 1659 compressed objects within 17 object streams
+ 168 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

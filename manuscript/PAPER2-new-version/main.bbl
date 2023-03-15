@@ -1,4 +1,4 @@
-\begin{thebibliography}{71}
+\begin{thebibliography}{73}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{{\tt #1}}
 \providecommand{\urlprefix}{URL }
@@ -157,6 +157,12 @@ Evans, C.~D., Irawan, D., Suardiwerianto, Y., Kurnianto, S., Deshmukh, C.,
   Warming, Nature Climate Change, 8, 907--913, \doi{10.1038/s41558-018-0271-1},
   2018.
 
+\bibitem[{Gasda et~al.(2011)Gasda, Farthing, Kees, and Miller}]{gasda2011}
+Gasda, S.~E., Farthing, M.~W., Kees, C.~E., and Miller, C.~T.: Adaptive
+  Split-Operator Methods for Modeling Transport Phenomena in Porous Medium
+  Systems, Advances in Water Resources, 34, 1268--1282,
+  \doi{10.1016/j.advwatres.2011.06.004}, 2011.
+
 \bibitem[{Geuzaine and Remachle(2009)}]{geuzaineGmshThreedimensionalFinite2009}
 Geuzaine, C. and Remachle, J.-F.: Gmsh: A Three-Dimensional Finite Element Mesh
   Generator with Built-in Pre- and Post-Processing Facilities, International
@@ -174,6 +180,13 @@ Haahti, K., Younis, B.~A., Stenberg, L., and Koivusalo, H.: Unsteady {{Flow
   Simulation}} and {{Erosion Assessment}} in a {{Ditch Network}} of a {{Drained
   Peatland Forest Catchment}} in {{Eastern Finland}}, Water Resources
   Management, 28, 5175--5197, \doi{10.1007/s11269-014-0805-x}, 2014.
+
+\bibitem[{Hikouei et~al.(2023)Hikouei, Eshleman, Saharjo, Graham, Applegate,
+  and Cochrane}]{hikouei2023}
+Hikouei, I.~S., Eshleman, K.~N., Saharjo, B.~H., Graham, L. L.~B., Applegate,
+  G., and Cochrane, M.~A.: Using Machine Learning Algorithms to Predict
+  Groundwater Levels in {{Indonesian}} Tropical Peatlands, Science of The Total
+  Environment, 857, 159\,701, \doi{10.1016/j.scitotenv.2022.159701}, 2023.
 
 \bibitem[{Hillel(1998)}]{hillelEnvironmentalSoilPhysics1998}
 Hillel, D.: Environmental Soil Physics, {Academic Press}, {San Diego, CA},

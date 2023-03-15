@@ -713,32 +713,34 @@ This was, in part, because the daily timestep was long enough to remove the effe
 As was pointed out previously, the blocks were modelled as watertight barriers that extend from the surface until the impermeable bottom, while in reality they are relatively porous \citep{osakiTropicalPeatlandEcosystems2016, ritzemaCanalBlockingStrategies2014}.
 The coupling between the PHM and CNM approximates water balance, but it does not strictly conserve mass.
 However, this is an unavoidable drawback of any hydrological model that solves groundwater and surface water flow in different modules \citep{barthelGroundwaterSurfaceWater2016}. 
+The error introduced in the coupling was not estimated in this work and is left for future studies, which could use techniques analogous to the ones presented in \cite{gasda2011}.
 
 The lack of information about the water flow at the area boundaries hindered the choice of appropriate boundary conditions both in the PHM and the CNM.
 In particular, there was no data on the water discharge at the catchment outlet, and we set the boundary conditions in the CWL at that point to no-flow Neumann.
 This choice, although striking at first, is overrun in the PHM step by the fixed $-0.2$ \unit{m} Dirichlet boundary conditions.
-
 The   Dirichlet boundary conditions are themselves a source of inaccuracy in the simulated WTD, as would be the case with any choice of boundary conditions.
 It seems plausible to us that the  distance to which the signal of the Dirichlet boundary conditions can propagate may be similar to the distance to which a change in the CWL affects WTD.
 Given our results in the present study, we can estimate that inaccuracies introduced by the Dirichlet boundary conditions would only affect the WTD up to a 1 km buffer zone around the boundaries of the study area.
 We nevertheless argue that these inaccuracies do not undermine the results presented in this work because they are based on direct comparisons between different scenarios.
-Indeed, the WTD difference maps displayed in Figures \ref{fig:diff_averaged_over_everything} and \ref{fig:spatial_extent_of_block_effect} (b) and (c) confirms that the difference between scenarios is negligible at the study are boundaries.
+Indeed, the WTD difference maps displayed in Figures \ref{fig:diff_averaged_over_everything} and \ref{fig:spatial_extent_of_block_effect} (b) and (c) confirms that the difference between scenarios is negligible at the study area boundaries.
 It is reasonable to think then that most of the error introduced by the boundary conditions does not have a large effect in our results.
 
 Despite being crucial for the understanding of water dynamics, there exist few published measurements of the physical parameters which govern water flow in tropical peat and in canals.
 Whereas the variability of the peat hydraulic properties was taken into account through the different modelling scenarios, the physical parameters governing open channel flow were fixed in all the scenarios. 
-In reality, all these --the width, depth and cross-section shape of the canals, the block discharge coefficient, the Manning friction coefficient-- vary spatially and/or temporally.
+In reality, all these --the width, depth and cross-section shape of the canals, the block discharge coefficient, the Manning friction coefficient-- vary spatially and/or temporally  \citep{ritzemaCanalBlockingStrategies2014, osakiTropicalPeatlandEcosystems2016}.
 Since the value of these coefficients have a direct influence on water dynamics, more experimental work is needed to correctly quantify the open channel flow coefficients for tropical peatlands.
 
-All parameters of the model are expected to have some spatial variability.
-Peat hydraulic properties are known to vary with vegetation and land use  \citep{bairdHighPermeabilityExplains2017, kurniantoInfluenceLandcoverChanges2019}; canal geometry changes throughout the canal network \citep{ritzemaCanalBlockingStrategies2014, osakiTropicalPeatlandEcosystems2016}; even precipitation and evapotranspiration may change over the study area \citep{vijithSpatialTemporalCharacteristics2020}.
+Not only the CNM parameters, but the physical parameters of the PHM are expected to have some spatial variability too.
+Peat hydraulic properties are known to vary with vegetation and land use  \citep{bairdHighPermeabilityExplains2017, kurniantoInfluenceLandcoverChanges2019}, and even precipitation and evapotranspiration may change over the study area \citep{vijithSpatialTemporalCharacteristics2020}.
 Our model could accommodate all this spatial variability, but in the absence of data we were forced to assume constant values throughout the study area.
 
 The model validation against the dipwell-measured WTD was limited by the coarse resolution of the PHM computational domain.
 The original resolution of our digital elevation model was 100 \unit{m} $\times$ 100 \unit{m}, a scale in which tropical peat surface typically presents variations of the order of tens of centimetres \citep{lampelaGroundSurfaceMicrotopography2016}.
 In the absence of further information about the precise  elevation of the dipwells, we assumed an uncertainty of comparable magnitude in the dipwell WTD measurements.
 And since WTD  variation at any location was also of  tens of centimetres (see Figure \ref{fig:modelled_vs_measured}), this uncertainty prevented any direct quantitative comparison between the modelled and measured WTD.
-It should also be mentioned that we are not sure about the origin of the dipwell measurements showing WTD up to 1 m above the surface in Figure \ref{fig:modelled_vs_measured}.
+The coarse resolution also prevented precise modelling of the canal-peatland interface (see Figure \ref{fig:study_area} b) and c)).
+
+It should also be pointed out that we are not sure about the origin of the dipwell measurements showing WTD up to 1 m above the surface in Figure \ref{fig:modelled_vs_measured}.
 It could be due to a wrong datum, or to local depressions that are unnoticeable in the DTM which are canalizing the water to certain spots.
 As a result, we  resorted to doing a qualitative estimation of the model plausibility.
 Two main features of the reality check of Figure \ref{fig:modelled_vs_measured} support the validity of the model.
@@ -748,7 +750,7 @@ Second,  the modelled WTD presented similar ranges and slopes in the daily dynam
 %Correctly keeping track of all the system water inputs and outputs is crucial for the overall water balance, but it is a difficult task.
 %There are three ways in which water can enter or exit our model: the sink/source precipitation and evapotranspiration terms in Eq.\eqref{eq:boussinesq}; the overall Dirichlet boundary conditions in the PHM; and the potential numerical inaccuracies in the interface between the CNM and the PHM.
 
-Despite the presented limitations, we claim that the modelling setup presented here has a greater potential to study the rewetting potential of blocks than purely experimental studies have.
+Despite the presented limitations, we claim that the modelling setup presented here has a greater potential to study the rewetting ability of blocks than purely experimental studies have.
 On the one hand, the effect of some of the aforementioned uncertainties might be partially compensated by the fact that we have only presented relative comparisons between blocked and non-blocked scenarios.
 On the other hand, our model gives theoretically coherent estimates of the dam impact throughout the area, which is not possible to do  with  experimental studies alone.
 
@@ -758,8 +760,11 @@ The present work was limited to the analysis of a single study area, with one bl
 Future studies might consider how varying the number of dams and their positions affects WTD, since, as we know,  the dam position is critical \citep{urzainkiCanalBlockingOptimization2020}.
 Furthermore, the impact of blocks on WTD would probably change in timescales of decades, which is closer to the typical lifespan of canal blocks \citep{ritzemaCanalBlockingStrategies2014, dohongReviewTechniquesEffective2018}.
 When analyzing long-term scenarios, the effect of climate change in precipitation and evapotranspiration \citep{gallego-salaLatitudinalLimitsPredicted2018, wangPotentialShiftCarbon2018, caiIncreasingFrequencyExtreme2014, portnerClimateChange20222022}, as well as peat subsidence \citep{evansRatesSpatialVariability2019, hoytWidespreadSubsidenceCarbon2020, evansLongtermTrajectoryTemporal2022} will need to be addressed.
+
 In order to have a more precise estimate of greenhouse gas emissions, future studies should take into account emissions of other compounds, such as methane and nitrous oxides.
 In fact, having shallower WTD as the only optimization goal may not be desirable due to increased methane emissions---although we are not aware of any studies where methane emissions have been shown to surpass CO\textsubscript{2} emissions \citep{tehSeasonalVariabilityMethane2017, wongMicrometeorologicalMeasurementMethane2018, planas-clarkeEffectWaterTable2020, deshmukhImpactForestPlantation2020, deshmukhConservationSlowsEmission2021, kiuruPeatMacroporeNetworks2022, zouRewettingGlobalWetlands2022, lestariRewettingTropicalPeatlands2022}.
+
+It might be interesting to connect process-based models such as the one presented in this work not only with more extensive empirical studies, but also with state-of-the-art remote sensing techniques for WTD measurement, such as \cite{hikouei2023}.
 
 \conclusions  %% \conclusions[modified heading if necessary]
 We modelled the effect that canal block restoration practices had on the WTD of a 22000 \unit{ha} drained tropical peatland.

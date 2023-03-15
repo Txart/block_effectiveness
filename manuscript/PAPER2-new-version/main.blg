@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: copernicus.bst
 Database file #1: peatland_hydro.bib
-You've used 71 entries,
+You've used 73 entries,
             2819 wiz_defined-function locations,
-            1515 strings with 33019 characters,
-and the built_in function-call counts, 79880 in all, are:
-= -- 8177
-> -- 4330
+            1529 strings with 33565 characters,
+and the built_in function-call counts, 82274 in all, are:
+= -- 8452
+> -- 4426
 < -- 22
-+ -- 1765
-- -- 1376
-* -- 5621
-:= -- 8622
-add.period$ -- 71
-call.type$ -- 71
-change.case$ -- 602
-chr.to.int$ -- 71
-cite$ -- 213
-duplicate$ -- 7258
-empty$ -- 3865
-format.name$ -- 1590
-if$ -- 15735
++ -- 1811
+- -- 1406
+* -- 5777
+:= -- 8854
+add.period$ -- 73
+call.type$ -- 73
+change.case$ -- 616
+chr.to.int$ -- 73
+cite$ -- 219
+duplicate$ -- 7497
+empty$ -- 3980
+format.name$ -- 1626
+if$ -- 16207
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 951
-newline$ -- 222
-num.names$ -- 287
-pop$ -- 3372
+missing$ -- 975
+newline$ -- 228
+num.names$ -- 295
+pop$ -- 3473
 preamble$ -- 1
-purify$ -- 600
+purify$ -- 614
 quote$ -- 0
-skip$ -- 4159
+skip$ -- 4297
 stack$ -- 0
-substring$ -- 2819
-swap$ -- 6233
+substring$ -- 2930
+swap$ -- 6449
 text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 615
+type$ -- 633
 warning$ -- 0
-while$ -- 374
+while$ -- 385
 width$ -- 0
-write$ -- 848
+write$ -- 872
