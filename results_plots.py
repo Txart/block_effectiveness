@@ -126,7 +126,7 @@ def read_data(n_params, modes, n_days, rasters_shape):
 data = read_data(params_to_plot, modes, N_DAYS, raster_shape)
 
 # reality check
-REALITY_CHECK = False
+REALITY_CHECK = True
 if REALITY_CHECK:
     reality_check_data  = read_data(n_params=[3], modes = [reality_check_mode], n_days=365, rasters_shape=raster_shape)
 
@@ -832,8 +832,8 @@ def K(zeta, depth, param):
     return k_pos*positives_mask + k_neg*negatives_mask
 
 
-def D(zeta, depth, param):
-    return T(zeta, depth, param)/S(zeta, param)
+# def D(zeta, depth, param):
+#     return T(zeta, depth, param)/S(zeta, param)
 
 # Read params
 # param_fn = parent_folder.joinpath('2d_calibration_parameters.xlsx')
@@ -850,41 +850,41 @@ DEPTH = 6.0 # m
 
 zz = np.linspace(-1, 0.2, num=1000)
 
-fig, axes = plt.subplots(nrows=2, ncols=3, sharey=True, figsize=(2.5*1.69/2*3, 2.5*1.69))
+fig, axes = plt.subplots(nrows=1, ncols=2, sharey=True, figsize=(2.5*1.69/2*3, 2.5*1.69))
 
-gs = axes[1,0].get_gridspec()
-for ax in axes[1,:]: # remove axes in the bottom row
-    ax.remove()
-ax_D = fig.add_subplot(gs[1, :]) # create axis in top row spanning all the columns
+# gs = axes[1,0].get_gridspec()
+# for ax in axes[1,:]: # remove axes in the bottom row
+#     ax.remove()
+# ax_D = fig.add_subplot(gs[1, :]) # create axis in top row spanning all the columns
 
 # Set labels for subplots
-for ax, label in zip(axes.flat, ["a)", "b)", "c)"]):
+for ax, label in zip(axes.flat, ["a)", "b)"]):
     ax.text(0 + 0.05, 1 - 0.05, s=label,
                 transform=ax.transAxes,
                 verticalalignment='top',
                 fontsize=10,
                 bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
-ax_D.text(0 + 0.02, 1 - 0.05, s='d)',
-            transform=ax_D.transAxes,
-            verticalalignment='top',
-            fontsize=10,
-            bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
+            # transform=ax_D.transAxes,
+# ax_D.text(0 + 0.02, 1 - 0.05, s='d)',
+#             verticalalignment='top',
+#             fontsize=10,
+#             bbox=dict(facecolor='1.0', edgecolor='none', pad=3.0))
 # storage
-axes[0,0].grid(visible=True)
-axes[0,0].set_xlabel(r'$S$')
-axes[0,0].set_ylabel(r'$\zeta (m)$')
-axes[0,0].plot(S(zz, p1), zz,
+axes[0].grid(visible=True)
+axes[0].set_xlabel(r'$S_y$')
+axes[0].set_ylabel(r'$\zeta (m)$')
+axes[0].plot(S(zz, p1), zz,
              color='black', linestyle='solid')
 
 # Transmissivity
-axes[0,1].grid(visible=True)
-axes[0,1].set_xlabel(r'$T(m^2 d^{-1})$')
-axes[0,1].set_xscale('log')
+axes[1].grid(visible=True)
+axes[1].set_xlabel(r'$T(m^2 d^{-1})$')
+axes[1].set_xscale('log')
 
-axes[0,1].plot(T(zz, DEPTH, p1), zz,
+axes[1].plot(T(zz, DEPTH, p1), zz,
              color=param_colors[0], linestyle='solid',
              label='param 1')
-axes[0,1].plot(T(zz, DEPTH, p2), zz,
+axes[1].plot(T(zz, DEPTH, p2), zz,
              color=param_colors[1], linestyle='solid',
              label='param 2')
 # axes[0,1].plot(T(zz, p3), zz,
@@ -897,13 +897,14 @@ axes[0,1].plot(T(zz, DEPTH, p2), zz,
 # axes[1].set_ylabel(r'$\zeta$')
 
 # conductivity
-axes[0,2].grid(visible=True)
-axes[0,2].set_xlabel(r'$K(md^{-1})$')
-axes[0,2].set_xscale('log')
-axes[0,2].plot(K(zz, DEPTH, p1), zz,
-             color=param_colors[0], linestyle='solid')
-axes[0,2].plot(K(zz, DEPTH, p2), zz,
-             color=param_colors[1], linestyle='solid')
+ax_K = axes[1].twiny()
+ax_K.sharex(axes[1])
+ax_K.set_xlabel(r'$K(md^{-1})$')
+ax_K.set_xscale('log')
+ax_K.plot(K(zz, DEPTH, p1), zz,
+             color=param_colors[0], linestyle='dashed')
+ax_K.plot(K(zz, DEPTH, p2), zz,
+             color=param_colors[1], linestyle='dashed')
 # axes[0,2].plot(K(zz, p3), zz,
 #              color=param_colors[2], linestyle='solid')
 # axes[0,2].plot(K(zz, p4), zz,
@@ -911,25 +912,32 @@ axes[0,2].plot(K(zz, DEPTH, p2), zz,
 # axes[2].set_ylabel(r'$\zeta$')
 
 # Diffusivity
-ax_D.set_xscale('log')
-ax_D.grid(visible=True)
-ax_D.set_xlabel(r'$D(m^{2}d^{-1})$')
-ax_D.set_ylabel(r'$\zeta (m)$')
 # ax_D.set_xscale('log')
-ax_D.plot(D(zz, DEPTH, p1), zz,
-             color=param_colors[0], linestyle='solid',
-             label='param 1')
-ax_D.plot(D(zz, DEPTH, p2), zz,
-             color=param_colors[1], linestyle='solid',
-             label='param 2')
+# ax_D.grid(visible=True)
+# ax_D.set_xlabel(r'$D(m^{2}d^{-1})$')
+# ax_D.set_ylabel(r'$\zeta (m)$')
+# # ax_D.set_xscale('log')
+# ax_D.plot(D(zz, DEPTH, p1), zz,
+#              color=param_colors[0], linestyle='solid',
+#              label='param 1')
+# ax_D.plot(D(zz, DEPTH, p2), zz,
+#              color=param_colors[1], linestyle='solid',
+#              label='param 2')
 # ax_D.plot(D(zz, p3), zz,
 #              color=param_colors[2], linestyle='solid',
 #              label='param 3')
 # ax_D.plot(D(zz, p4), zz,
 #              color=param_colors[3], linestyle='solid',
 #              label='param 4')
+
 # legend
-ax_D.legend(loc='lower right')
+# axes[1].legend(loc='lower right')
+# Plot custom legend
+color_legend_elements = [Patch(facecolor=pc, edgecolor=None, label=f'param ${i+1}$', linewidth=0) for i,pc in enumerate(param_colors)] 
+linestyle_legend_elements = [Line2D([],[], color='black', lw=1, linestyle='solid', label='$T$'),
+                                Line2D([],[], color='black', lw=1, linestyle='dashed', label='$K$')]
+legend_elements = color_legend_elements + linestyle_legend_elements
+axes[1].legend(handles=legend_elements, fontsize=7, loc='lower right')
 
 fig.tight_layout()
 plt.savefig(output_folder.joinpath(f'parameterization.png'), bbox_inches='tight')
@@ -1074,7 +1082,7 @@ for leftaxis in ax[:,0]:
 ax[1,0].set_xlabel('Time (d)')
 
 ax_n = 0
-for a, sublabel in zip(ax.flat, ["a)", "_", "c)", "d)"]):
+for a, sublabel in zip(ax.flat, ["a)", "_", "b)", "c)"]):
     if ax_n == 1:
         ax_n += 1
         continue # Do not use second pane

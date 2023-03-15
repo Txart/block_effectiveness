@@ -29,14 +29,14 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="3.8291356"
-     inkscape:cx="516.9574"
-     inkscape:cy="1151.5654"
+     inkscape:cx="499.98229"
+     inkscape:cy="1151.8265"
      inkscape:window-width="1904"
      inkscape:window-height="1044"
      inkscape:window-x="4"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" /><defs
+     inkscape:current-layer="g24234" /><defs
      id="defs2"><marker
        style="overflow:visible"
        id="TriangleStart"
@@ -5223,7 +5223,7 @@
              id="tspan23524"
              style="fill:#19d006;fill-opacity:1;stroke:#15d500;stroke-width:0.16119px;stroke-opacity:1"
              x="121.11728"
-             y="300.04297">D=0</tspan></text><text
+             y="300.04297">T=0</tspan></text><text
            xml:space="preserve"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.73711px;line-height:125%;font-family:'Latin Modern Math';-inkscape-font-specification:'Latin Modern Math, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#19d006;fill-opacity:1;stroke:#15d500;stroke-width:0.16119px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            x="152.3931"
@@ -5232,7 +5232,7 @@
              sodipodi:role="line"
              id="tspan23616"
              x="152.3931"
-             y="299.89438">D≠0</tspan></text><path
+             y="299.89438">T≠0</tspan></text><path
            style="opacity:0.993875;fill:#19d006;fill-opacity:1;fill-rule:evenodd;stroke:#15d500;stroke-width:1.4;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke;stop-color:#000000;stop-opacity:1"
            d="m 138.37938,294.855 -3.50195,8.28405"
            id="path27882" /><path
