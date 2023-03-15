@@ -1,0 +1,4 @@
+PWD /home/txart/Programming/github/paper2/manuscript/PAPER2-new-version
+INPUT /usr/local/texlive/2022/texmf.cnf
+INPUT /usr/local/texlive/2022/texmf-dist/web2c/texmf.cnf
+INPUT /usr/local/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt

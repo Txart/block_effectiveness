@@ -1,0 +1,516 @@
+\begin{thebibliography}{71}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{{\tt #1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{https://doi.org/\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{https://doi.org/\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem[{Allen et~al.(1998)Allen, Pereira, Raes, and
+  Smith}]{allenCropEvapotranspirationGuidelines1998}
+Allen, R., Pereira, L., Raes, D., and Smith, M.: Crop Evapotranspiration.
+  {{Guidelines}} for Computing Crop Water Requirements, FAO, p. 300, 1998.
+
+\bibitem[{Baird et~al.(2012)Baird, Morris, and
+  Belyea}]{bairdDigiBogPeatlandDevelopment2012}
+Baird, A.~J., Morris, P.~J., and Belyea, L.~R.: The {{DigiBog}} Peatland
+  Development Model 1: Rationale, Conceptual Model, and Hydrological Basis,
+  Ecohydrology, 5, 242--255, \doi{10.1002/eco.230}, 2012.
+
+\bibitem[{Baird et~al.(2017)Baird, Low, Young, Swindles, Lopez, and
+  Page}]{bairdHighPermeabilityExplains2017}
+Baird, A.~J., Low, R., Young, D., Swindles, G.~T., Lopez, O.~R., and Page, S.:
+  High Permeability Explains the Vulnerability of the Carbon Store in Drained
+  Tropical Peatlands, Geophysical Research Letters, 44, 1333--1339,
+  \doi{10.1002/2016GL072245}, 2017.
+
+\bibitem[{Barthel and Banzhaf(2016)}]{barthelGroundwaterSurfaceWater2016}
+Barthel, R. and Banzhaf, S.: Groundwater and {{Surface Water Interaction}} at
+  the {{Regional-scale}} \textendash{} {{A Review}} with {{Focus}} on
+  {{Regional Integrated Models}}, Water Resources Management, 30, 1--32,
+  \doi{10.1007/s11269-015-1163-z}, 2016.
+
+\bibitem[{Bear and Cheng(2010)}]{bearModelingGroundwaterFlow2010}
+Bear, J. and Cheng, A. H.-D.: Modeling {{Groundwater Flow}} and {{Contaminant
+  Transport}}, {Springer Netherlands}, {Dordrecht},
+  \doi{10.1007/978-1-4020-6682-5}, 2010.
+
+\bibitem[{Cai et~al.(2014)Cai, Borlace, Lengaigne, {van Rensch}, Collins,
+  Vecchi, Timmermann, Santoso, McPhaden, Wu, England, Wang, Guilyardi, and
+  Jin}]{caiIncreasingFrequencyExtreme2014}
+Cai, W., Borlace, S., Lengaigne, M., {van Rensch}, P., Collins, M., Vecchi, G.,
+  Timmermann, A., Santoso, A., McPhaden, M.~J., Wu, L., England, M.~H., Wang,
+  G., Guilyardi, E., and Jin, F.-F.: Increasing Frequency of Extreme {{El
+  Ni\~no}} Events Due to Greenhouse Warming, Nature Climate Change, 4,
+  111--116, \doi{10.1038/nclimate2100}, 2014.
+
+\bibitem[{Carlson et~al.(2015)Carlson, Goodman, and
+  {May-Tobin}}]{carlsonModelingRelationshipsWater2015}
+Carlson, K.~M., Goodman, L.~K., and {May-Tobin}, C.~C.: Modeling Relationships
+  between Water Table Depth and Peat Soil Carbon Loss in {{Southeast Asian}}
+  Plantations, Environmental Research Letters, 10, 074\,006,
+  \doi{10.1088/1748-9326/10/7/074006}, 2015.
+
+\bibitem[{Cobb and Harvey(2019)}]{cobbScalarSimulationParameterization2019}
+Cobb, A.~R. and Harvey, C.~F.: Scalar {{Simulation}} and {{Parameterization}}
+  of {{Water Table Dynamics}} in {{Tropical Peatlands}}, Water Resources
+  Research, 55, 9351--9377, \doi{10.1029/2019WR025411}, 2019.
+
+\bibitem[{Cobb et~al.(2017)Cobb, Hoyt, Gandois, Eri, Dommain, Abu~Salim, Kai,
+  Haji~Su'ut, and Harvey}]{cobbHowTemporalPatterns2017}
+Cobb, A.~R., Hoyt, A.~M., Gandois, L., Eri, J., Dommain, R., Abu~Salim, K.,
+  Kai, F.~M., Haji~Su'ut, N.~S., and Harvey, C.~F.: How Temporal Patterns in
+  Rainfall Determine the Geomorphology and Carbon Fluxes of Tropical Peatlands,
+  Proceedings of the National Academy of Sciences, p. 201701090,
+  \doi{10.1073/pnas.1701090114}, 2017.
+
+\bibitem[{Connorton(1985)}]{connortonDoesRegionalGroundwaterflow1985}
+Connorton, B.: Does the Regional Groundwater-Flow Equation Model Vertical
+  Flow?, Journal of Hydrology, 79, 279--299,
+  \doi{10.1016/0022-1694(85)90059-9}, 1985.
+
+\bibitem[{Cunge et~al.(1980)Cunge, Holly, and
+  Verwey}]{cungePracticalAspectsComputational1980}
+Cunge, J.~A., Holly, F.~M., and Verwey, A.: Practical Aspects of Computational
+  River Hydraulics, no.~3 in Monographs and Surveys in Water Resources
+  Engineering, {Pitman Advanced Pub. Program}, {Boston}, 1980.
+
+\bibitem[{Deshmukh et~al.(2020)Deshmukh, Julius, Evans, {Nardi}, Susanto, Page,
+  Gauci, Laur{\'e}n, Sabiham, Agus, Asyhari, Kurnianto, Suardiwerianto, and
+  Desai}]{deshmukhImpactForestPlantation2020}
+Deshmukh, C.~S., Julius, D., Evans, C.~D., {Nardi}, Susanto, A.~P., Page,
+  S.~E., Gauci, V., Laur{\'e}n, A., Sabiham, S., Agus, F., Asyhari, A.,
+  Kurnianto, S., Suardiwerianto, Y., and Desai, A.~R.: Impact of Forest
+  Plantation on Methane Emissions from Tropical Peatland, Global Change
+  Biology, 26, 2477--2495, \doi{10.1111/gcb.15019}, 2020.
+
+\bibitem[{Deshmukh et~al.(2021)Deshmukh, Julius, Desai, Asyhari, Page, Nardi,
+  Susanto, Nurholis, Hendrizal, Kurnianto, Suardiwerianto, Salam, Agus,
+  Astiani, Sabiham, Gauci, and Evans}]{deshmukhConservationSlowsEmission2021}
+Deshmukh, C.~S., Julius, D., Desai, A.~R., Asyhari, A., Page, S.~E., Nardi, N.,
+  Susanto, A.~P., Nurholis, N., Hendrizal, M., Kurnianto, S., Suardiwerianto,
+  Y., Salam, Y.~W., Agus, F., Astiani, D., Sabiham, S., Gauci, V., and Evans,
+  C.~D.: Conservation Slows down Emission Increase from a Tropical Peatland in
+  {{Indonesia}}, Nature Geoscience, 14, 484--490,
+  \doi{10.1038/s41561-021-00785-2}, 2021.
+
+\bibitem[{Dohong et~al.(2017)Dohong, Aziz, and
+  Dargusch}]{dohongReviewDriversTropical2017}
+Dohong, A., Aziz, A.~A., and Dargusch, P.: A Review of the Drivers of Tropical
+  Peatland Degradation in {{South-East Asia}}, Land Use Policy, 69, 349--360,
+  \doi{10.1016/j.landusepol.2017.09.035}, 2017.
+
+\bibitem[{Dohong et~al.(2018)Dohong, Abdul~Aziz, and
+  Dargusch}]{dohongReviewTechniquesEffective2018}
+Dohong, A., Abdul~Aziz, A., and Dargusch, P.: A {{Review}} of {{Techniques}}
+  for {{Effective Tropical Peatland Restoration}}, Wetlands, 38, 275--292,
+  \doi{10.1007/s13157-018-1017-6}, 2018.
+
+\bibitem[{Evans et~al.(2019)Evans, Williamson, Kacaribu, Irawan,
+  Suardiwerianto, Hidayat, Laur{\'e}n, and
+  Page}]{evansRatesSpatialVariability2019}
+Evans, C.~D., Williamson, J.~M., Kacaribu, F., Irawan, D., Suardiwerianto, Y.,
+  Hidayat, M.~F., Laur{\'e}n, A., and Page, S.~E.: Rates and Spatial
+  Variability of Peat Subsidence in {{Acacia}} Plantation and Forest Landscapes
+  in {{Sumatra}}, {{Indonesia}}, Geoderma, 338, 410--421,
+  \doi{10.1016/j.geoderma.2018.12.028}, 2019.
+
+\bibitem[{Evans et~al.(2022)Evans, Irawan, Suardiwerianto, Kurnianto, Deshmukh,
+  Asyhari, Page, Astiani, Agus, Sabiham, Laur{\'e}n, and
+  Williamson}]{evansLongtermTrajectoryTemporal2022}
+Evans, C.~D., Irawan, D., Suardiwerianto, Y., Kurnianto, S., Deshmukh, C.,
+  Asyhari, A., Page, S., Astiani, D., Agus, F., Sabiham, S., Laur{\'e}n, A.,
+  and Williamson, J.: Long-Term Trajectory and Temporal Dynamics of Tropical
+  Peat Subsidence in Relation to Plantation Management and Climate, Geoderma,
+  p. 116100, \doi{10.1016/j.geoderma.2022.116100}, 2022.
+
+\bibitem[{{Gallego-Sala} et~al.(2018){Gallego-Sala}, Charman, Brewer, Page,
+  Prentice, Friedlingstein, Moreton, Amesbury, Beilman, Bj{\"o}rck,
+  Blyakharchuk, Bochicchio, Booth, Bunbury, Camill, Carless, Chimner, Clifford,
+  Cressey, {Courtney-Mustaphi}, De~Vleeschouwer, {de Jong},
+  {Fialkiewicz-Koziel}, Finkelstein, Garneau, Githumbi, Hribjlan, Holmquist,
+  Hughes, Jones, Jones, Karofeld, Klein, Kokfelt, Korhola, Lacourse, Le~Roux,
+  Lamentowicz, Large, Lavoie, Loisel, Mackay, MacDonald, Makila, Magnan,
+  Marchant, Marcisz, Mart{\'i}nez~Cortizas, Massa, Mathijssen, Mauquoy,
+  Mighall, Mitchell, Moss, Nichols, Oksanen, Orme, Packalen, Robinson, Roland,
+  Sanderson, Sannel, {Silva-S{\'a}nchez}, Steinberg, Swindles, Turner, Uglow,
+  V{\"a}liranta, {van Bellen}, {van der Linden}, {van Geel}, Wang, Yu,
+  {Zaragoza-Castells}, and Zhao}]{gallego-salaLatitudinalLimitsPredicted2018}
+{Gallego-Sala}, A.~V., Charman, D.~J., Brewer, S., Page, S.~E., Prentice,
+  I.~C., Friedlingstein, P., Moreton, S., Amesbury, M.~J., Beilman, D.~W.,
+  Bj{\"o}rck, S., Blyakharchuk, T., Bochicchio, C., Booth, R.~K., Bunbury, J.,
+  Camill, P., Carless, D., Chimner, R.~A., Clifford, M., Cressey, E.,
+  {Courtney-Mustaphi}, C., De~Vleeschouwer, F., {de Jong}, R.,
+  {Fialkiewicz-Koziel}, B., Finkelstein, S.~A., Garneau, M., Githumbi, E.,
+  Hribjlan, J., Holmquist, J., Hughes, P. D.~M., Jones, C., Jones, M.~C.,
+  Karofeld, E., Klein, E.~S., Kokfelt, U., Korhola, A., Lacourse, T., Le~Roux,
+  G., Lamentowicz, M., Large, D., Lavoie, M., Loisel, J., Mackay, H.,
+  MacDonald, G.~M., Makila, M., Magnan, G., Marchant, R., Marcisz, K.,
+  Mart{\'i}nez~Cortizas, A., Massa, C., Mathijssen, P., Mauquoy, D., Mighall,
+  T., Mitchell, F. J.~G., Moss, P., Nichols, J., Oksanen, P.~O., Orme, L.,
+  Packalen, M.~S., Robinson, S., Roland, T.~P., Sanderson, N.~K., Sannel, A.
+  B.~K., {Silva-S{\'a}nchez}, N., Steinberg, N., Swindles, G.~T., Turner,
+  T.~E., Uglow, J., V{\"a}liranta, M., {van Bellen}, S., {van der Linden}, M.,
+  {van Geel}, B., Wang, G., Yu, Z., {Zaragoza-Castells}, J., and Zhao, Y.:
+  Latitudinal Limits to the Predicted Increase of the Peatland Carbon Sink with
+  Warming, Nature Climate Change, 8, 907--913, \doi{10.1038/s41558-018-0271-1},
+  2018.
+
+\bibitem[{Geuzaine and Remachle(2009)}]{geuzaineGmshThreedimensionalFinite2009}
+Geuzaine, C. and Remachle, J.-F.: Gmsh: A Three-Dimensional Finite Element Mesh
+  Generator with Built-in Pre- and Post-Processing Facilities, International
+  Journal for Numerical Methods in Engineering, 0, 1--24, 2009.
+
+\bibitem[{Guyer et~al.(2009)Guyer, Wheeler, and
+  Warren}]{guyerFiPyPartialDifferential2009}
+Guyer, J.~E., Wheeler, D., and Warren, J.~A.: {{FiPy}}: {{Partial Differential
+  Equations}} with {{Python}}, Computing in Science \& Engineering, 11, 6--15,
+  \doi{10.1109/MCSE.2009.52}, 2009.
+
+\bibitem[{Haahti et~al.(2014)Haahti, Younis, Stenberg, and
+  Koivusalo}]{haahtiUnsteadyFlowSimulation2014}
+Haahti, K., Younis, B.~A., Stenberg, L., and Koivusalo, H.: Unsteady {{Flow
+  Simulation}} and {{Erosion Assessment}} in a {{Ditch Network}} of a {{Drained
+  Peatland Forest Catchment}} in {{Eastern Finland}}, Water Resources
+  Management, 28, 5175--5197, \doi{10.1007/s11269-014-0805-x}, 2014.
+
+\bibitem[{Hillel(1998)}]{hillelEnvironmentalSoilPhysics1998}
+Hillel, D.: Environmental Soil Physics, {Academic Press}, {San Diego, CA},
+  1998.
+
+\bibitem[{Hirano et~al.(2015)Hirano, Kusin, Limin, and
+  Osaki}]{hiranoEvapotranspirationTropicalPeat2015}
+Hirano, T., Kusin, K., Limin, S., and Osaki, M.: Evapotranspiration of Tropical
+  Peat Swamp Forests, Global Change Biology, 21, 1914--1927,
+  \doi{10.1111/gcb.12653}, 2015.
+
+\bibitem[{Holden et~al.(2017)Holden, Green, Baird, Grayson, Dooling, Chapman,
+  Evans, Peacock, and Swindles}]{holdenImpactDitchBlocking2017}
+Holden, J., Green, S.~M., Baird, A.~J., Grayson, R.~P., Dooling, G.~P.,
+  Chapman, P.~J., Evans, C.~D., Peacock, M., and Swindles, G.: The Impact of
+  Ditch Blocking on the Hydrological Functioning of Blanket Peatlands:
+  {{Blanket}} Peat Ditch Blocking Impacts, Hydrological Processes, 31,
+  525--539, \doi{10.1002/hyp.11031}, 2017.
+
+\bibitem[{Hooijer(2005)}]{hooijerHydrologyTropicalWetland2005}
+Hooijer, A.: Hydrology of Tropical Wetland Forests: Recent Research Results
+  from {{Sarawak}} Peatswamps, in: Forests, {{Water}} and {{People}} in the
+  {{Humid Tropics}}, edited by Bonell, M. and Bruijnzeel, L.~A., pp. 447--461,
+  {Cambridge University Press}, first edn., \doi{10.1017/CBO9780511535666.023},
+  2005.
+
+\bibitem[{Hooijer et~al.(2012)Hooijer, Page, Jauhiainen, Lee, Lu, Idris, and
+  Anshari}]{hooijerSubsidenceCarbonLoss2012}
+Hooijer, A., Page, S., Jauhiainen, J., Lee, W.~A., Lu, X.~X., Idris, A., and
+  Anshari, G.: Subsidence and Carbon Loss in Drained Tropical Peatlands,
+  Biogeosciences, 9, 1053--1071, \doi{10.5194/bg-9-1053-2012}, 2012.
+
+\bibitem[{Hoyt et~al.(2020)Hoyt, Chaussard, Seppalainen, and
+  Harvey}]{hoytWidespreadSubsidenceCarbon2020}
+Hoyt, A.~M., Chaussard, E., Seppalainen, S.~S., and Harvey, C.~F.: Widespread
+  Subsidence and Carbon Emissions across {{Southeast Asian}} Peatlands, Nature
+  Geoscience, 13, 435--440, \doi{10.1038/s41561-020-0575-4}, 2020.
+
+\bibitem[{Ishii et~al.(2016)Ishii, Koizumi, Fukami, Yamamoto, Takahashi, Limin,
+  Kusin, Usup, and Susilo}]{ishiiGroundwaterPeatland2016}
+Ishii, Y., Koizumi, K., Fukami, H., Yamamoto, K., Takahashi, H., Limin, S.~H.,
+  Kusin, K., Usup, and Susilo, G.~E.: Groundwater in {{Peatland}}, in: Tropical
+  {{Peatland Ecosystem}}, pp. 265--279, {Springer Japan}, 2016.
+
+\bibitem[{Ishikura et~al.(2018)Ishikura, Hirano, Okimoto, Hirata, Kiew,
+  Melling, Aeries, Lo, Musin, Waili, Wong, and
+  Ishii}]{ishikuraSoilCarbonDioxide2018}
+Ishikura, K., Hirano, T., Okimoto, Y., Hirata, R., Kiew, F., Melling, L.,
+  Aeries, E.~B., Lo, K.~S., Musin, K.~K., Waili, J.~W., Wong, G.~X., and Ishii,
+  Y.: Soil Carbon Dioxide Emissions Due to Oxidative Peat Decomposition in an
+  Oil Palm Plantation on Tropical Peat, Agriculture, Ecosystems \& Environment,
+  254, 202--212, \doi{10.1016/j.agee.2017.11.025}, 2018.
+
+\bibitem[{Jaenicke et~al.(2010)Jaenicke, W{\"o}sten, Budiman, and
+  Siegert}]{jaenickePlanningHydrologicalRestoration2010}
+Jaenicke, J., W{\"o}sten, H., Budiman, A., and Siegert, F.: Planning
+  Hydrological Restoration of Peatlands in {{Indonesia}} to Mitigate Carbon
+  Dioxide Emissions, Mitigation and Adaptation Strategies for Global Change,
+  15, 223--239, \doi{10.1007/s11027-010-9214-5}, 2010.
+
+\bibitem[{Jauhiainen et~al.(2012)Jauhiainen, Hooijer, and
+  Page}]{jauhiainenCarbonDioxideEmissions2012}
+Jauhiainen, J., Hooijer, A., and Page, S.~E.: Carbon Dioxide Emissions from an
+  {{Acacia}} Plantation on Peatland in {{Sumatra}}, {{Indonesia}},
+  Biogeosciences, 9, 617--630, \doi{10.5194/bg-9-617-2012}, 2012.
+
+\bibitem[{Kasih et~al.(2016)Kasih, Simon, Ansori, Pratama, and
+  Wirada}]{kasihRewettingDegradedTropical2016}
+Kasih, R.~C., Simon, O., Ansori, M., Pratama, M.~P., and Wirada, F.: Rewetting
+  of Degraded Tropical Peatland by Canal Blocking Technique in {{Sebangau
+  National Park}}, {{Central Kalimantan}}, {{Indonesia}}, in: 15th
+  {{International Peat Congress}}, p.~5, {Kuching}, 2016.
+
+\bibitem[{Kiely et~al.(2021)Kiely, Spracklen, Arnold, Papargyropoulou,
+  Conibear, Wiedinmyer, Knote, and
+  Adrianto}]{kielyAssessingCostsIndonesian2021}
+Kiely, L., Spracklen, D.~V., Arnold, S.~R., Papargyropoulou, E., Conibear, L.,
+  Wiedinmyer, C., Knote, C., and Adrianto, H.~A.: Assessing Costs of
+  {{Indonesian}} Fires and the Benefits of Restoring Peatland, Nature
+  Communications, 12, 7044, \doi{10.1038/s41467-021-27353-x}, 2021.
+
+\bibitem[{Kiuru et~al.(2022)Kiuru, Palviainen, Gr{\"o}nholm, Raivonen, Kohl,
+  Gauci, Urzainki, and Laur{\'e}n}]{kiuruPeatMacroporeNetworks2022}
+Kiuru, P., Palviainen, M., Gr{\"o}nholm, T., Raivonen, M., Kohl, L., Gauci, V.,
+  Urzainki, I., and Laur{\'e}n, A.: Peat Macropore Networks \textendash{} New
+  Insights into Episodic and Hotspot Methane Emission, Biogeosciences, 19,
+  1959--1977, \doi{10.5194/bg-19-1959-2022}, 2022.
+
+\bibitem[{K{\"o}n{\"o}nen et~al.(2018)K{\"o}n{\"o}nen, Jauhiainen,
+  Strakov{\'a}, Heinonsalo, Laiho, Kusin, Limin, and
+  Vasander}]{kononenDeforestedDrainedTropical2018}
+K{\"o}n{\"o}nen, M., Jauhiainen, J., Strakov{\'a}, P., Heinonsalo, J., Laiho,
+  R., Kusin, K., Limin, S., and Vasander, H.: Deforested and Drained Tropical
+  Peatland Sites Show Poorer Peat Substrate Quality and Lower Microbial Biomass
+  and Activity than Unmanaged Swamp Forest, Soil Biology and Biochemistry, 123,
+  229--241, \doi{10.1016/j.soilbio.2018.04.028}, 2018.
+
+\bibitem[{Kurnianto et~al.(2019)Kurnianto, Selker, Boone~Kauffman, Murdiyarso,
+  and Peterson}]{kurniantoInfluenceLandcoverChanges2019}
+Kurnianto, S., Selker, J., Boone~Kauffman, J., Murdiyarso, D., and Peterson,
+  J.~T.: The Influence of Land-Cover Changes on the Variability of Saturated
+  Hydraulic Conductivity in Tropical Peatlands, Mitigation and Adaptation
+  Strategies for Global Change, 24, 535--555, \doi{10.1007/s11027-018-9802-3},
+  2019.
+
+\bibitem[{Lampela et~al.(2016)Lampela, Jauhiainen, K{\"a}m{\"a}ri, Koskinen,
+  Tanhuanp{\"a}{\"a}, Valkeap{\"a}{\"a}, and
+  Vasander}]{lampelaGroundSurfaceMicrotopography2016}
+Lampela, M., Jauhiainen, J., K{\"a}m{\"a}ri, I., Koskinen, M.,
+  Tanhuanp{\"a}{\"a}, T., Valkeap{\"a}{\"a}, A., and Vasander, H.: Ground
+  Surface Microtopography and Vegetation Patterns in a Tropical Peat Swamp
+  Forest, CATENA, 139, 127--136, \doi{10.1016/j.catena.2015.12.016}, 2016.
+
+\bibitem[{Laur{\'e}n et~al.(2021)Laur{\'e}n, Palviainen, Page, Evans, Urzainki,
+  and H{\"o}kk{\"a}}]{laurenNutrientBalanceTool2021}
+Laur{\'e}n, A., Palviainen, M., Page, S., Evans, C., Urzainki, I., and
+  H{\"o}kk{\"a}, H.: Nutrient {{Balance}} as a {{Tool}} for {{Maintaining
+  Yield}} and {{Mitigating Environmental Impacts}} of {{Acacia Plantation}} in
+  {{Drained Tropical Peatland}}\textemdash{{Description}} of {{Plantation
+  Simulator}}, Forests, 12, 312, \doi{10.3390/f12030312}, 2021.
+
+\bibitem[{Lestari et~al.(2022)Lestari, Murdiyarso, and
+  Taufik}]{lestariRewettingTropicalPeatlands2022}
+Lestari, I., Murdiyarso, D., and Taufik, M.: Rewetting {{Tropical Peatlands
+  Reduced Net Greenhouse Gas Emissions}} in {{Riau Province}}, {{Indonesia}},
+  Forests, 13, \doi{10.3390/f13040505}, 2022.
+
+\bibitem[{LeVeque(1992)}]{levequeNumericalMethodsConservation1992}
+LeVeque, R.~J.: Numerical Methods for Conservation Laws, Lectures in
+  Mathematics {{ETH Z\"urich}}, {Birkh\"auser Verlag}, {Basel ; Boston}, 2nd ed
+  edn., 1992.
+
+\bibitem[{Liu and Hodges(2014)}]{liuApplyingMicroprocessorAnalysis2014}
+Liu, F. and Hodges, B.~R.: Applying Microprocessor Analysis Methods to River
+  Network Modelling, Environmental Modelling \& Software, 52, 234--252,
+  \doi{10.1016/j.envsoft.2013.09.013}, 2014.
+
+\bibitem[{Miettinen et~al.(2016)Miettinen, Shi, and
+  Liew}]{miettinenLandCoverDistribution2016}
+Miettinen, J., Shi, C., and Liew, S.~C.: Land Cover Distribution in the
+  Peatlands of {{Peninsular Malaysia}}, {{Sumatra}} and {{Borneo}} in 2015 with
+  Changes since 1990, Global Ecology and Conservation, 6, 67--78,
+  \doi{10.1016/j.gecco.2016.02.004}, 2016.
+
+\bibitem[{Miettinen et~al.(2017)Miettinen, Shi, and
+  Liew}]{miettinenFireDistributionPeninsular2017}
+Miettinen, J., Shi, C., and Liew, S.~C.: Fire {{Distribution}} in {{Peninsular
+  Malaysia}}, {{Sumatra}} and {{Borneo}} in 2015 with {{Special Emphasis}} on
+  {{Peatland Fires}}, Environmental Management, 60, 747--757,
+  \doi{10.1007/s00267-017-0911-7}, 2017.
+
+\bibitem[{Morris et~al.(2012)Morris, Baird, and
+  Belyea}]{morrisDigiBogPeatlandDevelopment2012}
+Morris, P.~J., Baird, A.~J., and Belyea, L.~R.: The {{DigiBog}} Peatland
+  Development Model 2: Ecohydrological Simulations in {{2D}}, Ecohydrology, 5,
+  256--268, \doi{10.1002/eco.229}, 2012.
+
+\bibitem[{Nov{\'a}k(2010)}]{novakHydraulicModellingIntroduction2010}
+Nov{\'a}k, P., ed.: Hydraulic Modelling: An Introduction ; Principles, Methods
+  and Applications, {Spon Press}, {London ; New York}, 2010.
+
+\bibitem[{Novita et~al.(2021)Novita, Lestari, Lugina, Tiryana, Basuki, and
+  Jupesta}]{novitaGeographicSettingGroundwater2021}
+Novita, N., Lestari, N.~S., Lugina, M., Tiryana, T., Basuki, I., and Jupesta,
+  J.: Geographic {{Setting}} and {{Groundwater Table Control Carbon Emission}}
+  from {{Indonesian Peatland}}: {{A Meta-Analysis}}, Forests, 12,
+  \doi{10.3390/f12070832}, 2021.
+
+\bibitem[{Osaki and Tsuji(2016)}]{osakiTropicalPeatlandEcosystems2016}
+Osaki, M. and Tsuji, N., eds.: {Tropical Peatland Ecosystems}, {Springer
+  Japan}, {Tokyo}, \doi{10.1007/978-4-431-55681-7}, 2016.
+
+\bibitem[{Page et~al.(2022)Page, Mishra, Agus, Anshari, Dargie, Evers,
+  Jauhiainen, Jaya, {Jovani-Sancho}, Laur{\'e}n, Sj{\"o}gersten, Suspense,
+  Wijedasa, and Evans}]{pageAnthropogenicImpactsLowland2022}
+Page, S., Mishra, S., Agus, F., Anshari, G., Dargie, G., Evers, S., Jauhiainen,
+  J., Jaya, A., {Jovani-Sancho}, A.~J., Laur{\'e}n, A., Sj{\"o}gersten, S.,
+  Suspense, I.~A., Wijedasa, L.~S., and Evans, C.~D.: Anthropogenic Impacts on
+  Lowland Tropical Peatland Biogeochemistry, Nature Reviews Earth \&
+  Environment, 3, 426--443, \doi{10.1038/s43017-022-00289-6}, 2022.
+
+\bibitem[{Page et~al.(2011)Page, Rieley, and
+  Banks}]{pageGlobalRegionalImportance2011}
+Page, S.~E., Rieley, J.~O., and Banks, C.~J.: Global and Regional Importance of
+  the Tropical Peatland Carbon Pool, Global Change Biology, 17, 798--818,
+  \doi{10.1111/j.1365-2486.2010.02279.x}, 2011.
+
+\bibitem[{{Planas-Clarke} et~al.(2020){Planas-Clarke}, Chimner, Hribljan,
+  Lilleskov, and Fuentealba}]{planas-clarkeEffectWaterTable2020}
+{Planas-Clarke}, A.~M., Chimner, R.~A., Hribljan, J.~A., Lilleskov, E.~A., and
+  Fuentealba, B.: The Effect of Water Table Levels and Short-Term Ditch
+  Restoration on Mountain Peatland Carbon Cycling in the {{Cordillera Blanca}},
+  {{Peru}}, Wetlands Ecology and Management, 28, 51--69,
+  \doi{10.1007/s11273-019-09694-z}, 2020.
+
+\bibitem[{P{\"o}rtner et~al.(2022)P{\"o}rtner, Roberts, Tignor, Poloczanska,
+  Mintenbeck, Alegr{\'i}a, Craig, Langsdorf, L{\"o}schke, M{\"o}ller, Okem, and
+  Rama~(eds.)}]{portnerClimateChange20222022}
+P{\"o}rtner, H.-O., Roberts, D., Tignor, M., Poloczanska, E., Mintenbeck, K.,
+  Alegr{\'i}a, A., Craig, M., Langsdorf, S., L{\"o}schke, S., M{\"o}ller, V.,
+  Okem, A., and Rama~(eds.), B.: Climate {{Change}} 2022: {{Impacts}},
+  {{Adaptation}} and {{Vulnerability}}. {{Working Group II Contribution}} to
+  the {{IPCC Sixth Assessment Report}}, {Cambridge University Press}, 2022.
+
+\bibitem[{Putra et~al.(2021)Putra, Holden, and
+  Baird}]{putraEffectsDitchDams2021}
+Putra, S.~S., Holden, J., and Baird, A.~J.: The Effects of Ditch Dams on
+  Water-level Dynamics in Tropical Peatlands, Hydrological Processes, 35,
+  \doi{10.1002/hyp.14174}, 2021.
+
+\bibitem[{Putra et~al.(2022)Putra, Baird, and
+  Holden}]{putraModellingPerformanceBunds2022}
+Putra, S.~S., Baird, A.~J., and Holden, J.: Modelling the Performance of Bunds
+  and Ditch Dams in the Hydrological Restoration of Tropical Peatlands,
+  Hydrological Processes, 36, \doi{10.1002/hyp.14470}, 2022.
+
+\bibitem[{Ritzema et~al.(2014)Ritzema, Limin, Kusin, Jauhiainen, and
+  W{\"o}sten}]{ritzemaCanalBlockingStrategies2014}
+Ritzema, H., Limin, S., Kusin, K., Jauhiainen, J., and W{\"o}sten, H.: Canal
+  Blocking Strategies for Hydrological Restoration of Degraded Tropical
+  Peatlands in {{Central Kalimantan}}, {{Indonesia}}, CATENA, 114, 11--20,
+  \doi{10.1016/j.catena.2013.10.009}, 2014.
+
+\bibitem[{Schimelpfenig et~al.(2014)Schimelpfenig, Cooper, and
+  Chimner}]{schimelpfenigEffectivenessDitchBlockage2014}
+Schimelpfenig, D.~W., Cooper, D.~J., and Chimner, R.~A.: Effectiveness of
+  {{Ditch Blockage}} for {{Restoring Hydrologic}} and {{Soil Processes}} in
+  {{Mountain Peatlands}}: {{Mountain Fen Restoration}}, Restoration Ecology,
+  22, 257--265, \doi{10.1111/rec.12053}, 2014.
+
+\bibitem[{Sinclair et~al.(2020)Sinclair, Graham, Putra, Saharjo, Applegate,
+  Grover, and Cochrane}]{sinclairEffectsDistanceCanal2020}
+Sinclair, A.~L., Graham, L.~L., Putra, E.~I., Saharjo, B.~H., Applegate, G.,
+  Grover, S.~P., and Cochrane, M.~A.: Effects of Distance from Canal and
+  Degradation History on Peat Bulk Density in a Degraded Tropical Peatland,
+  Science of The Total Environment, 699, 134\,199,
+  \doi{10.1016/j.scitotenv.2019.134199}, 2020.
+
+\bibitem[{Sutikno et~al.(2019)Sutikno, Nasrul, Gunawan, Jayadi, {Rinaldi},
+  Saputra, and Yamamoto}]{sutiknoEffectivenessCanalBlocking2019}
+Sutikno, S., Nasrul, B., Gunawan, H., Jayadi, R., {Rinaldi}, Saputra, E., and
+  Yamamoto, K.: The Effectiveness of Canal Blocking for Hydrological
+  Restoration in Tropical Peatland, MATEC Web of Conferences, 276, 06\,003,
+  \doi{10.1051/matecconf/201927606003}, 2019.
+
+\bibitem[{Sutikno et~al.(2020)Sutikno, Rinaldi, Saputra, Kusairi, Saharjo, and
+  Putra}]{sutiknoWaterManagementHydrological2020}
+Sutikno, S., Rinaldi, R., Saputra, E., Kusairi, M., Saharjo, B.~H., and Putra,
+  E.~I.: Water Management for Hydrological Restoration and Fire Prevention in
+  Tropical Peatland, IOP Conference Series: Materials Science and Engineering,
+  933, 012\,053, \doi{10.1088/1757-899X/933/1/012053}, 2020.
+
+\bibitem[{Szymkiewicz(2010)}]{szymkiewiczNumericalModelingOpen2010}
+Szymkiewicz, R.: Numerical {{Modeling}} in {{Open Channel Hydraulics}}, vol.~83
+  of {\em Water {{Science}} and {{Technology Library}}\/}, {Springer
+  Netherlands}, {Dordrecht}, \doi{10.1007/978-90-481-3674-2}, 2010.
+
+\bibitem[{Teh et~al.(2017)Teh, Murphy, Berrio, Boom, and
+  Page}]{tehSeasonalVariabilityMethane2017}
+Teh, Y.~A., Murphy, W.~A., Berrio, J.-C., Boom, A., and Page, S.~E.: Seasonal
+  Variability in Methane and Nitrous Oxide Fluxes from Tropical Peatlands in
+  the Western {{Amazon}} Basin, Biogeosciences, 14, 3669--3683,
+  \doi{10.5194/bg-14-3669-2017}, 2017.
+
+\bibitem[{Urzainki(2022)}]{urzainkiTxartBlockEffectiveness2022}
+Urzainki, I.: Txart Block\_effectiveness: V1.0.2, 2022.
+
+\bibitem[{Urzainki et~al.(2020)Urzainki, Laur{\'e}n, Palviainen, Haahti,
+  Budiman, Basuki, Netzer, and
+  H{\"o}kk{\"a}}]{urzainkiCanalBlockingOptimization2020}
+Urzainki, I., Laur{\'e}n, A., Palviainen, M., Haahti, K., Budiman, A., Basuki,
+  I., Netzer, M., and H{\"o}kk{\"a}, H.: Canal Blocking Optimization in
+  Restoration of Drained Peatlands, Biogeosciences, 17, 4769--4784,
+  \doi{10.5194/bg-17-4769-2020}, 2020.
+
+\bibitem[{Vernimmen et~al.(2020)Vernimmen, Hooijer, Akmalia, Fitranatanegara,
+  Mulyadi, Yuherdha, Andreas, and Page}]{vernimmenMappingDeepPeat2020}
+Vernimmen, R., Hooijer, A., Akmalia, R., Fitranatanegara, N., Mulyadi, D.,
+  Yuherdha, A., Andreas, H., and Page, S.: Mapping Deep Peat Carbon Stock from
+  a {{LiDAR}} Based {{DTM}} and Field Measurements, with Application to Eastern
+  {{Sumatra}}, Carbon Balance and Management, 15, 4,
+  \doi{10.1186/s13021-020-00139-2}, 2020.
+
+\bibitem[{Vijith and
+  {Dodge-Wan}(2020)}]{vijithSpatialTemporalCharacteristics2020}
+Vijith, H. and {Dodge-Wan}, D.: Spatial and Temporal Characteristics of
+  Rainfall over a Forested River Basin in {{NW Borneo}}, Meteorology and
+  Atmospheric Physics, 132, 683--702, \doi{10.1007/s00703-019-00714-4}, 2020.
+
+\bibitem[{Wang et~al.(2018)Wang, Zhuang, L{\"a}hteenoja, Draper, and
+  {Cadillo-Quiroz}}]{wangPotentialShiftCarbon2018}
+Wang, S., Zhuang, Q., L{\"a}hteenoja, O., Draper, F.~C., and {Cadillo-Quiroz},
+  H.: Potential Shift from a Carbon Sink to a Source in {{Amazonian}} Peatlands
+  under a Changing Climate, Proceedings of the National Academy of Sciences,
+  115, 12\,407--12\,412, \doi{10.1073/pnas.1801317115}, 2018.
+
+\bibitem[{Wati et~al.(2018)Wati, Sopaheluwakan, and
+  Fatkhuroyan}]{watiComparisonPanEvaporation2018}
+Wati, T., Sopaheluwakan, A., and Fatkhuroyan, F.: Comparison {{Pan Evaporation
+  Data}} with {{Global Land-surface Evaporation GLEAM}} in {{Java}} and {{Bali
+  Island Indonesia}}, Indonesian Journal of Geography, 50, 87,
+  \doi{10.22146/ijg.30926}, 2018.
+
+\bibitem[{Wijedasa et~al.(2018)Wijedasa, Sloan, Page, Clements, Lupascu, and
+  Evans}]{wijedasaCarbonEmissionsSouthEast2018}
+Wijedasa, L.~S., Sloan, S., Page, S.~E., Clements, G.~R., Lupascu, M., and
+  Evans, T.~A.: Carbon Emissions from {{South-East Asian}} Peatlands Will
+  Increase despite Emission-Reduction Schemes, Global Change Biology, 24,
+  4598--4613, \doi{10.1111/gcb.14340}, 2018.
+
+\bibitem[{Wong et~al.(2018)Wong, Hirata, Hirano, Kiew, Aeries, Musin, Waili,
+  Lo, and Melling}]{wongMicrometeorologicalMeasurementMethane2018}
+Wong, G.~X., Hirata, R., Hirano, T., Kiew, F., Aeries, E.~B., Musin, K.~K.,
+  Waili, J.~W., Lo, K.~S., and Melling, L.: Micrometeorological Measurement of
+  Methane Flux above a Tropical Peat Swamp Forest, Agricultural and Forest
+  Meteorology, 256--257, 353--361, \doi{10.1016/j.agrformet.2018.03.025}, 2018.
+
+\bibitem[{W{\"o}sten et~al.(2006)W{\"o}sten, Hooijer, Siderius, Rais, Idris,
+  and Rieley}]{wostenTropicalPeatlandWater2006}
+W{\"o}sten, H., Hooijer, A., Siderius, C., Rais, D.~S., Idris, A., and Rieley,
+  J.: Tropical {{Peatland}} Water Management Modelling of the {{Air Hitam
+  Laut}} Catchment in {{Indonesia}}, International Journal of River Basin
+  Management, 4, 233--244, \doi{10.1080/15715124.2006.9635293}, 2006.
+
+\bibitem[{Xu et~al.(2018)Xu, Morris, Liu, and
+  Holden}]{xuPEATMAPRefiningEstimates2018}
+Xu, J., Morris, P.~J., Liu, J., and Holden, J.: {{PEATMAP}}: {{Refining}}
+  Estimates of Global Peatland Distribution Based on a Meta-Analysis, CATENA,
+  160, 134--140, \doi{10.1016/j.catena.2017.09.010}, 2018.
+
+\bibitem[{Zou et~al.(2022)Zou, Ziegler, Chen, McNicol, Ciais, Jiang, Zheng, Wu,
+  Wu, Lin, He, Brown, Holden, Zhang, Ramchunder, Chen, and
+  Zeng}]{zouRewettingGlobalWetlands2022}
+Zou, J., Ziegler, A.~D., Chen, D., McNicol, G., Ciais, P., Jiang, X., Zheng,
+  C., Wu, J., Wu, J., Lin, Z., He, X., Brown, L.~E., Holden, J., Zhang, Z.,
+  Ramchunder, S.~J., Chen, A., and Zeng, Z.: Rewetting Global Wetlands
+  Effectively Reduces Major Greenhouse Gas Emissions, Nature Geoscience, 15,
+  627--632, \doi{10.1038/s41561-022-00989-0}, 2022.
+
+\end{thebibliography}
