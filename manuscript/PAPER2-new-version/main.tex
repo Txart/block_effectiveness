@@ -190,6 +190,7 @@ The SMPP area remains uninhabited, and pioneering native forest species are the 
 
 Our study site, a large subset of the SMPP area, contains  $219$ \unit{km} of canals and 168 dams (Figure \ref{fig:study_area}).
 The locations of the peat compaction dams  were based on elevation difference by distance \citep{jaenickePlanningHydrologicalRestoration2010}.
+The typical dam is made out of surrounding peat, and covers the canal width entirely up to the local peat surface.
 The peat depth averages at about $5$ \unit{m}.
 There are five patrol posts inside our area, each consisting of a weather station and six daily-measured dipwells along a $200$ \unit{m} transect perpendicular to the nearest canal. 
 There are 111 additional dipwells measured manually at an approximately monthly frequency.
@@ -391,7 +392,7 @@ The weather data used in this study differed between model scenarios, see the fo
 \subsection{Modeled scenarios}
 We simulated the WTD over one year for eight different scenarios.
 Each simulation started from the same initial WTD.
-We ran the model with two different weather data (dry and wet years); two different blocks states (blocked or without any blocks); and two different peat hydraulic properties functions, $S_y$ and $T$.
+We ran the model with two different weather data (dry and wet years); two different blocks states (blocked or without any blocks); and two different peat hydraulic transmissivities, $T$.
 The eight different scenarios arise from a combination of all of the above factors ($2^3 = 8$).
 
 Apart from those, we also conducted a simple reality check for the model, in which we visually compared the model results with WTD sensor data.
@@ -407,7 +408,7 @@ Net annual water input between the two scenarios differed in 1255 \unit{mm}: Tot
 Around day 150 in the dry scenario a prolonged dry period began, which lasted almost until the end of the year.
 The wet year had intense and prolonged rainfalls, even during the dry period.
 The resulting net water sources for the two scenarios are shown in Figure \ref{fig:p_minus_et}.
-The two selected years  reflect extremes of the large inter-annual and seasonal variability that are common in the tropics..
+The two selected years  reflect extremes of the large inter-annual and seasonal variability that are common in the tropics.
 
 \begin{figure}[t]
 \includegraphics[width=8.3 cm]{figs/P_minus_ET.pdf}
@@ -423,23 +424,23 @@ This value was $ET = 4.17$ \unit{mm d^{-1}}, the mean of 7 years of measurements
 \cite{watiComparisonPanEvaporation2018} found that pan evaporation (evaporation from ponding water) in Java and Bali could be as high as $7$ \unit{mm d^{-1}}.
 Based on that, we added a pan evaporation term to the constant baseline.
 This pan evaporation term increased linearly from $0$ \unit{mm d^{-1}} when the WTD was at $-10$ \unit{cm}, to $3$  \unit{mm d^{-1}} when the WTD was at $+10$ \unit{cm}.
-The contribution of the added pan evaporation term for higher water levels was cut off at $3$ \unit{mm d^{-1}}.
+The contribution of the added pan evaporation term for ponding water tables was cut off at $3$ \unit{mm d^{-1}}.
 
 
 \subsubsection{Block configurations}
 Two different dam setups were modelled.
 One setup, which will be referred to as  'blocked configuration' or simply 'blocked', consisted of all the 168 blocks present in the study area (see Figure \ref{fig:study_area}).
 The other setup, called 'not blocked', did not contain any blocks.
-The typical block is made out of surrounding peat, and covers the canal width entirely up to the local peat surface.
+
 
 \subsubsection{Peat hydraulic properties}
 Our description of the peat hydraulic properties was based on the findings presented in \cite{cobbHowTemporalPatterns2017}, \cite{hooijerHydrologyTropicalWetland2005} and \cite{bairdHighPermeabilityExplains2017}.
 The values reported for the transmissivity and its derivative, the conductivity, $K$, vary significantly both between sites and in the vertical soil profile within the same site.
-In their measurements in several Panamanian peatlands, \cite{bairdHighPermeabilityExplains2017} found  that hydraulic conductivities at a depth of around $0.5$ \unit{m} in the peat profile were in the range $K = 7.5\text{--}471.9$ \unit{m d^{-1}}.
-In an Brunei peatland, \cite{cobbHowTemporalPatterns2017} found $K = 1300$ \unit{m d^{-1}} at the surface and $K = 5.2$ \unit{md^{-1}} at $30$ \unit{cm} below the surface.
+In their measurements in several Panamanian peatlands, \cite{bairdHighPermeabilityExplains2017} found  that hydraulic conductivities at a depth of around $0.5$ \unit{m} in the peat profile were in the range $K = 7.5 \text{--} 471.9$ \unit{m d^{-1}}.
+In a Brunei peatland, \cite{cobbHowTemporalPatterns2017} found $K = 1300$ \unit{m d^{-1}} at the surface and $K = 5.2$ \unit{md^{-1}} at $30$ \unit{cm} below the surface.
 The specific yield, on the other hand, varies less in the cited studies.
-All values are in the range $S_y=0.29\text{--}0.68$, deeper layers of the peat profile having lower values.
-To capture some of this range and the rapid vertical change in the soil profile, we chose to use a single specific yield curve and  four different transmissivity curves, which were modelled using Eqs.\eqref{eq:S_zeta} and \eqref{eq:T_zeta}.
+All values are in the range $S_y=0.29 \text{--} 0.68$, deeper layers of the peat profile having lower values.
+To capture some of this range and the vertical change in the soil profile, we chose to use a single specific yield curve and  two different transmissivity curves, which were modelled using Eqs.\eqref{eq:S_zeta} and \eqref{eq:T_zeta}.
 The resulting peat hydraulic properties are shown in Figure \ref{fig:parameterizatioe}, and the sets of parameters used to generate them are listed in Table \ref{tab:peat_property_params}.
 
 \begin{table}[t]
@@ -456,13 +457,13 @@ The resulting peat hydraulic properties are shown in Figure \ref{fig:parameteriz
 \end{table}
 
 \begin{figure*}[t]
-\includegraphics[width=12 cm]{figs/parameterization.pdf}
-\caption{The two modelled sets of peat hydraulic properties arising from the parameters in Table \ref{tab:peat_property_params}. \textbf{(a)} Specific yield, Eq.\eqref{eq:S_zeta}, common to all modelled scenarios. \textbf{(b)} Transmissivity, Eq.\eqref{eq:T_zeta}, and conductivity, the derivative of transmissivity, $K = \frac{\partial T}{\partial \zeta}$. The different parameter sets are color coded, and this code is used in the rest of the text.}
+\includegraphics[width=8.3 cm]{figs/parameterization.pdf}
+\caption{The two modelled sets of peat hydraulic properties arising from the parameters in Table \ref{tab:peat_property_params}. \textbf{(a)} Specific yield, Eq.\eqref{eq:S_zeta}, common to all modelled scenarios. \textbf{(b)} Transmissivity, Eq.\eqref{eq:T_zeta}, and its derivative, conductivity, $K = \frac{\partial T}{\partial \zeta}$. The different parameter sets are color coded, and this code is used in the rest of the text.}
 \label{fig:parameterizatioe}
 \end{figure*}
 
 \subsubsection{Reality check}
-We performed a reality check of our model by comparing the simulated WTD with the available measured field data (meteorological data from the patrol posts and dipwell data, obtained during the year 2020).
+We performed a reality check of our model by comparing the simulated WTD with the available measured field data---meteorological data from the patrol posts and dipwell data, both obtained during the year 2020.
 The variation in peatland topography at smaller scales than the resolution limit of our data (originally, 100 \unit{m}$\times$ 100 \unit{m}) prevented any meaningful one-to-one quantitative comparison between the modelled and the measured WTD (see Figure \ref{fig:study_area}).
 This small scale variation in peat elevation is known to be of tens of centimeters \citep{lampelaGroundSurfaceMicrotopography2016, cobbHowTemporalPatterns2017}, which is comparable to daily and annual WTD ranges.
 
@@ -480,7 +481,7 @@ We chose to present here the peat hydraulic property set that best fitted the be
 \subsubsection{Initial condition} \label{sec:initial-condition}
 The initial WTD was the same in all modelled scenarios, including the reality check, and it was derived as follows.
 Starting from total water saturation, $\zeta=0$ \unit{m} everywhere in the study area, we let the model evolve with no precipitation and a high evapotranspiration, $ET=7.5$ \unit{mm d^{-1}}.
-The simulations were run with blocks and with the set of peat hydraulic properties number 4 (see Table \ref{tab:peat_property_params}).
+The simulations were run with blocks and with the set of peat hydraulic properties number 2 (see Table \ref{tab:peat_property_params}).
 The model was run for 50 days, recording the resulting WTD rasters at the end of each day.
 We then compared the WTD  at the dipwell locations for each of the 50 rasters with the dipwell measurements from January 22nd, 2020, the first sensor measurements of the year.
 The modelled WTD raster that resulted in the smallest mean squared error was selected as the initial condition for all scenarios.
@@ -505,7 +506,7 @@ CO\textsubscript{2} emissions in the study area were modelled as a linearly incr
 \end{equation}
 where the negative sign implies that the emissions increase with deeper WTD (note that $\zeta$ is negative below ground).
 Equation \eqref{eq:m_CO2} was used for below ground WTD.
-The CO\textsubscript{2} emissions resulting from above ground WTDs were set equal to the emissions at the surface, i.e., $m_{CO_2}(0) = b$. 
+The CO\textsubscript{2} emissions resulting from above ground WTDs were set equal to the emissions at the surface, i.e., $m_{CO_2}(\zeta > 0) = b$. 
 In this work, we used the values from \cite{jauhiainenCarbonDioxideEmissions2012}, $a=74.11$ \unit{Mg ha^{-1} m^{-1} yr^{-1}} and  $b=29.34$ \unit{Mg ha^{-1} yr^{-1}}.
 These values were obtained for an Acacia plantation, which may not give the most accurate estimation of the emissions from a rehabilitating natural peat swamp forest. 
 Therefore the reader is encouraged to treat the CO\textsubscript{2} emission results as a rough estimation of their magnitude.
@@ -531,7 +532,7 @@ There were three sensors that recorded an annual WTD average above 0.5 \unit{m},
 % The daily fluctuations produced by variations in precipitation and evapotranspiration were comparable in their magnitude.
 The magnitudes of the WTD rise after heavy rainfalls and the WTD drop in the recession periods were similar in the modelled and measured datasets.
 The water rise and recession slopes were similar as well.
-As a result, the distribution of annually averaged modelled WTD was very similar to the measured one, as can be seen in Figure \ref{fig:modelled_vs_measured} (c).
+As a result, the distribution of annually averaged modelled WTD was similar to the measured one, as can be seen in Figure \ref{fig:modelled_vs_measured} (c).
 
 The model captured the relevant water flow dynamics during the reality check, and thus it is considered to be plausible under the other weather scenarios presented in the study.
 
@@ -603,7 +604,7 @@ The dependence of $\Delta \bar{\zeta}$ on the distance to the nearest block, sho
 The effect of blocks on WTD for all modelled scenarios was relevant until about $600$ \unit{m} from the nearest dam, and it markedly decreased from there.
 The mean annual impact of the blocks on WTD more than one kilometre away was negligible (not shown in Figure \ref{fig:spatial_extent_of_block_effect} (a) for clarity).
 This was true across all weather conditions and peat hydraulic properties, albeit with small variations between modelled scenarios.
-Drier conditions and higher hydraulic conductivities had the effect of increasing the spatial extent of the blocks' influence.
+Higher hydraulic conductivities had the effect of increasing the spatial extent of the blocks' influence.
 
 \begin{figure}[t]
 \includegraphics[width=12 cm]{figs/rasters_and_distance_to_blocks.pdf}
@@ -616,12 +617,12 @@ Drier conditions and higher hydraulic conductivities had the effect of increasin
 The net block-induced WTD rise in all modelled scenarios led to an overall decrease of CO\textsubscript{2} emissions, Figure \ref{fig:cum_CO2}.
 In the worst performing rewetting scenario, with dry conditions and a peatland with the lowest studied hydraulic conductivity (parameter set 1), the non-blocked setup emitted an annual total of $0.62$ \unit{Mg ha^{-1}} more than the blocked one.
 In contrast, the high-transmissivity scenario (parameter set 2) the block-induced WTD rise was translated into a $1.52$ \unit{Mg ha^{-1} y^{-1}} CO\textsubscript{2} emission reduction for both the dry and wet years.
-Averaging over all peat hydraulic properties, the emission of $1.07$ \unit{Mg ha^{-1}} and $1.17$ \unit{Mg ha^{-1}} CO\textsubscript{2} was prevented in the whole year for dry and wet years, respectively.
+Averaging over peat hydraulic properties, the emission of $1.07$ \unit{Mg ha^{-1}} and $1.17$ \unit{Mg ha^{-1}} CO\textsubscript{2} was prevented in the whole year for dry and wet years, respectively.
 
 
 \begin{figure}[t]
 \includegraphics[width=8.3 cm]{figs/all_params_daily_cumulative_CO2.pdf}
-\caption{Cumulative change in CO\textsubscript{2} emissions due to the blocks, $\Delta m_{CO_2}$ [\unit{Mg ha^{-1}}], in all modeling scenarios. Positive values indicate less CO\textsubscript{2} emissions in the blocked scenario. Solid and dashed lines correspond to wet and dry weather conditions, while colors stand for different sets of hydraulic peat properties. Sequestered CO\textsubscript{2} was computed using a linear relationship with WTD, Eq.\eqref{eq:m_CO2}.}
+\caption{Cumulative change in average CO\textsubscript{2} emissions due to the blocks, $\langle \Delta m_{CO_2} \rangle$ [\unit{Mg ha^{-1}}], in all modeling scenarios. Positive values indicate less CO\textsubscript{2} emissions in the blocked scenario. Solid and dashed lines correspond to wet and dry weather conditions, while colors stand for different sets of hydraulic peat properties. Sequestered CO\textsubscript{2} was computed using a linear relationship with WTD, Eq.\eqref{eq:m_CO2}.}
 \label{fig:cum_CO2}
 \end{figure}   
 
@@ -682,23 +683,25 @@ This implies that peatlands with higher hydraulic conductivities have greater po
 
 Fifth, the effect of the weather on the block rewetting ability was non-trivial, with an overall slightly greater impact in the wet year than in the dry year.
 On the one hand, heavy rainfall events led to smaller differences between the blocked and non-blocked scenarios.
-Moreover, the drier days in-between large rainfall events saw a greater impact of the blocks.
-Our interpretation is that with enough water supply from precipitation, WTD rises regardless of whether dams exist or not, making dams less useful.
+And it was in the drier days in-between these large rainfall events that the blocks raised the most water.
+Our interpretation of these observations is that with enough water supply from precipitation WTD rises regardless of whether dams exist or not, making dams less useful.
 On the other hand, in extremely prolongued dry periods such as the second half of the dry year, the overall rewetting potential of the dams decreased.
 This behaviour agreed with the findings of Putra et al. in their small scale empirical and modelling studies \citep{putraEffectsDitchDams2021, putraModellingPerformanceBunds2022}.
 Putra et al. reported a decrease in the effectiveness of blocks during dry periods because canals became completely dry and, therefore, blocks were not able to retain any water.
 However, our simple model of discharge through blocks, Eq.\eqref{eq:Qblock}, completely restricts water flow through blocks even when the water is below the canal bottom, i.e., when the canal is dry.
 Even if the canals had dried out, our model would not have been able to reproduce the effect described by Putra et al.
-Thus, another mechanism must explain the observed behavior, and we suspect it is precisely the mentioned block impermeability.
+Thus, another mechanism must explain the observed behavior.
+Our suspicion is that a combination of the mentioned block impermeability and the low resolution of the data around canals might be responsible.
 Two consecutive watertight dams in the same canal reach create a segment that is completelly disconnected from other parts of the network.
 The only water source of that canal segment is either precipitation or incoming water from the peatland.
-Some canal segments, embedded in peatland areas with a certain topography, may receive very little water during long, dry periods.
+Given its low resolution, the DTM was not able to describe the usual depressions of the peat surface around many canals, which likely reduced the water flow from the peatland to the canals.
+Some canal segments, embedded in peatland areas with a certain topography, may as a result receive very little water during long, dry periods.
 In our simulations, the negative $\Delta \zeta$ arising from those areas decreased faster than did the positive $\Delta \zeta$ increase in the rest of the areas.
 Hence the overall decrease in the block rewetting ability after a prolongued dry period.
-In reality blocks are permeable, although less conductive than an open channel.
+In reality blocks are permeable, although less conductive than an open channel, and canals are excavated in the peat, which attracts more water from the peatland.
 So this observation is an exaggeration of a subtler effect that takes place in nature.
-The conclusion that can be drawn from the combination of the two studies (Putra's and ours) is the following.
-The WTD difference between the blocked and non-blocked scenarios is greater in the absence of rainfall.
+The conclusion that can be drawn from the combination of the two studies (Putra's and ours) regarding the influence of weather is the following.
+The WTD difference between the blocked and non-blocked scenarios is generally greater in the absence of rainfall.
 Blocks are likely to delay the point in which canals become dry, yet, once that point is reached, blocks cease to have any impact on WTD.
 
 
