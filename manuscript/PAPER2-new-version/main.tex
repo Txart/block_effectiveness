@@ -137,7 +137,7 @@ The study was performed across two contrasting weather scenarios representing dr
 Our simulations revealed that while canal blocks had a net positive impact on WTD rise, they lowered WTD in some areas, and the extent of their effect over one year was limited to a distance of about 600 \unit{m} around the canals.
 We also show that canal blocks are most effective in peatlands with high hydraulic conductivity.
 Averaging over all modelled scenarios,  blocks raised the annual mean WTD by only 1.5 \unit{cm}.
-This value was similar in the dry year (1.44 \unit{cm}) and in the wet year (1.57 \unit{cm}), and there was a 2.13 fold difference between the scenarios with the large and the small hydraulic conductivity (2.05 \unit{cm} versus 0.96 \unit{cm}).
+This value was similar in the dry (1.44 \unit{cm}) and wet (1.57 \unit{cm}) years, and there was a 2.13 fold difference between the scenarios with large and  small hydraulic conductivities (2.05 \unit{cm} versus 0.96 \unit{cm}).
 Using a linear relationship between WTD and CO\textsubscript{2} emissions, we estimated that, averaging over peat hydraulic properties, canal blocks prevented the emission of 1.07 \unit{Mg ha^{-1}} CO\textsubscript{2} in the dry year and 1.17 \unit{Mg ha^{-1}} CO\textsubscript{2} in the wet year.
 We believe that the  modelling tools developed in this work could be adopted by local stakeholders aiming at a more effective and evidence-based approach to canal block based peatland restoration.
 \end{abstract}
@@ -197,7 +197,7 @@ Weather and WTD data was collected for 365 days, starting from January 22nd, 202
 
 \begin{figure}[H]
 \includegraphics[width=12 cm]{figs/area+zoominDTM.pdf}
-\caption{Study area and peat hydrological module (PHM) mesh. \textbf{(a)} Digital terrain model (brown gradient), water bodies (blue lines), dipwells (pink triangles), canal blocks (yellow dots) and patrol posts (red crosses). Each patrol posts consist of a weather station and six daily measured  dipwells along a 200 \unit{m} transect. The rest of the dipwells were measured manually with monthly frequency. Native forest species are the main vegetation cover. The area extends from ($2^\circ 5' 29''$ S $104^\circ 3' 14''$ E) to ($1^\circ 57' 11''$ S $104^\circ 14' 1''$ E). \textbf{(b)} and \textbf{(c)} Zoomed in region near two canals in the southern part of the study area. \textbf{(b)} Original 100 \unit{m} $\times$ 100 \unit{m} resolution of the digital terrain model, which was later interpolated to 50 \unit{m} $\times$ 50 \unit{m}. \textbf{(c)} Triangular mesh for the peat hydrological module (PHM). The white segments show the mesh cell faces corresponding to the canals, which were treated differently. This difference is emphasized with the green and pink schematic annotations. Two cell faces are shown in green: one is the face between two canal mesh cells, and consequently has no hydraulic transmissivity, $T=0$; the other is the face between a canal and a peat mesh cell and therefore $T\neq0$ in general. In pink we indicate the lateral inflow per unit length, $q$, between the peat and canal mesh cells.}
+\caption{Study area and peat hydrological module (PHM) mesh. \textbf{(a)} Digital terrain model (brown gradient), water bodies (blue lines), dipwells (pink triangles), canal blocks (yellow dots) and patrol posts (red crosses). Each patrol post consist of a weather station and six daily measured  dipwells along a 200 \unit{m} transect. The rest of the dipwells were measured manually with monthly frequency. Native forest species are the main vegetation cover. The area extends from ($2^\circ 5' 29''$ S $104^\circ 3' 14''$ E) to ($1^\circ 57' 11''$ S $104^\circ 14' 1''$ E). \textbf{(b)} and \textbf{(c)} Zoomed in region near two canals in the southern part of the study area. \textbf{(b)} Original 100 \unit{m} $\times$ 100 \unit{m} resolution of the digital terrain model, which was later interpolated to 50 \unit{m} $\times$ 50 \unit{m}. \textbf{(c)} Triangular mesh for the peat hydrological module (PHM). The white segments show the mesh cell faces corresponding to the canals, which were treated differently. This difference is emphasized with the green and pink schematic annotations. Two cell faces are shown in green: one is the cell face between two canal mesh cells, and consequently has a null hydraulic transmissivity, $T=0$; the other is the cell face between a canal and a peat mesh cell and therefore $T\neq0$ in general. In pink we indicate the lateral inflow per unit length, $q$, between the peat and canal mesh cells.}
 \label{fig:study_area}
 \end{figure}   
 
@@ -312,7 +312,7 @@ This is different from the usual practice, in which external mass and energy con
 As a result, the computational domain in our method is, by design, analogous to the canal network topology, which simplifies the implementation.
 Further details on the discretization method are given in Appendix \ref{ap-difwave}.
 
-In our implementation of the model, disconnected components of the canal network were solved independently, in parallel processes.
+In our numerical implementation of the model, disconnected components of the canal network were solved independently, in parallel processes.
 The accelerated Newton-Raphson method introduced by \cite{liuApplyingMicroprocessorAnalysis2014} was used to solve the resulting nonlinear system of equations.
 No-flow Neumann boundary conditions were set at all boundary nodes.
 
@@ -359,7 +359,8 @@ Above ground, on the contrary, we opted for a constant conductivity, the derivat
 It can be checked that $T(\zeta)$ is continuous and differentiable at the domain threshold $\zeta = 0$, which helps avoid potential numerical problems.
 
 Equation \eqref{eq:boussinesq} was solved using an explicit finite volume solver in an unstructured mesh generated from the study area maps (see Figure \ref{fig:study_area} \textbf{(c)}).
-Convergence and stability of the numerical method where confirmed by solving the equation with a 42 times smaller timestep for one day (usually, $\Delta t= 1/24$ \unit{d}; $\Delta t = 1/1000$ \unit{d} was used for the tests).
+Convergence and stability of the numerical method was tested by solving the equation with a smaller timestep for 5 days ($\Delta t= 1/24$ \unit{d} was used for the simulations; $\Delta t = 1/1000$ \unit{d} was used for the tests).
+The WTD for the two timesteps differed by less than 0.1 \% everywhere in the modelled domain (results not shown here).
 Our code relied on open source software \citep{guyerFiPyPartialDifferential2009, geuzaineGmshThreedimensionalFinite2009}.
 Fixed head Dirichlet boundary conditions with value $\zeta = -0.2$ \unit{m} were applied at the domain boundaries.
 
@@ -373,18 +374,18 @@ In the solution of the PHM, so as not to compute the canal flow twice, water flo
 In contrast, water flow between canal and peat cells was allowed. 
 The execution of the PHM did not directly modify the CWL; instead, the head difference at canal cells before and after the execution of the PHM was used to compute the lateral water inflow $q$ for each timestep.
 Thus, $q$ acts as a sink/source term which captures how much water is expected to enter or leave each node of the canal network in the next timestep.
-Whenever the CWL rose above ground, the volume of ponding water was distributed instantaneously throughout the cell area in the PHM step.
+Whenever the CWL rose above ground, the volume of ponding water was distributed instantaneously throughout the corresponding cell area in the PHM step.
 A schematic representation of the mentioned quantities around canals is shown in Figure \ref{fig:study_area} \textbf{(c)}.
 
-An hourly timestep was used in each internal iteration ($Delta t = 1/24$ \unit{d}), although smaller timesteps ($Delta t = 1/100$ \unit{d}) were adopted if any of the modules had not converged to a specified accuracy.
+An hourly timestep was used in each internal iteration ($\Delta t = 1/24$ \unit{d}), although smaller timesteps ($\Delta t = 1/100$ \unit{d}) were adopted if any of the modules had not converged to a specified accuracy.
 
 \subsubsection{Input requirements}
 The model runs with easily available GIS data: maps of surface elevation and peat depth, as well as a vector file that specifies the topology of the canal network.
 The digital elevation model and peat depth maps have a resolution of 100 \unit{m} $\times$ 100 \unit{m}, and they were derived from high-resolution light detection and ranging (LiDAR) data collected by Deltares following the methods described in \cite{vernimmenMappingDeepPeat2020}. 
 Local depressions in both layers were filled and the rasters interpolated to 50 \unit{m} $\times$ 50 \unit{m}.
-The peat depth model was derived from a geographically weighed regression and spatial interpolation of a peat thickness field inventory.
+The peat depth was derived from a geographically weighed regression and spatial interpolation of a peat thickness field inventory.
 Additionally, daily weather information is required for the solution of Eq.\eqref{eq:boussinesq}.
-Each cell of the finite element mesh receives a daily source term input given by  the difference between precipitation and evapotranspiration, $P -ET$.
+Each cell of the PHM finite element mesh receives a daily source term input given by  the difference between precipitation and evapotranspiration, $P -ET$.
 The weather data used in this study differed between model scenarios, see the following section for more details.
 
 \subsection{Modeled scenarios}
