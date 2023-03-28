@@ -694,15 +694,16 @@ Thus, another mechanism must explain the observed behavior.
 Our suspicion is that a combination of the mentioned block impermeability and the low resolution of the data around canals might be responsible.
 Two consecutive watertight dams in the same canal reach create a segment that is completelly disconnected from other parts of the network.
 The only water source of that canal segment is either precipitation or incoming water from the peatland.
-Given its low resolution, the DTM was not able to describe the usual depressions of the peat surface around many canals, which likely reduced the water flow from the peatland to the canals.
-Some canal segments, embedded in peatland areas with a certain topography, may as a result receive very little water during long, dry periods.
+Given its low resolution, the DTM was not able to describe the usual depressions of the peat surface around canals, which likely reduced the water inflow from the peatland.
+As a result, some canal segments, embedded in peatland areas with a certain topography, may have received very little water during long, dry periods.
 In our simulations, the negative $\Delta \zeta$ arising from those areas decreased faster than did the positive $\Delta \zeta$ increase in the rest of the areas.
 Hence the overall decrease in the block rewetting ability after a prolongued dry period.
 In reality blocks are permeable, although less conductive than an open channel, and canals are excavated in the peat, which attracts more water from the peatland.
-So this observation is an exaggeration of a subtler effect that takes place in nature.
-The conclusion that can be drawn from the combination of the two studies (Putra's and ours) regarding the influence of weather is the following.
+Therefore, our results in this regard are likely an exaggeration of a subtler effect that takes place in nature.
+The conclusion that can be drawn from the combination of Putra's and our studies regarding the influence of weather is the following.
 The WTD difference between the blocked and non-blocked scenarios is generally greater in the absence of rainfall.
 Blocks are likely to delay the point in which canals become dry, yet, once that point is reached, blocks cease to have any impact on WTD.
+When water input into the system is scarce, some areas of a blocked peatland might receive considerably less water than an unmanaged one.
 
 
 \subsection{Model limitations}
@@ -723,7 +724,7 @@ The lack of information about the water flow at the area boundaries hindered the
 In particular, there was no data on the water discharge at the catchment outlet, and we set the boundary conditions in the CWL at that point to no-flow Neumann.
 This choice, although striking at first, is overrun in the PHM step by the fixed $-0.2$ \unit{m} Dirichlet boundary conditions.
 The   Dirichlet boundary conditions are themselves a source of inaccuracy in the simulated WTD, as would be the case with any choice of boundary conditions.
-It seems plausible to us that the  distance to which the signal of the Dirichlet boundary conditions can propagate may be similar to the distance to which a change in the CWL affects WTD.
+It seems plausible that the  distance to which the signal of the Dirichlet boundary conditions can propagate may be similar to the distance to which a change in the CWL affects WTD.
 Given our results in the present study, we can estimate that inaccuracies introduced by the Dirichlet boundary conditions would only affect the WTD up to a 1 km buffer zone around the boundaries of the study area.
 We nevertheless argue that these inaccuracies do not undermine the results presented in this work because they are based on direct comparisons between different scenarios.
 Indeed, the WTD difference maps displayed in Figures \ref{fig:diff_averaged_over_everything} and \ref{fig:spatial_extent_of_block_effect} (b) and (c) confirms that the difference between scenarios is negligible at the study area boundaries.
@@ -742,14 +743,16 @@ The model validation against the dipwell-measured WTD was limited by the coarse 
 The original resolution of our digital elevation model was 100 \unit{m} $\times$ 100 \unit{m}, a scale in which tropical peat surface typically presents variations of the order of tens of centimetres \citep{lampelaGroundSurfaceMicrotopography2016}.
 In the absence of further information about the precise  elevation of the dipwells, we assumed an uncertainty of comparable magnitude in the dipwell WTD measurements.
 And since WTD  variation at any location was also of  tens of centimetres (see Figure \ref{fig:modelled_vs_measured}), this uncertainty prevented any direct quantitative comparison between the modelled and measured WTD.
-The coarse resolution also prevented precise modelling of the canal-peatland interface (see Figure \ref{fig:study_area} b) and c)).
-
-It should also be pointed out that we are not sure about the origin of the dipwell measurements showing WTD up to 1 m above the surface in Figure \ref{fig:modelled_vs_measured}.
-It could be due to a wrong datum, or to local depressions that are unnoticeable in the DTM which are canalizing the water to certain spots.
-As a result, we  resorted to doing a qualitative estimation of the model plausibility.
+As a result, we  resorted to doing a qualitative estimation of the model plausibility (called reality check in the text).
 Two main features of the reality check of Figure \ref{fig:modelled_vs_measured} support the validity of the model.
 First, the model was unbiased and the range of modelled and measured WTD was comparable.
 Second,  the modelled WTD presented similar ranges and slopes in the daily dynamics driven by precipitation and evapotranspiration.
+The origin of the dipwell measurements showing WTD up to 1 m above the surface in Figure \ref{fig:modelled_vs_measured} is unknown to us.
+They could be due to a wrong datum, or to local depressions that are unnoticeable in the DTM which are canalizing the water to certain spots.
+
+The coarse resolution also prevented precise modelling of the canal-peatland interface (see Figure \ref{fig:study_area} b) and c)).
+This may have led to an underestimation of the water gradient between the canals and the peatland, and therefore also to low CWL in very dry conditions (see fifth point in the previous section).
+
 
 %Correctly keeping track of all the system water inputs and outputs is crucial for the overall water balance, but it is a difficult task.
 %There are three ways in which water can enter or exit our model: the sink/source precipitation and evapotranspiration terms in Eq.\eqref{eq:boussinesq}; the overall Dirichlet boundary conditions in the PHM; and the potential numerical inaccuracies in the interface between the CNM and the PHM.

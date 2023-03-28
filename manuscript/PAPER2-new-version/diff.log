@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.9)  15 MAR 2023 20:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.9)  28 MAR 2023 08:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2974,28 +2974,10 @@ Package natbib Warning: Citation `page_global_2011' on page 1 undefined on input
 Package natbib Warning: Citation `xu_peatmap_2018' on page 1 undefined on input line 191.
 
 
-Package natbib Warning: Citation `pageGlobalRegionalImportance2011' on page 1 undefined on input line 193.
-
-
-Package natbib Warning: Citation `pageAnthropogenicImpactsLowland2022' on page 1 undefined on input line 193.
-
-
-Package natbib Warning: Citation `xuPEATMAPRefiningEstimates2018' on page 1 undefined on input line 193.
-
-
 Package natbib Warning: Citation `wijedasa_carbon_2018' on page 1 undefined on input line 196.
 
 
-Package natbib Warning: Citation `miettinenLandCoverDistribution2016' on page 1 undefined on input line 198.
-
-
-Package natbib Warning: Citation `wijedasaCarbonEmissionsSouthEast2018' on page 1 undefined on input line 198.
-
-
 Package natbib Warning: Citation `dohong_review_2017' on page 1 undefined on input line 202.
-
-
-Package natbib Warning: Citation `dohongReviewDriversTropical2017' on page 1 undefined on input line 204.
 
 
 Package natbib Warning: Citation `novita_geographic_2021' on page 1 undefined on input line 208.
@@ -3008,18 +2990,6 @@ Package natbib Warning: Citation `ishikura_soil_2018' on page 1 undefined on inp
 
 
 Package natbib Warning: Citation `carlson_modeling_2015' on page 1 undefined on input line 208.
-
-
-Package natbib Warning: Citation `novitaGeographicSettingGroundwater2021' on page 1 undefined on input line 210.
-
-
-Package natbib Warning: Citation `jauhiainenCarbonDioxideEmissions2012' on page 1 undefined on input line 210.
-
-
-Package natbib Warning: Citation `ishikuraSoilCarbonDioxide2018' on page 1 undefined on input line 210.
-
-
-Package natbib Warning: Citation `carlsonModelingRelationshipsWater2015' on page 1 undefined on input line 210.
 
 
 Package natbib Warning: Citation `evans_long-term_2022' on page 1 undefined on input line 212.
@@ -3037,31 +3007,10 @@ Package natbib Warning: Citation `sinclair_effects_2020' on page 1 undefined on 
 Package natbib Warning: Citation `hoyt_widespread_2020' on page 1 undefined on input line 212.
 
 
-Package natbib Warning: Citation `evansLongtermTrajectoryTemporal2022' on page 1 undefined on input line 214.
-
-
-Package natbib Warning: Citation `evansRatesSpatialVariability2019' on page 1 undefined on input line 214.
-
-
-Package natbib Warning: Citation `hooijerSubsidenceCarbonLoss2012' on page 1 undefined on input line 214.
-
-
-Package natbib Warning: Citation `sinclairEffectsDistanceCanal2020' on page 1 undefined on input line 214.
-
-
-Package natbib Warning: Citation `hoytWidespreadSubsidenceCarbon2020' on page 1 undefined on input line 214.
-
-
 Package natbib Warning: Citation `miettinen_fire_2017' on page 1 undefined on input line 216.
 
 
 Package natbib Warning: Citation `kiely_assessing_2021' on page 1 undefined on input line 216.
-
-
-Package natbib Warning: Citation `miettinenFireDistributionPeninsular2017' on page 1 undefined on input line 218.
-
-
-Package natbib Warning: Citation `kielyAssessingCostsIndonesian2021' on page 1 undefined on input line 218.
 
 
 Package natbib Warning: Citation `lauren_drainage_2021' on page 1 undefined on input line 220.
@@ -3070,16 +3019,20 @@ Package natbib Warning: Citation `lauren_drainage_2021' on page 1 undefined on i
 Package natbib Warning: Citation `lauren_nutrient_2021' on page 1 undefined on input line 220.
 
 
-Package natbib Warning: Citation `laurenNutrientBalanceTool2021' on page 1 undefined on input line 222.
-
-
 Package natbib Warning: Citation `nieminen_nitrogen_2017' on page 1 undefined on input line 224.
 
 
 Package natbib Warning: Citation `kononen_deforested_2018' on page 1 undefined on input line 226.
 
 
-Package natbib Warning: Citation `kononenDeforestedDrainedTropical2018' on page 1 undefined on input line 228.
+Overfull \hbox (0.56213pt too wide) in paragraph at lines 189--229
+\T1/ptm/m/n/10 Tropical peat-lands con-tain ap-prox-i-mately one sixth of the global soil car-bon pool []|   []   [][]|   []
+ []
+
+
+Overfull \hbox (2.2915pt too wide) in paragraph at lines 189--229
+[][]|   []   []\T1/ptm/m/n/10 , nu-tri-ent re-lease []|   []   |   []   [][]|   []   |   []   |   []   []ex-port to wa-ter courses[]|   []
+ []
 
 [1
 
@@ -3088,13 +3041,7 @@ Package natbib Warning: Citation `kononenDeforestedDrainedTropical2018' on page 
 Package natbib Warning: Citation `page_anthropogenic_2022' on page 2 undefined on input line 234.
 
 
-Package natbib Warning: Citation `pageAnthropogenicImpactsLowland2022' on page 2 undefined on input line 237.
-
-
 Package natbib Warning: Citation `dohong_review_2018' on page 2 undefined on input line 241.
-
-
-Package natbib Warning: Citation `dohongReviewTechniquesEffective2018' on page 2 undefined on input line 243.
 
 
 Package natbib Warning: Citation `sutikno_water_2020' on page 2 undefined on input line 249.
@@ -3106,19 +3053,7 @@ Package natbib Warning: Citation `kasih_rewetting_2016' on page 2 undefined on i
 Package natbib Warning: Citation `ritzema_canal_2014' on page 2 undefined on input line 249.
 
 
-Package natbib Warning: Citation `sutiknoWaterManagementHydrological2020' on page 2 undefined on input line 251.
-
-
-Package natbib Warning: Citation `kasihRewettingDegradedTropical2016' on page 2 undefined on input line 251.
-
-
-Package natbib Warning: Citation `ritzemaCanalBlockingStrategies2014' on page 2 undefined on input line 251.
-
-
 Package natbib Warning: Citation `dohong_review_2018' on page 2 undefined on input line 256.
-
-
-Package natbib Warning: Citation `dohongReviewTechniquesEffective2018' on page 2 undefined on input line 258.
 
 
 Package natbib Warning: Citation `wosten_tropical_2006' on page 2 undefined on input line 265.
@@ -3133,18 +3068,6 @@ Package natbib Warning: Citation `baird_high_2017' on page 2 undefined on input 
 Package natbib Warning: Citation `urzainki_canal_2020' on page 2 undefined on input line 265.
 
 
-Package natbib Warning: Citation `wostenTropicalPeatlandWater2006' on page 2 undefined on input line 267.
-
-
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 2 undefined on input line 267.
-
-
-Package natbib Warning: Citation `bairdHighPermeabilityExplains2017' on page 2 undefined on input line 267.
-
-
-Package natbib Warning: Citation `urzainkiCanalBlockingOptimization2020' on page 2 undefined on input line 267.
-
-
 Package natbib Warning: Citation `jaenicke_planning_2010' on page 2 undefined on input line 270.
 
 
@@ -3154,297 +3077,203 @@ Package natbib Warning: Citation `ishii_groundwater_2016' on page 2 undefined on
 Package natbib Warning: Citation `putra_modelling_2022' on page 2 undefined on input line 270.
 
 
-Package natbib Warning: Citation `jaenickePlanningHydrologicalRestoration2010' on page 2 undefined on input line 272.
-
-
-Package natbib Warning: Citation `ishiiGroundwaterPeatland2016' on page 2 undefined on input line 272.
-
-
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 2 undefined on input line 272.
-
-
 Package natbib Warning: Citation `ishii_groundwater_2016' on page 2 undefined on input line 277.
 
 
 Package natbib Warning: Citation `jaenicke_planning_2010' on page 2 undefined on input line 277.
 
 
-Package natbib Warning: Citation `ishiiGroundwaterPeatland2016' on page 2 undefined on input line 281.
-
-
-Package natbib Warning: Citation `jaenickePlanningHydrologicalRestoration2010' on page 2 undefined on input line 281.
-
-
 Package natbib Warning: Citation `putra_modelling_2022' on page 2 undefined on input line 284.
 
 
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 2 undefined on input line 286.
+Overfull \hbox (23.6217pt too wide) in paragraph at lines 260--288
+[]\T1/ptm/m/n/10 . Only few of those have dealt with the ques-tion of block per-for-mance []|   []   [][]|   []
+ []
 
 [2]
 
-Package natbib Warning: Citation `jaenicke_planning_2010' on page 3 undefined on input line 306.
+Package natbib Warning: Citation `jaenicke_planning_2010' on page 3 undefined on input line 307.
 
-
-Package natbib Warning: Citation `jaenickePlanningHydrologicalRestoration2010' on page 3 undefined on input line 308.
-
-<figs/area+zoominDTM.pdf, id=23, 884.01103pt x 986.0257pt>
+<figs/area+zoominDTM.pdf, id=123, 884.01103pt x 986.0257pt>
 File: figs/area+zoominDTM.pdf Graphic file (type pdf)
 <use figs/area+zoominDTM.pdf>
-Package pdftex.def Info: figs/area+zoominDTM.pdf  used on input line 318.
+Package pdftex.def Info: figs/area+zoominDTM.pdf  used on input line 320.
 (pdftex.def)             Requested size: 341.43306pt x 380.83223pt.
 [3] [4 <./figs/area+zoominDTM.pdf>]
 
-Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 5 undefined on input line 339.
+Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 5 undefined on input line 341.
 
 
-Package natbib Warning: Citation `szymkiewiczNumericalModelingOpen2010' on page 5 undefined on input line 341.
+Package natbib Warning: Citation `novak_hydraulic_2010' on page 5 undefined on input line 348.
 
 
-Package natbib Warning: Citation `novak_hydraulic_2010' on page 5 undefined on input line 346.
+Package natbib Warning: Citation `cunge_practical_1980' on page 5 undefined on input line 353.
 
-
-Package natbib Warning: Citation `novakHydraulicModellingIntroduction2010' on page 5 undefined on input line 348.
-
-
-Package natbib Warning: Citation `cunge_practical_1980' on page 5 undefined on input line 351.
-
-
-Package natbib Warning: Citation `cungePracticalAspectsComputational1980' on page 5 undefined on input line 353.
-
-<figs/canal_alboko_goitiko_bistak.pdf, id=247, 339.62189pt x 154.82562pt>
+<figs/canal_alboko_goitiko_bistak.pdf, id=354, 339.62189pt x 154.82562pt>
 File: figs/canal_alboko_goitiko_bistak.pdf Graphic file (type pdf)
 <use figs/canal_alboko_goitiko_bistak.pdf>
-Package pdftex.def Info: figs/canal_alboko_goitiko_bistak.pdf  used on input line 376.
+Package pdftex.def Info: figs/canal_alboko_goitiko_bistak.pdf  used on input line 378.
 (pdftex.def)             Requested size: 236.15796pt x 107.66136pt.
 [5]
 
-Package natbib Warning: Citation `novak_hydraulic_2010' on page 6 undefined on input line 407.
+Package natbib Warning: Citation `novak_hydraulic_2010' on page 6 undefined on input line 409.
 
 
-Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 6 undefined on input line 407.
-
-
-Package natbib Warning: Citation `novakHydraulicModellingIntroduction2010' on page 6 undefined on input line 409.
-
-
-Package natbib Warning: Citation `szymkiewiczNumericalModelingOpen2010' on page 6 undefined on input line 409.
+Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 6 undefined on input line 409.
 
 [6 <./figs/canal_alboko_goitiko_bistak.pdf>]
 
-Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 7 undefined on input line 436.
+Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 7 undefined on input line 438.
 
 
-Package natbib Warning: Citation `szymkiewiczNumericalModelingOpen2010' on page 7 undefined on input line 439.
+Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 7 undefined on input line 446.
 
 
-Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 7 undefined on input line 444.
+Overfull \hbox (10.00449pt too wide) in paragraph at lines 444--449
+[]\T1/ptm/m/n/10 The wa-ter dis-charge through a canal block, $\OML/cmm/m/it/10 Q[]$ \T1/ptm/m/n/10 [$[]$], was mod-elled us-ing the fol-low-ing re-la-tion-ship []|   []   [][]|   []
+ []
 
 
-Package natbib Warning: Citation `szymkiewiczNumericalModelingOpen2010' on page 7 undefined on input line 446.
+Package natbib Warning: Citation `cunge_practical_1980' on page 7 undefined on input line 463.
 
 
-Package natbib Warning: Citation `cunge_practical_1980' on page 7 undefined on input line 461.
+Package natbib Warning: Citation `liu_applying_2014' on page 7 undefined on input line 472.
 
 
-Package natbib Warning: Citation `cungePracticalAspectsComputational1980' on page 7 undefined on input line 463.
+Package natbib Warning: Citation `urzainki_canal_2020' on page 7 undefined on input line 481.
 
 
-Package natbib Warning: Citation `liu_applying_2014' on page 7 undefined on input line 470.
+Package natbib Warning: Citation `cobb_how_2017' on page 7 undefined on input line 487.
 
 
-Package natbib Warning: Citation `liuApplyingMicroprocessorAnalysis2014' on page 7 undefined on input line 472.
+Package natbib Warning: Citation `morris_digibog_2012' on page 7 undefined on input line 487.
 
 
-Package natbib Warning: Citation `urzainki_canal_2020' on page 7 undefined on input line 479.
+Package natbib Warning: Citation `putra_modelling_2022' on page 7 undefined on input line 487.
 
 
-Package natbib Warning: Citation `urzainkiCanalBlockingOptimization2020' on page 7 undefined on input line 481.
+Package natbib Warning: Citation `connorton_does_1985' on page 7 undefined on input line 494.
 
 
-Package natbib Warning: Citation `cobb_how_2017' on page 7 undefined on input line 485.
-
-
-Package natbib Warning: Citation `morris_digibog_2012' on page 7 undefined on input line 485.
-
-
-Package natbib Warning: Citation `putra_modelling_2022' on page 7 undefined on input line 485.
-
-
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 7 undefined on input line 488.
-
-
-Package natbib Warning: Citation `morrisDigiBogPeatlandDevelopment2012' on page 7 undefined on input line 488.
-
-
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 7 undefined on input line 488.
-
-
-Package natbib Warning: Citation `connorton_does_1985' on page 7 undefined on input line 492.
-
-
-Package natbib Warning: Citation `bear_modeling_2010' on page 7 undefined on input line 492.
-
-
-Package natbib Warning: Citation `connortonDoesRegionalGroundwaterflow1985' on page 7 undefined on input line 497.
-
-
-Package natbib Warning: Citation `bearModelingGroundwaterFlow2010' on page 7 undefined on input line 497.
+Package natbib Warning: Citation `bear_modeling_2010' on page 7 undefined on input line 494.
 
 [7]
 
-LaTeX Warning: Reference `eq:boussinesq_theta' on page 8 undefined on input line 515.
+LaTeX Warning: Reference `eq:boussinesq_theta' on page 8 undefined on input line 517.
 
 
-LaTeX Warning: Reference `ap-theta' on page 8 undefined on input line 520.
+LaTeX Warning: Reference `ap-theta' on page 8 undefined on input line 522.
 
 
-Package natbib Warning: Citation `cobb_how_2017' on page 8 undefined on input line 526.
+Package natbib Warning: Citation `cobb_how_2017' on page 8 undefined on input line 528.
 
 
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 8 undefined on input line 528.
+Package natbib Warning: Citation `cobb_scalar_2019' on page 8 undefined on input line 533.
 
 
-Package natbib Warning: Citation `cobb_scalar_2019' on page 8 undefined on input line 531.
+LaTeX Warning: Reference `eq:boussinesq_theta' on page 8 undefined on input line 537.
 
 
-Package natbib Warning: Citation `cobbScalarSimulationParameterization2019' on page 8 undefined on input line 533.
-
-
-LaTeX Warning: Reference `eq:boussinesq_theta' on page 8 undefined on input line 535.
-
-
-LaTeX Warning: Reference `ap-theta' on page 8 undefined on input line 541.
+LaTeX Warning: Reference `ap-theta' on page 8 undefined on input line 543.
 
 [8]
 
-LaTeX Warning: Reference `ap-theta' on page 9 undefined on input line 586.
+LaTeX Warning: Reference `ap-theta' on page 9 undefined on input line 588.
 
 
-LaTeX Warning: Reference `eq:boussinesq_theta' on page 9 undefined on input line 595.
+LaTeX Warning: Reference `eq:boussinesq_theta' on page 9 undefined on input line 597.
 
 
-Package natbib Warning: Citation `guyer_fipy_2009' on page 9 undefined on input line 600.
+Package natbib Warning: Citation `guyer_fipy_2009' on page 9 undefined on input line 603.
 
 
-Package natbib Warning: Citation `geuzaine_gmsh_2009' on page 9 undefined on input line 600.
-
-
-Package natbib Warning: Citation `guyerFiPyPartialDifferential2009' on page 9 undefined on input line 602.
-
-
-Package natbib Warning: Citation `geuzaineGmshThreedimensionalFinite2009' on page 9 undefined on input line 602.
-
-
-Package natbib Warning: Citation `vernimmen_mapping_2020' on page 9 undefined on input line 626.
-
-
-Package natbib Warning: Citation `vernimmenMappingDeepPeat2020' on page 9 undefined on input line 629.
-
-
-LaTeX Warning: Reference `eq:boussinesq_theta' on page 9 undefined on input line 631.
+Package natbib Warning: Citation `geuzaine_gmsh_2009' on page 9 undefined on input line 603.
 
 [9]
 
-LaTeX Warning: Reference `eq:boussinesq_theta' on page 10 undefined on input line 647.
+Package natbib Warning: Citation `vernimmen_mapping_2020' on page 10 undefined on input line 629.
 
-<figs/P_minus_ET.pdf, id=350, 297.511pt x 297.511pt>
+
+LaTeX Warning: Reference `eq:boussinesq_theta' on page 10 undefined on input line 634.
+
+
+LaTeX Warning: Reference `eq:boussinesq_theta' on page 10 undefined on input line 650.
+
+<figs/P_minus_ET.pdf, id=501, 297.511pt x 297.511pt>
 File: figs/P_minus_ET.pdf Graphic file (type pdf)
 <use figs/P_minus_ET.pdf>
-Package pdftex.def Info: figs/P_minus_ET.pdf  used on input line 658.
+Package pdftex.def Info: figs/P_minus_ET.pdf  used on input line 660.
 (pdftex.def)             Requested size: 236.15796pt x 236.166pt.
 
-Package natbib Warning: Citation `hirano_evapotranspiration_2015' on page 10 undefined on input line 667.
+Package natbib Warning: Citation `hirano_evapotranspiration_2015' on page 10 undefined on input line 669.
 
 
-Package natbib Warning: Citation `wati_comparison_2018' on page 10 undefined on input line 667.
+Package natbib Warning: Citation `wati_comparison_2018' on page 10 undefined on input line 669.
 
 
-Package natbib Warning: Citation `hiranoEvapotranspirationTropicalPeat2015' on page 10 undefined on input line 669.
+Package natbib Warning: Citation `hirano_evapotranspiration_2015' on page 10 undefined on input line 678.
 
 
-Package natbib Warning: Citation `watiComparisonPanEvaporation2018' on page 10 undefined on input line 669.
+Package natbib Warning: Citation `wati_comparison_2018' on page 10 undefined on input line 678.
+
+[10] [11 <./figs/P_minus_ET.pdf>]
+
+Package natbib Warning: Citation `cobb_how_2017' on page 12 undefined on input line 702.
 
 
-Package natbib Warning: Citation `hirano_evapotranspiration_2015' on page 10 undefined on input line 676.
+Package natbib Warning: Citation `bonell_hydrology_2005' on page 12 undefined on input line 702.
 
 
-Package natbib Warning: Citation `wati_comparison_2018' on page 10 undefined on input line 676.
+Package natbib Warning: Citation `baird_high_2017' on page 12 undefined on input line 702.
 
 
-Package natbib Warning: Citation `hiranoEvapotranspirationTropicalPeat2015' on page 10 undefined on input line 681.
+Package natbib Warning: Citation `baird_high_2017' on page 12 undefined on input line 712.
 
 
-Package natbib Warning: Citation `watiComparisonPanEvaporation2018' on page 10 undefined on input line 681.
-
-[10]
-
-Package natbib Warning: Citation `cobb_how_2017' on page 11 undefined on input line 701.
+Package natbib Warning: Citation `cobb_how_2017' on page 12 undefined on input line 717.
 
 
-Package natbib Warning: Citation `bonell_hydrology_2005' on page 11 undefined on input line 701.
+Overfull \hbox (14.2823pt too wide) in paragraph at lines 696--724
+\T1/ptm/m/n/10 Our de-scrip-tion of the peat hy-draulic prop-er-ties was based on the find-ings pre-sented in []|   []   |   []   |   []   |   []   |   []   [][]|   []   |   []   |   []
+ []
 
-
-Package natbib Warning: Citation `baird_high_2017' on page 11 undefined on input line 701.
-
-
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 11 undefined on input line 707.
-
-
-Package natbib Warning: Citation `hooijerHydrologyTropicalWetland2005' on page 11 undefined on input line 707.
-
-
-Package natbib Warning: Citation `bairdHighPermeabilityExplains2017' on page 11 undefined on input line 707.
-
-
-Package natbib Warning: Citation `baird_high_2017' on page 11 undefined on input line 711.
-
-
-Package natbib Warning: Citation `bairdHighPermeabilityExplains2017' on page 11 undefined on input line 713.
-
-
-Package natbib Warning: Citation `cobb_how_2017' on page 11 undefined on input line 716.
-
-
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 11 undefined on input line 718.
-
-[11 <./figs/P_minus_ET.pdf>]
-./diff.tex:745: Misplaced \noalign.
+./diff.tex:746: Misplaced \noalign.
 \bottomhline ->\noalign 
                         {\vspace {1mm}}\hline 
-l.745 \DIFdelendFL \bottomhline
+l.746 \DIFdelendFL \bottomhline
                                
 I expect to see \noalign only after the \cr of
 an alignment. Proceed, and I'll ignore this case.
 
-./diff.tex:745: Misplaced \noalign.
+./diff.tex:746: Misplaced \noalign.
 \hline ->\noalign 
                   {\ifnum 0=`}\fi \hrule \@height \arrayrulewidth \futurelet...
-l.745 \DIFdelendFL \bottomhline
+l.746 \DIFdelendFL \bottomhline
                                
 I expect to see \noalign only after the \cr of
 an alignment. Proceed, and I'll ignore this case.
 
-./diff.tex:745: You can't use `\hrule' here except with leaders.
+./diff.tex:746: You can't use `\hrule' here except with leaders.
 \hline ->\noalign {\ifnum 0=`}\fi \hrule 
                                          \@height \arrayrulewidth \futurelet...
-l.745 \DIFdelendFL \bottomhline
+l.746 \DIFdelendFL \bottomhline
                                
 To put a horizontal rule in an hbox or an alignment,
 you should use \leaders or \hrulefill (see The TeXbook).
 
-./diff.tex:745: Missing number, treated as zero.
+./diff.tex:746: Missing number, treated as zero.
 <to be read again> 
                    \futurelet 
-l.745 \DIFdelendFL \bottomhline
+l.746 \DIFdelendFL \bottomhline
                                
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
 look up `weird error' in the index to The TeXbook.)
 
-./diff.tex:745: Illegal unit of measure (pt inserted).
+./diff.tex:746: Illegal unit of measure (pt inserted).
 <to be read again> 
                    \futurelet 
-l.745 \DIFdelendFL \bottomhline
+l.746 \DIFdelendFL \bottomhline
                                
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -3453,560 +3282,346 @@ To recover gracefully from this error, it's best to
 delete the erroneous units; e.g., type `2' to delete
 two letters. (See Chapter 27 of The TeXbook.)
 
-<figs/parameterization.pdf, id=404, 450.78413pt x 298.11375pt>
+<figs/parameterization.pdf, id=575, 450.78413pt x 298.11375pt>
 File: figs/parameterization.pdf Graphic file (type pdf)
 <use figs/parameterization.pdf>
-Package pdftex.def Info: figs/parameterization.pdf  used on input line 750.
-(pdftex.def)             Requested size: 341.43306pt x 225.7955pt.
+Package pdftex.def Info: figs/parameterization.pdf  used on input line 753.
+(pdftex.def)             Requested size: 236.15796pt x 156.17545pt.
 
-LaTeX Warning: Reference `eq:def_diffusivity' on page 12 undefined on input line 756.
-
-
-Package natbib Warning: Citation `lampela_ground_2016' on page 12 undefined on input line 765.
-
-
-Package natbib Warning: Citation `lampelaGroundSurfaceMicrotopography2016' on page 12 undefined on input line 767.
-
-
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 12 undefined on input line 767.
-
-
-Overfull \hbox (15.56062pt too wide) in paragraph at lines 761--768
-\T1/ptm/m/n/10 We per-formed a re-al-ity check of our model by com-par-ing the sim-u-lated WTD with the avail-able mea-sured field data []|   []
- []
+LaTeX Warning: Reference `eq:def_diffusivity' on page 12 undefined on input line 759.
 
 [12 <./figs/parameterization.pdf>]
 
-Package natbib Warning: Citation `allen_crop_1998' on page 13 undefined on input line 777.
+Package natbib Warning: Citation `lampela_ground_2016' on page 13 undefined on input line 769.
 
 
-Package natbib Warning: Citation `allenCropEvapotranspirationGuidelines1998' on page 13 undefined on input line 779.
+Overfull \hbox (41.39044pt too wide) in paragraph at lines 764--772
+\T1/ptm/m/n/10 We per-formed a re-al-ity check of our model by com-par-ing the sim-u-lated WTD with the avail-able mea-sured field []|   []   [][]|   []
+ []
 
 
-Package natbib Warning: Citation `hirano_evapotranspiration_2015' on page 13 undefined on input line 781.
+Package natbib Warning: Citation `allen_crop_1998' on page 13 undefined on input line 781.
 
 
-Package natbib Warning: Citation `hiranoEvapotranspirationTropicalPeat2015' on page 13 undefined on input line 783.
+Package natbib Warning: Citation `hirano_evapotranspiration_2015' on page 13 undefined on input line 785.
 
 [13]
 
-Package natbib Warning: Citation `jauhiainen_carbon_2012' on page 14 undefined on input line 819.
+Package natbib Warning: Citation `jauhiainen_carbon_2012' on page 14 undefined on input line 823.
 
-
-Package natbib Warning: Citation `jauhiainenCarbonDioxideEmissions2012' on page 14 undefined on input line 821.
-
-<figs/reality_check.pdf, id=467, 305.16208pt x 192.71953pt>
+<figs/reality_check.pdf, id=652, 305.16208pt x 192.71953pt>
 File: figs/reality_check.pdf Graphic file (type pdf)
 <use figs/reality_check.pdf>
-Package pdftex.def Info: figs/reality_check.pdf  used on input line 859.
+Package pdftex.def Info: figs/reality_check.pdf  used on input line 863.
 (pdftex.def)             Requested size: 341.43306pt x 215.62677pt.
 [14]
-<figs/diff_averaged_over_everything_with_blocks.pdf, id=482, 240.25803pt x 180.67221pt>
+<figs/diff_averaged_over_everything_with_blocks.pdf, id=667, 240.25803pt x 180.67221pt>
 File: figs/diff_averaged_over_everything_with_blocks.pdf Graphic file (type pdf)
 <use figs/diff_averaged_over_everything_with_blocks.pdf>
-Package pdftex.def Info: figs/diff_averaged_over_everything_with_blocks.pdf  used on input line 877.
+Package pdftex.def Info: figs/diff_averaged_over_everything_with_blocks.pdf  used on input line 881.
 (pdftex.def)             Requested size: 236.15796pt x 177.59238pt.
  [15 <./figs/reality_check.pdf>]
-<figs/combined_every_param_diff_vs_time_wet_and_dry.pdf, id=837, 392.18471pt x 392.18471pt>
+<figs/combined_every_param_diff_vs_time_wet_and_dry.pdf, id=1022, 392.18471pt x 392.18471pt>
 File: figs/combined_every_param_diff_vs_time_wet_and_dry.pdf Graphic file (type pdf)
 <use figs/combined_every_param_diff_vs_time_wet_and_dry.pdf>
-Package pdftex.def Info: figs/combined_every_param_diff_vs_time_wet_and_dry.pdf  used on input line 906.
+Package pdftex.def Info: figs/combined_every_param_diff_vs_time_wet_and_dry.pdf  used on input line 910.
 (pdftex.def)             Requested size: 341.43306pt x 341.45525pt.
  [16 <./figs/diff_averaged_over_everything_with_blocks.pdf>]
-<figs/rasters_and_distance_to_blocks.pdf, id=888, 559.02736pt x 352.10666pt>
+<figs/rasters_and_distance_to_blocks.pdf, id=1074, 559.02736pt x 352.10666pt>
 File: figs/rasters_and_distance_to_blocks.pdf Graphic file (type pdf)
 <use figs/rasters_and_distance_to_blocks.pdf>
-Package pdftex.def Info: figs/rasters_and_distance_to_blocks.pdf  used on input line 932.
+Package pdftex.def Info: figs/rasters_and_distance_to_blocks.pdf  used on input line 936.
 (pdftex.def)             Requested size: 341.43306pt x 215.05875pt.
  [17 <./figs/COMBINED_every_param_diff_vs_time_wet_and_dry.pdf>]
-<figs/all_params_daily_cumulative_CO2.pdf, id=927, 284.96178pt x 186.3974pt>
+<figs/all_params_daily_cumulative_CO2.pdf, id=1112, 284.96178pt x 186.3974pt>
 File: figs/all_params_daily_cumulative_CO2.pdf Graphic file (type pdf)
 <use figs/all_params_daily_cumulative_CO2.pdf>
-Package pdftex.def Info: figs/all_params_daily_cumulative_CO2.pdf  used on input line 947.
+Package pdftex.def Info: figs/all_params_daily_cumulative_CO2.pdf  used on input line 951.
 (pdftex.def)             Requested size: 236.15796pt x 154.47656pt.
  [18 <./figs/rasters_and_distance_to_blocks.pdf> <./figs/all_params_daily_cumulative_CO2.pdf>]
 
-Package natbib Warning: Citation `urzainki_canal_2020' on page 19 undefined on input line 967.
+Package natbib Warning: Citation `urzainki_canal_2020' on page 19 undefined on input line 971.
 
 
-Package natbib Warning: Citation `urzainkiCanalBlockingOptimization2020' on page 19 undefined on input line 969.
+Package natbib Warning: Citation `cobb_how_2017' on page 19 undefined on input line 977.
 
 
-Package natbib Warning: Citation `cobb_how_2017' on page 19 undefined on input line 973.
+Package natbib Warning: Citation `cobb_scalar_2019' on page 19 undefined on input line 977.
 
 
-Package natbib Warning: Citation `cobb_scalar_2019' on page 19 undefined on input line 973.
+Package natbib Warning: Citation `baird_digibog_2012' on page 19 undefined on input line 977.
 
 
-Package natbib Warning: Citation `baird_digibog_2012' on page 19 undefined on input line 973.
+Package natbib Warning: Citation `baird_high_2017' on page 19 undefined on input line 977.
 
 
-Package natbib Warning: Citation `baird_high_2017' on page 19 undefined on input line 973.
+Package natbib Warning: Citation `morris_digibog_2012' on page 19 undefined on input line 977.
 
 
-Package natbib Warning: Citation `morris_digibog_2012' on page 19 undefined on input line 973.
+Package natbib Warning: Citation `wosten_tropical_2006' on page 19 undefined on input line 977.
 
 
-Package natbib Warning: Citation `wosten_tropical_2006' on page 19 undefined on input line 973.
+Package natbib Warning: Citation `jaenicke_planning_2010' on page 19 undefined on input line 990.
 
 
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 19 undefined on input line 975.
+Package natbib Warning: Citation `ishii_groundwater_2016' on page 19 undefined on input line 990.
 
 
-Package natbib Warning: Citation `cobbScalarSimulationParameterization2019' on page 19 undefined on input line 975.
+Package natbib Warning: Citation `putra_modelling_2022' on page 19 undefined on input line 990.
 
 
-Package natbib Warning: Citation `bairdDigiBogPeatlandDevelopment2012' on page 19 undefined on input line 975.
+Package natbib Warning: Citation `jaenicke_planning_2010' on page 19 undefined on input line 990.
 
 
-Package natbib Warning: Citation `bairdHighPermeabilityExplains2017' on page 19 undefined on input line 975.
+Package natbib Warning: Citation `ishii_groundwater_2016' on page 19 undefined on input line 990.
 
 
-Package natbib Warning: Citation `morrisDigiBogPeatlandDevelopment2012' on page 19 undefined on input line 975.
+Package natbib Warning: Citation `putra_modelling_2022' on page 19 undefined on input line 1005.
 
 
-Package natbib Warning: Citation `wostenTropicalPeatlandWater2006' on page 19 undefined on input line 975.
+Overfull \hbox (188.37003pt too wide) in paragraph at lines 975--1009
+[]\T1/ptm/m/n/10 A few stud-ies have mod-elled trop-i-cal peat-land WTD []|   []   [][]|   []
+ []
 
 
-Package natbib Warning: Citation `jaenicke_planning_2010' on page 19 undefined on input line 986.
+Overfull \hbox (4.95288pt too wide) in paragraph at lines 975--1009
+[]\T1/ptm/m/n/10 , but to our knowl-edge only three have fo-cused on the ef-fec-tive-ness of canal blocks: []|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   [][]|   []
+ []
 
 
-Package natbib Warning: Citation `ishii_groundwater_2016' on page 19 undefined on input line 986.
+Package natbib Warning: Citation `cunge_practical_1980' on page 19 undefined on input line 1013.
 
 
-Package natbib Warning: Citation `putra_modelling_2022' on page 19 undefined on input line 986.
+Package natbib Warning: Citation `novak_hydraulic_2010' on page 19 undefined on input line 1013.
 
 
-Package natbib Warning: Citation `jaenicke_planning_2010' on page 19 undefined on input line 986.
+Package natbib Warning: Citation `putra_effects_2021' on page 19 undefined on input line 1027.
 
 
-Package natbib Warning: Citation `ishii_groundwater_2016' on page 19 undefined on input line 986.
+Package natbib Warning: Citation `sutikno_effectiveness_2019' on page 19 undefined on input line 1027.
 
 
-Package natbib Warning: Citation `jaenickePlanningHydrologicalRestoration2010' on page 19 undefined on input line 997.
+Package natbib Warning: Citation `sutikno_water_2020' on page 19 undefined on input line 1027.
 
 
-Package natbib Warning: Citation `ishiiGroundwaterPeatland2016' on page 19 undefined on input line 997.
+Package natbib Warning: Citation `holden_impact_2017' on page 19 undefined on input line 1027.
 
 
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 19 undefined on input line 997.
+Package natbib Warning: Citation `planas-clarke_effect_2020' on page 19 undefined on input line 1027.
 
 
-Package natbib Warning: Citation `jaenickePlanningHydrologicalRestoration2010' on page 19 undefined on input line 997.
+Package natbib Warning: Citation `schimelpfenig_effectiveness_2014' on page 19 undefined on input line 1027.
 
 
-Package natbib Warning: Citation `ishiiGroundwaterPeatland2016' on page 19 undefined on input line 997.
+Package natbib Warning: Citation `kasih_rewetting_2016' on page 19 undefined on input line 1027.
 
 
-Package natbib Warning: Citation `putra_modelling_2022' on page 19 undefined on input line 1001.
+Package natbib Warning: Citation `putra_effects_2021' on page 19 undefined on input line 1034.
 
 
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 19 undefined on input line 1003.
+Package natbib Warning: Citation `putra_modelling_2022' on page 19 undefined on input line 1034.
 
 
-Package natbib Warning: Citation `cunge_practical_1980' on page 19 undefined on input line 1009.
-
-
-Package natbib Warning: Citation `novak_hydraulic_2010' on page 19 undefined on input line 1009.
-
-
-Package natbib Warning: Citation `cungePracticalAspectsComputational1980' on page 19 undefined on input line 1011.
-
-
-Package natbib Warning: Citation `novakHydraulicModellingIntroduction2010' on page 19 undefined on input line 1011.
-
-
-Package natbib Warning: Citation `putra_effects_2021' on page 19 undefined on input line 1023.
-
-
-Package natbib Warning: Citation `sutikno_effectiveness_2019' on page 19 undefined on input line 1023.
-
-
-Package natbib Warning: Citation `sutikno_water_2020' on page 19 undefined on input line 1023.
-
-
-Package natbib Warning: Citation `holden_impact_2017' on page 19 undefined on input line 1023.
-
-
-Package natbib Warning: Citation `planas-clarke_effect_2020' on page 19 undefined on input line 1023.
-
-
-Package natbib Warning: Citation `schimelpfenig_effectiveness_2014' on page 19 undefined on input line 1023.
-
-
-Package natbib Warning: Citation `kasih_rewetting_2016' on page 19 undefined on input line 1023.
-
-
-Package natbib Warning: Citation `putraEffectsDitchDams2021' on page 19 undefined on input line 1025.
-
-
-Package natbib Warning: Citation `sutiknoEffectivenessCanalBlocking2019' on page 19 undefined on input line 1025.
-
-
-Package natbib Warning: Citation `sutiknoWaterManagementHydrological2020' on page 19 undefined on input line 1025.
-
-
-Package natbib Warning: Citation `holdenImpactDitchBlocking2017' on page 19 undefined on input line 1025.
-
-
-Package natbib Warning: Citation `planas-clarkeEffectWaterTable2020' on page 19 undefined on input line 1025.
-
-
-Package natbib Warning: Citation `schimelpfenigEffectivenessDitchBlockage2014' on page 19 undefined on input line 1025.
-
-
-Package natbib Warning: Citation `kasihRewettingDegradedTropical2016' on page 19 undefined on input line 1025.
-
-
-Package natbib Warning: Citation `putra_effects_2021' on page 19 undefined on input line 1030.
-
-
-Package natbib Warning: Citation `putra_modelling_2022' on page 19 undefined on input line 1030.
-
-
-Package natbib Warning: Citation `putraEffectsDitchDams2021' on page 19 undefined on input line 1032.
-
-
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 19 undefined on input line 1032.
+Overfull \hbox (358.4985pt too wide) in paragraph at lines 1024--1037
+\T1/ptm/m/n/10 been ob-served in many stud-ies in trop-i-cal and tem-per-ate peat-lands []|   []   [][]|   []
+ []
 
 [19]
 
-Package natbib Warning: Citation `sutikno_effectiveness_2019' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `sutikno_effectiveness_2019' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `sutikno_water_2020' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `sutikno_water_2020' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `evans_rates_2019' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `evans_rates_2019' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `putra_effects_2021' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `putra_effects_2021' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `putra_modelling_2022' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `putra_modelling_2022' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `ishii_groundwater_2016' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `ishii_groundwater_2016' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `jaenicke_planning_2010' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `jaenicke_planning_2010' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `sutikno_effectiveness_2019' on page 20 undefined on input line 1047.
+Package natbib Warning: Citation `sutikno_effectiveness_2019' on page 20 undefined on input line 1051.
 
 
-Package natbib Warning: Citation `sutiknoEffectivenessCanalBlocking2019' on page 20 undefined on input line 1052.
+Package natbib Warning: Citation `ishii_groundwater_2016' on page 20 undefined on input line 1058.
 
 
-Package natbib Warning: Citation `sutiknoWaterManagementHydrological2020' on page 20 undefined on input line 1052.
+Overfull \hbox (162.73048pt too wide) in paragraph at lines 1044--1063
+\T1/ptm/m/n/10 Fig-ure []8[]). Sev-eral stud-ies sup-port this claim []|   []   |   []   |   []   [][]|   []
+ []
 
 
-Package natbib Warning: Citation `evansRatesSpatialVariability2019' on page 20 undefined on input line 1052.
+Package natbib Warning: Citation `putra_modelling_2022' on page 20 undefined on input line 1067.
 
 
-Package natbib Warning: Citation `putraEffectsDitchDams2021' on page 20 undefined on input line 1052.
+Package natbib Warning: Citation `hillel_environmental_1998' on page 20 undefined on input line 1072.
 
 
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 20 undefined on input line 1052.
+Package natbib Warning: Citation `bear_modeling_2010' on page 20 undefined on input line 1072.
 
 
-Package natbib Warning: Citation `ishiiGroundwaterPeatland2016' on page 20 undefined on input line 1052.
+Package natbib Warning: Citation `putra_effects_2021' on page 20 undefined on input line 1088.
 
 
-Package natbib Warning: Citation `jaenickePlanningHydrologicalRestoration2010' on page 20 undefined on input line 1052.
-
-
-Package natbib Warning: Citation `sutiknoEffectivenessCanalBlocking2019' on page 20 undefined on input line 1052.
-
-
-Package natbib Warning: Citation `ishii_groundwater_2016' on page 20 undefined on input line 1054.
-
-
-Package natbib Warning: Citation `ishiiGroundwaterPeatland2016' on page 20 undefined on input line 1056.
-
-
-Package natbib Warning: Citation `putra_modelling_2022' on page 20 undefined on input line 1063.
-
-
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 20 undefined on input line 1065.
-
-
-Package natbib Warning: Citation `hillel_environmental_1998' on page 20 undefined on input line 1068.
-
-
-Package natbib Warning: Citation `bear_modeling_2010' on page 20 undefined on input line 1068.
-
-
-Package natbib Warning: Citation `hillelEnvironmentalSoilPhysics1998' on page 20 undefined on input line 1070.
-
-
-Package natbib Warning: Citation `bearModelingGroundwaterFlow2010' on page 20 undefined on input line 1070.
-
-
-Package natbib Warning: Citation `putra_effects_2021' on page 20 undefined on input line 1084.
-
-
-Package natbib Warning: Citation `putra_modelling_2022' on page 20 undefined on input line 1084.
-
-
-Package natbib Warning: Citation `putraEffectsDitchDams2021' on page 20 undefined on input line 1086.
-
-
-Package natbib Warning: Citation `putraModellingPerformanceBunds2022' on page 20 undefined on input line 1086.
+Package natbib Warning: Citation `putra_modelling_2022' on page 20 undefined on input line 1088.
 
 [20]
 
-Package natbib Warning: Citation `connorton_does_1985' on page 21 undefined on input line 1111.
+Package natbib Warning: Citation `connorton_does_1985' on page 21 undefined on input line 1119.
 
 
-Package natbib Warning: Citation `connortonDoesRegionalGroundwaterflow1985' on page 21 undefined on input line 1113.
+Package natbib Warning: Citation `baird_digibog_2012' on page 21 undefined on input line 1124.
 
 
-Package natbib Warning: Citation `baird_digibog_2012' on page 21 undefined on input line 1116.
+Package natbib Warning: Citation `cobb_how_2017' on page 21 undefined on input line 1124.
 
 
-Package natbib Warning: Citation `cobb_how_2017' on page 21 undefined on input line 1116.
+Package natbib Warning: Citation `cunge_practical_1980' on page 21 undefined on input line 1129.
 
 
-Package natbib Warning: Citation `bairdDigiBogPeatlandDevelopment2012' on page 21 undefined on input line 1118.
+Package natbib Warning: Citation `haahti_unsteady_2014' on page 21 undefined on input line 1129.
 
 
-Package natbib Warning: Citation `cobbHowTemporalPatterns2017' on page 21 undefined on input line 1118.
+Package natbib Warning: Citation `osaki_arrangement_2016' on page 21 undefined on input line 1135.
 
 
-Package natbib Warning: Citation `cunge_practical_1980' on page 21 undefined on input line 1121.
+Package natbib Warning: Citation `ritzema_canal_2014' on page 21 undefined on input line 1135.
 
 
-Package natbib Warning: Citation `haahti_unsteady_2014' on page 21 undefined on input line 1121.
-
-
-Package natbib Warning: Citation `cungePracticalAspectsComputational1980' on page 21 undefined on input line 1123.
-
-
-Package natbib Warning: Citation `haahtiUnsteadyFlowSimulation2014' on page 21 undefined on input line 1123.
-
-
-Package natbib Warning: Citation `osaki_arrangement_2016' on page 21 undefined on input line 1127.
-
-
-Package natbib Warning: Citation `ritzema_canal_2014' on page 21 undefined on input line 1127.
-
-
-Package natbib Warning: Citation `osakiTropicalPeatlandEcosystems2016' on page 21 undefined on input line 1129.
-
-
-Package natbib Warning: Citation `ritzemaCanalBlockingStrategies2014' on page 21 undefined on input line 1129.
-
-
-Package natbib Warning: Citation `barthel_groundwater_2016' on page 21 undefined on input line 1134.
-
-
-Package natbib Warning: Citation `barthelGroundwaterSurfaceWater2016' on page 21 undefined on input line 1140.
-
-
-Package natbib Warning: Citation `gasda2011' on page 21 undefined on input line 1140.
-
-
-Package natbib Warning: Citation `ritzemaCanalBlockingStrategies2014' on page 21 undefined on input line 1158.
-
-
-Package natbib Warning: Citation `osakiTropicalPeatlandEcosystems2016' on page 21 undefined on input line 1158.
+Package natbib Warning: Citation `barthel_groundwater_2016' on page 21 undefined on input line 1142.
 
 [21]
 
-Package natbib Warning: Citation `baird_high_2017' on page 22 undefined on input line 1166.
+Package natbib Warning: Citation `baird_high_2017' on page 22 undefined on input line 1174.
 
 
-Package natbib Warning: Citation `kurnianto_influence_2019' on page 22 undefined on input line 1166.
+Package natbib Warning: Citation `kurnianto_influence_2019' on page 22 undefined on input line 1174.
 
 
-Package natbib Warning: Citation `ritzema_canal_2014' on page 22 undefined on input line 1166.
+Package natbib Warning: Citation `ritzema_canal_2014' on page 22 undefined on input line 1174.
 
 
-Package natbib Warning: Citation `osaki_arrangement_2016' on page 22 undefined on input line 1166.
+Package natbib Warning: Citation `osaki_arrangement_2016' on page 22 undefined on input line 1174.
 
 
-Package natbib Warning: Citation `bairdHighPermeabilityExplains2017' on page 22 undefined on input line 1168.
+Package natbib Warning: Citation `vijith_spatial_2020' on page 22 undefined on input line 1178.
 
 
-Package natbib Warning: Citation `kurniantoInfluenceLandcoverChanges2019' on page 22 undefined on input line 1168.
-
-
-Package natbib Warning: Citation `vijith_spatial_2020' on page 22 undefined on input line 1170.
-
-
-Package natbib Warning: Citation `vijithSpatialTemporalCharacteristics2020' on page 22 undefined on input line 1172.
-
-
-Package natbib Warning: Citation `lampela_ground_2016' on page 22 undefined on input line 1178.
-
-
-Package natbib Warning: Citation `lampelaGroundSurfaceMicrotopography2016' on page 22 undefined on input line 1180.
-
-
-Package natbib Warning: Citation `urzainki_canal_2020' on page 22 undefined on input line 1206.
-
-
-Package natbib Warning: Citation `urzainkiCanalBlockingOptimization2020' on page 22 undefined on input line 1208.
-
-
-Package natbib Warning: Citation `ritzema_canal_2014' on page 22 undefined on input line 1211.
-
-
-Package natbib Warning: Citation `dohong_review_2018' on page 22 undefined on input line 1211.
-
-
-Package natbib Warning: Citation `ritzemaCanalBlockingStrategies2014' on page 22 undefined on input line 1213.
-
-
-Package natbib Warning: Citation `dohongReviewTechniquesEffective2018' on page 22 undefined on input line 1213.
-
-
-Package natbib Warning: Citation `gallego-sala_latitudinal_2018' on page 22 undefined on input line 1216.
-
-
-Package natbib Warning: Citation `wang_potential_2018' on page 22 undefined on input line 1216.
-
-
-Package natbib Warning: Citation `cai_increasing_2014' on page 22 undefined on input line 1216.
-
-
-Package natbib Warning: Citation `portner_climate_2022' on page 22 undefined on input line 1216.
-
-
-Package natbib Warning: Citation `gallego-salaLatitudinalLimitsPredicted2018' on page 22 undefined on input line 1218.
-
-
-Package natbib Warning: Citation `wangPotentialShiftCarbon2018' on page 22 undefined on input line 1218.
-
-
-Package natbib Warning: Citation `caiIncreasingFrequencyExtreme2014' on page 22 undefined on input line 1218.
-
-
-Package natbib Warning: Citation `portnerClimateChange20222022' on page 22 undefined on input line 1218.
-
-
-Package natbib Warning: Citation `evans_rates_2019' on page 22 undefined on input line 1220.
-
-
-Package natbib Warning: Citation `hoyt_widespread_2020' on page 22 undefined on input line 1220.
-
-
-Package natbib Warning: Citation `evans_long-term_2022' on page 22 undefined on input line 1220.
-
-
-Package natbib Warning: Citation `evansRatesSpatialVariability2019' on page 22 undefined on input line 1222.
-
-
-Package natbib Warning: Citation `hoytWidespreadSubsidenceCarbon2020' on page 22 undefined on input line 1222.
-
-
-Package natbib Warning: Citation `evansLongtermTrajectoryTemporal2022' on page 22 undefined on input line 1222.
+Package natbib Warning: Citation `lampela_ground_2016' on page 22 undefined on input line 1186.
 
 [22]
 
-Package natbib Warning: Citation `teh_seasonal_2017' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `urzainki_canal_2020' on page 23 undefined on input line 1217.
 
 
-Package natbib Warning: Citation `wong_micrometeorological_2018' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `ritzema_canal_2014' on page 23 undefined on input line 1222.
 
 
-Package natbib Warning: Citation `planas-clarke_effect_2020' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `dohong_review_2018' on page 23 undefined on input line 1222.
 
 
-Package natbib Warning: Citation `deshmukh_impact_2020' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `gallego-sala_latitudinal_2018' on page 23 undefined on input line 1227.
 
 
-Package natbib Warning: Citation `deshmukh_conservation_2021' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `wang_potential_2018' on page 23 undefined on input line 1227.
 
 
-Package natbib Warning: Citation `kiuru_peat_2022' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `cai_increasing_2014' on page 23 undefined on input line 1227.
 
 
-Package natbib Warning: Citation `zou_rewetting_2022' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `portner_climate_2022' on page 23 undefined on input line 1227.
 
 
-Package natbib Warning: Citation `lestari_rewetting_2022' on page 23 undefined on input line 1228.
+Package natbib Warning: Citation `evans_rates_2019' on page 23 undefined on input line 1231.
 
 
-Package natbib Warning: Citation `tehSeasonalVariabilityMethane2017' on page 23 undefined on input line 1230.
+Package natbib Warning: Citation `hoyt_widespread_2020' on page 23 undefined on input line 1231.
 
 
-Package natbib Warning: Citation `wongMicrometeorologicalMeasurementMethane2018' on page 23 undefined on input line 1230.
+Package natbib Warning: Citation `evans_long-term_2022' on page 23 undefined on input line 1231.
 
 
-Package natbib Warning: Citation `planas-clarkeEffectWaterTable2020' on page 23 undefined on input line 1230.
+Overfull \hbox (265.89882pt too wide) in paragraph at lines 1214--1235
+\T1/ptm/m/n/10 When an-a-lyz-ing long-term sce-nar-ios, the ef-fect of cli-mate change in pre-cip-i-ta-tion and evap-o-tran-spi-ra-tion []|   []   [][]|   []
+ []
 
 
-Package natbib Warning: Citation `deshmukhImpactForestPlantation2020' on page 23 undefined on input line 1230.
+Package natbib Warning: Citation `teh_seasonal_2017' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `deshmukhConservationSlowsEmission2021' on page 23 undefined on input line 1230.
+Package natbib Warning: Citation `wong_micrometeorological_2018' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `kiuruPeatMacroporeNetworks2022' on page 23 undefined on input line 1230.
+Package natbib Warning: Citation `planas-clarke_effect_2020' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `zouRewettingGlobalWetlands2022' on page 23 undefined on input line 1230.
+Package natbib Warning: Citation `deshmukh_impact_2020' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `lestariRewettingTropicalPeatlands2022' on page 23 undefined on input line 1230.
+Package natbib Warning: Citation `deshmukh_conservation_2021' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `hikouei2023' on page 23 undefined on input line 1235.
+Package natbib Warning: Citation `kiuru_peat_2022' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `urzainkiTxartBlockEffectiveness2022' on page 23 undefined on input line 1253.
+Package natbib Warning: Citation `zou_rewetting_2022' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `cunge_practical_1980' on page 23 undefined on input line 1268.
+Package natbib Warning: Citation `lestari_rewetting_2022' on page 23 undefined on input line 1239.
 
 
-Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 23 undefined on input line 1268.
-
-
-Package natbib Warning: Citation `cungePracticalAspectsComputational1980' on page 23 undefined on input line 1270.
-
-
-Package natbib Warning: Citation `szymkiewiczNumericalModelingOpen2010' on page 23 undefined on input line 1270.
+Overfull \hbox (305.80928pt too wide) in paragraph at lines 1236--1242
+|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
 
 [23]
 
-Package natbib Warning: Citation `leveque_numerical_1992' on page 24 undefined on input line 1288.
+Package natbib Warning: Citation `cunge_practical_1980' on page 24 undefined on input line 1279.
 
 
-Package natbib Warning: Citation `levequeNumericalMethodsConservation1992' on page 24 undefined on input line 1290.
+Package natbib Warning: Citation `szymkiewicz_numerical_2010' on page 24 undefined on input line 1279.
+
+
+Package natbib Warning: Citation `leveque_numerical_1992' on page 24 undefined on input line 1299.
 
 [24]
 
-Package natbib Warning: Citation `urzainki_canal_2020' on page 25 undefined on input line 1355.
+Package natbib Warning: Citation `urzainki_canal_2020' on page 25 undefined on input line 1366.
 
-
-Overfull \hbox (26.18324pt too wide) in paragraph at lines 1361--1365
+[25]
+Overfull \hbox (26.18324pt too wide) in paragraph at lines 1372--1376
 []|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   [][]|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
  []
 
 
-LaTeX Warning: Reference `eq:boussinesq_theta' on page 25 undefined on input line 1371.
-
-[25]
-
-LaTeX Warning: Reference `eq:def-theta' on page 26 undefined on input line 1387.
+LaTeX Warning: Reference `eq:boussinesq_theta' on page 26 undefined on input line 1382.
 
 
-LaTeX Warning: Reference `eq:theta(zeta)' on page 26 undefined on input line 1425.
+LaTeX Warning: Reference `eq:def-theta' on page 26 undefined on input line 1398.
+
+
+LaTeX Warning: Reference `eq:theta(zeta)' on page 26 undefined on input line 1436.
 
 [26]
 pdfTeX warning (ext4): destination with the same identifier (name{appendix.A}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1504 \appendixfigures
+l.1515 \appendixfigures
                          %% needs to be added in front of appendix figures
 pdfTeX warning (ext4): destination with the same identifier (name{appendix.A}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1506 \appendixtables
-                         %% needs to be added in front of appendix tables (./diff.bbl [27]
+l.1517 \appendixtables
+                         %% needs to be added in front of appendix tables [27] (./diff.bbl [28]
 Underfull \hbox (badness 3954) in paragraph at lines 35--38
 []\T1/ptm/m/n/9 Bear, J. and Cheng, A. H.-D.: Mod-el-ing Ground-wa-ter Flow and Con-tam-i-nant Trans-port, Springer Nether-lands, Dor-drecht,
  []
@@ -4016,7 +3631,7 @@ Underfull \hbox (badness 3536) in paragraph at lines 69--72
 []\T1/ptm/m/n/9 Connorton, B.: Does the Re-gional Groundwater-Flow Equa-tion Model Ver-ti-cal Flow?, Jour-nal of Hy-drol-ogy, 79, 279--299,
  []
 
-[28] [29] [30] [31]
+[29] [30] [31] [32]
 Underfull \hbox (badness 1242) in paragraph at lines 481--485
 \T1/ptm/m/n/9 in Ama-zo-nian Peat-lands un-der a Chang-ing Cli-mate, Pro-ceed-ings of the Na-tional Academy of Sci-ences, 115, 12407--12412,
  []
@@ -4031,37 +3646,29 @@ Underfull \hbox (badness 4096) in paragraph at lines 509--513
 \T1/ptm/m/n/9 elling of the Air Hi-tam Laut Catch-ment in In-done-sia, In-ter-na-tional Jour-nal of River Basin Man-age-ment, 4, 233--244,
  []
 
-) [32]
+) [33]
 
 Package natbib Warning: There were undefined citations.
 
-(./diff.aux
-
-Package natbib Warning: Citation(s) may have changed.
-(natbib)                Rerun to get citations correct.
-
-)
+(./diff.aux)
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 19448 strings out of 476093
- 295155 string characters out of 5791592
- 1934793 words of memory out of 5000000
+ 19449 strings out of 476093
+ 295162 string characters out of 5791592
+ 1943793 words of memory out of 5000000
  39351 multiletter control sequences out of 15000+600000
  561062 words of font info for 103 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 87i,15n,91p,2009b,744s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 87i,15n,91p,2074b,744s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/latxfont/lasy6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/te
 xlive/2022/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on diff.pdf (32 pages, 4874787 bytes).
+Output written on diff.pdf (33 pages, 4893065 bytes).
 PDF statistics:
- 2197 PDF objects out of 2487 (max. 8388607)
- 1388 compressed objects within 14 object streams
- 171 named destinations out of 1000 (max. 500000)
+ 2487 PDF objects out of 2487 (max. 8388607)
+ 1674 compressed objects within 17 object streams
+ 172 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
