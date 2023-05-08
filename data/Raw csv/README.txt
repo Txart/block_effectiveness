@@ -12,3 +12,13 @@ Dipwell measurements:
 - WaterLevel_Adjusted2020.csv: WTD (cm) at patrol post canals.
 - WTL_PatPos_2020.csv: WTD (cm) at patrol post transects.
 - WTL_Other_2020.csv: WTD (cm) at dipwells not in the patrol posts.
+
+BMKG Sultan Thaha Airport weather data:
+ID WMO: 96195
+Station Name: Stasiun Meteorologi Sultan Thaha
+Latitude: -1.63368 
+Longitude: 103.64000
+Elevation: 26 (m)
+RR: Rainfall (mm)
+8888: Unmeasured Data
+9999: No Data
