@@ -1370,6 +1370,8 @@ for i in range(4):
 
 plt.show()
 #%% Some results
+
+
 print("Averaging over everything, blocks raised WTD by:")
 print(0.5*(np.mean(dry_diffs) + np.mean(wet_diffs))*100, " cm")
 print("In dry periods, and averaging over everything else, blocks raised WTD by:")
@@ -1386,6 +1388,12 @@ print(0.5*(np.mean(dry_diffs_spatial_avg, axis=1)[0] + np.mean(wet_diffs_spatial
 print("Averaging over weathers, the parameter with highest conductivity raised WTD by")
 print()
 
+wet_CO2_daily_unblocked = m_CO2_daily[:, 1, :]
+dry_CO2_daily_unblocked = m_CO2_daily[:, 0, :]
+cum_wet_CO2_daily_unblocked = np.cumsum(wet_CO2_daily_unblocked, axis=1)
+cum_dry_CO2_daily_unblocked = np.cumsum(dry_CO2_daily_unblocked, axis=1)
+print("Averaging over everything, the unblocked CO2 Mg emissions were:")
+print(0.5*(cum_dry_CO2_daily_unblocked[:,-1].mean() + cum_wet_CO2_daily_unblocked[:,-1].mean()))
 print("Total annual sequestered CO2 Mg per ha averaged over everythin:")
 print(0.5*(cum_sequestered_dry_CO2_daily[:,-1].mean() + cum_sequestered_wet_CO2_daily[:,-1].mean()))
 print("Total annual sequestered CO2 Mg per ha for DRY conditions, for all parameters :")
